@@ -15,11 +15,13 @@ public class Phrases {
             e.printStackTrace();
             return;
         }
-        System.out.println(Phrases.font.getName());
 
     }
 
-    public static Font font = new Font("arial", Font.BOLD, 12);
+
+    public static Font showFontBold = new Font("arial", Font.BOLD, 20);
+    public static Font showFontPlain = new Font("arial", Font.PLAIN, 20);
+    public static Font inputFont = new Font("arial", Font.BOLD, 12);
 
     public static String number = "Nr.";
     public static String date = "Datum";
@@ -35,5 +37,12 @@ public class Phrases {
     public static String cancel = "Abbrechen";
     public static String by = "Von";
     public static String value = "Betrag";
+
+    public static Color COLOR_HEAD_ROW = Color.GRAY;
+    public static Color COLOR_CONTROLS = Color.GRAY;
+    public static Color COLOR_CONTROLS_INPUT = Color.LIGHT_GRAY;
+    public static Color COLOR_CONTROL_BACKGROUND = null;
+    public static Color COLOR_TABLE_BACKGROUND = null;
+    public static Color COLOR_TABLE_CONTENT_BACKGROUND = Color.LIGHT_GRAY;
 
 }
