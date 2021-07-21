@@ -20,7 +20,7 @@ public class Phrases {
 
 
     public static Font showFontBold = new Font("arial", Font.BOLD, 20);
-    public static Font showFontPlain = new Font("arial", Font.PLAIN, 20);
+    public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
     public static Font inputFont = new Font("arial", Font.BOLD, 12);
 
     public static String number = "Nr.";
@@ -28,8 +28,8 @@ public class Phrases {
     public static String receiver = "Empfänger";
     public static String category = "Kategorie";
     public static String purpose = "V. Zweck";
-    public static String cost = "Ausgaben";
-    public static String gain = "Einnahmen";
+    public static String tableSpending = "Ausgaben";
+    public static String tableIncome = "Einnahmen";
     public static String balance = "Saldo";
     public static String neu = "Neu";
     public static String edit = "Bearbeiten";

@@ -2,6 +2,8 @@
 /shelf/
 /workspace.xml
 
+test
+
 # ignore intelliJ
 out
 *.ipr

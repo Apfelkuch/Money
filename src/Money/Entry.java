@@ -4,23 +4,29 @@ import java.time.LocalDate;
 
 public class Entry {
 
+    public enum options {
+        SPENDING, INCOME
+    }
+
     private int number;
     private LocalDate date;
-    private String receiver;
+    private String receiverBy;
     private String category;
     private String purpose;
-    private float cost;
-    private float gain;
-    private float balance;
+    private double spending;
+    private double income;
+    private double balance;
+    private options option;
 
-    public Entry(int number, LocalDate date, String receiver, String category, String purpose, float cost, float gain, float balance) {
+    public Entry(options option, int number, LocalDate date, String receiverBy, String category, String purpose, float spending, float income, float balance) {
+        this.option = option;
         this.number = number;
         this.date = date;
-        this.receiver = receiver;
+        this.receiverBy = receiverBy;
         this.category = category;
         this.purpose = purpose;
-        this.cost = cost;
-        this.gain = gain;
+        this.spending = spending;
+        this.income = income;
         this.balance = balance;
     }
 
@@ -30,12 +36,12 @@ public class Entry {
         return number;
     }
 
-    public LocalDate getDate() {
+    public LocalDate getLocalDate() {
         return date;
     }
 
-    public String getReceiver() {
-        return receiver;
+    public String getReceiverBy() {
+        return receiverBy;
     }
 
     public String getCategory() {
@@ -46,15 +52,19 @@ public class Entry {
         return purpose;
     }
 
-    public float getCost() {
-        return cost;
+    public double getSpending() {
+        return spending;
     }
 
-    public float getGain() {
-        return gain;
+    public double getIncome() {
+        return income;
     }
 
-    public float getBalance() {
+    public options getOption() {
+        return option;
+    }
+
+    public double getBalance() {
         return balance;
     }
 
@@ -62,12 +72,12 @@ public class Entry {
         this.number = number;
     }
 
-    public void setDate(LocalDate date) {
+    public void setLocalDate(LocalDate date) {
         this.date = date;
     }
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
+    public void setReceiverBy(String receiverBy) {
+        this.receiverBy = receiverBy;
     }
 
     public void setCategory(String category) {
@@ -78,15 +88,20 @@ public class Entry {
         this.purpose = purpose;
     }
 
-    public void setCost(float cost) {
-        this.cost = cost;
+    public void setSpending(float spending) {
+        this.spending = spending;
     }
 
-    public void setGain(float gain) {
-        this.gain = gain;
+    public void setIncome(float income) {
+        this.income = income;
     }
 
     public void setBalance(float balance) {
         this.balance = balance;
     }
+
+    public void setOption(options option) {
+        this.option = option;
+    }
 }
+
