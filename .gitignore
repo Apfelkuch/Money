@@ -3,6 +3,7 @@
 /workspace.xml
 
 test
+.rest
 
 # ignore intelliJ
 out
