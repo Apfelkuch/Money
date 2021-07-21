@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+test
+.rest
+
+# ignore intelliJ
+out
+*.ipr
+*.iws
+*.iml
