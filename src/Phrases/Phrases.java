@@ -37,6 +37,10 @@ public class Phrases {
     public static String cancel = "Abbrechen";
     public static String by = "Von";
     public static String value = "Betrag";
+    // menu bar
+    public static String options = "options";
+    public static String save = "save";
+    public static String exit = "exit";
 
     public static Color COLOR_HEAD_ROW = Color.GRAY;
     public static Color COLOR_CONTROLS = Color.GRAY;

@@ -26,6 +26,11 @@ import java.util.Date;
 
 public class Window extends JFrame implements ActionListener {
 
+    // menu bar
+    private JMenuBar menuBar;
+    private JMenuItem save;
+    private JMenuItem exit;
+
     // table
     private Panel input;
     private JLabel controlsReceiver_by;
@@ -80,6 +85,7 @@ public class Window extends JFrame implements ActionListener {
         this.money = money;
 
         this.init();
+        this.buildMenuBar();
         this.addTable();
         try {
             this.addControls();
@@ -106,6 +112,22 @@ public class Window extends JFrame implements ActionListener {
         new Phrases();
 
         focusElements = new ArrayList<>();
+
+    }
+
+    public void buildMenuBar() {
+        menuBar = new JMenuBar();
+        this.setJMenuBar(menuBar);
+
+        // Option
+        JMenu options = new JMenu(Phrases.options);
+        menuBar.add(options);
+        save = new JMenuItem(Phrases.save);
+        save.addActionListener(this);
+        options.add(save);
+        exit = new JMenuItem(Phrases.exit);
+        exit.addActionListener(this);
+        options.add(exit);
 
     }
 
@@ -452,7 +474,7 @@ public class Window extends JFrame implements ActionListener {
 
     public void showEntry(Entry entry) {
         this.clearInput();
-        this.changeEdit(false);
+        this.changeEnabled(false);
         if (entry.getOption().equals(Entry.options.INCOME)) {
             changeToIncome();
             this.inputValue.setValue(entry.getIncome());
@@ -463,20 +485,21 @@ public class Window extends JFrame implements ActionListener {
         this.inputReceiver_by.setSelectedItem(entry.getReceiverBy());
         this.inputCategory.setSelectedItem(entry.getCategory());
         this.inputPurpose.setSelectedItem(entry.getPurpose());
-        System.out.println(setDateOnControl(entry.getLocalDate()));
+//        System.out.println(setDateOnControl(entry.getLocalDate()));
         this.inputDate.setValue(setDateOnControl(entry.getLocalDate()));
     }
 
-    private void changeEdit(boolean editable) {
-        this.inputReceiver_by.setEnabled(editable);
-        this.inputCategory.setEnabled(editable);
-        this.inputPurpose.setEnabled(editable);
-        this.inputDate.setEnabled(editable);
-        this.inputValue.setEnabled(editable);
+    private void changeEnabled(boolean enabled) {
+        this.inputReceiver_by.setEnabled(enabled);
+        this.inputCategory.setEnabled(enabled);
+        this.inputPurpose.setEnabled(enabled);
+        this.inputDate.setEnabled(enabled);
+        this.inputValue.setEnabled(enabled);
     }
 
+    // TODO complete the actions and the functionality.
     @Override
-    public void actionPerformed(ActionEvent e) { // TODO
+    public void actionPerformed(ActionEvent e) {
         this.revalidate();
         this.repaint();
         if (e.getSource() == spending) {
@@ -494,13 +517,15 @@ public class Window extends JFrame implements ActionListener {
         } else if (e.getSource() == neu) {
             System.out.println("neu");
             this.clearInput();
-            this.changeEdit(true);
-            editing = false;
+            this.changeEnabled(true);
+            editing = true;
         } else if (e.getSource() == edit) {
             // TODO edit
-            System.out.println("edit");
-            this.changeEdit(true);
-            editing = true;
+            if(!isInputEmpty() && !this.inputReceiver_by.isEnabled()) {
+                System.out.println("edit");
+                this.changeEnabled(true);
+                editing = true;
+            }
         } else if (e.getSource() == enter) {
             // TODO enter
             System.out.println("enter");
@@ -509,7 +534,7 @@ public class Window extends JFrame implements ActionListener {
         } else if (e.getSource() == cancel) {
             System.out.println("cancel");
             this.clearInput();
-            this.changeEdit(true);
+            this.changeEnabled(true);
             editing = false;
         } else if (e.getSource() == choiceDate) {
             // TODO choiceDate
@@ -517,6 +542,17 @@ public class Window extends JFrame implements ActionListener {
         } else if (e.getSource() == calcValue) {
             // TODO calcValue
             System.out.println("calc value");
+        }
+        if (e.getSource() == save) {
+            // TODO JMenuBar save
+            System.out.println("JMenuBar save");
+            money.save();
+        }
+        if (e.getSource() == exit) {
+            // TODO JMenuBar exit
+            System.out.println("JMenuBar exit");
+            money.save();
+            System.exit(1);
         }
     }
 
@@ -540,6 +576,10 @@ public class Window extends JFrame implements ActionListener {
     }
 
     // GETTER && SETTER
+
+    public boolean isEditing() {
+        return editing;
+    }
 
     public int getContentElements() {
         return contentElements;
