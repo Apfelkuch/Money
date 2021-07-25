@@ -40,6 +40,10 @@ public class Money {
         // TODO edit methode
     }
 
+    public void save() {
+        // TODO save the program
+    }
+
     // GETTER && SETTER
 
 
