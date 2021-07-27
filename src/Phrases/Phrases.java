@@ -6,19 +6,16 @@ import java.io.IOException;
 
 public class Phrases {
 
-    // Font
+    // Fonts
     public Phrases() {
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
             graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("res/arial.ttf")));
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
-            return;
         }
 
     }
-
-
     public static Font showFontBold = new Font("arial", Font.BOLD, 20);
     public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
     public static Font inputFont = new Font("arial", Font.BOLD, 12);
@@ -49,4 +46,6 @@ public class Phrases {
     public static Color COLOR_TABLE_BACKGROUND = null;
     public static Color COLOR_TABLE_CONTENT_BACKGROUND = Color.LIGHT_GRAY;
 
+    // input
+    public static String moneySymbol = "€";
 }

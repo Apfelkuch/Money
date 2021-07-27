@@ -1,12 +1,10 @@
 package Money;
 
+import utilitis.Options;
+
 import java.time.LocalDate;
 
 public class Entry {
-
-    public enum options {
-        SPENDING, INCOME
-    }
 
     private int number;
     private LocalDate date;
@@ -16,9 +14,9 @@ public class Entry {
     private double spending;
     private double income;
     private double balance;
-    private options option;
+    private Options option;
 
-    public Entry(options option, int number, LocalDate date, String receiverBy, String category, String purpose, float spending, float income, float balance) {
+    public Entry(Options option, int number, LocalDate date, String receiverBy, String category, String purpose, double spending, double income, double balance) {
         this.option = option;
         this.number = number;
         this.date = date;
@@ -52,15 +50,15 @@ public class Entry {
         return purpose;
     }
 
-    public double getSpending() {
+    public Double getSpending() {
         return spending;
     }
 
-    public double getIncome() {
+    public Double getIncome() {
         return income;
     }
 
-    public options getOption() {
+    public Options getOption() {
         return option;
     }
 
@@ -100,7 +98,7 @@ public class Entry {
         this.balance = balance;
     }
 
-    public void setOption(options option) {
+    public void setOption(Options option) {
         this.option = option;
     }
 }

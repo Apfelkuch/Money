@@ -4,24 +4,20 @@ import Input.KeyAdapterInput;
 import Input.MouseAdapterEntry;
 import Money.Entry;
 import Phrases.Phrases;
-import main.Money;
+import Money.Money;
 import utilitis.CustomJButton;
 import utilitis.CustomJComboBox;
+import utilitis.Options;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.MaskFormatter;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Window extends JFrame implements ActionListener {
@@ -32,25 +28,27 @@ public class Window extends JFrame implements ActionListener {
     private JMenuItem exit;
 
     // table
-    private Panel input;
     private JLabel controlsReceiver_by;
     private Panel content;
-    private int contentElements = 7;
+    private int maxContentElements = 7;
 
     // dimensions
     private Dimension tableDimension;
     // dimensions control
-    Dimension buttonsDimension = new Dimension(120, 20);
-    Dimension inputDimensionBig = new Dimension(400, 20);
-    Dimension inputDimensionSmall = new Dimension(100, 20);
-    Dimension textDimensionBig = new Dimension(100, 20);
-    Dimension textDimensionSmall = new Dimension(50, 20);
-    Dimension extraButton = new Dimension(20, 20);
+    private int bufferPageEnd = 40;
+    private Dimension buttonsDimension = new Dimension(120, 20);
+    private Dimension inputDimensionBig = new Dimension(400, 20);
+    private Dimension inputDimensionSmall = new Dimension(100, 20);
+    private Dimension textDimensionBig = new Dimension(100, 20);
+    private Dimension textDimensionSmall = new Dimension(50, 20);
+    private Dimension extraButton = new Dimension(20, 20);
 
 
     // controls
+    private Panel input;
     private CustomJButton spending;
     private CustomJButton income;
+    private boolean isSpending = true;
 
     private CustomJButton neu;
     private CustomJButton edit;
@@ -65,9 +63,14 @@ public class Window extends JFrame implements ActionListener {
     private JFormattedTextField inputValue;
     private CustomJButton calcValue;
 
+    // improve
+    private int inputValueMax = 999990;
+    private int inputValueMin = -999990;
+
     private ArrayList<Component> focusElements;
 
     private boolean editing = false;
+    private boolean adding = true;
 
     // logic
     private final Money money;
@@ -96,16 +99,6 @@ public class Window extends JFrame implements ActionListener {
         this.revalidate();
         this.repaint();
 
-        // TODO for testing
-        this.addContentToTable(new Entry(Entry.options.SPENDING, 0, LocalDate.of(2021, Calendar.AUGUST, 10), "receiver1", "category1", "purpose1", 1f, 0f, 1f));
-        this.addContentToTable(new Entry(Entry.options.SPENDING, 0, LocalDate.of(2021, Calendar.AUGUST, 11), "receiver2", "category2", "purpose2", 2f, 0f, 3f));
-        this.addContentToTable(new Entry(Entry.options.SPENDING, 0, LocalDate.of(2021, 7, 12), "receiver3", "category3", "purpose3", 3f, 0f, 6f));
-        this.addContentToTable(new Entry(Entry.options.INCOME, 0, LocalDate.of(2021, 7, 13), "receiver4", "category4", "purpose4", 0f, 1f, 5f));
-        this.addContentToTable(new Entry(Entry.options.INCOME, 0, LocalDate.of(2021, 7, 14), "receiver5", "category5", "purpose5", 0f, 2f, 3f));
-        this.addContentToTable(new Entry(Entry.options.SPENDING, 0, LocalDate.of(2021, 7, 15), "receiver6", "category6", "purpose6", 1f, 0f, 4f));
-        this.addContentToTable(new Entry(Entry.options.SPENDING, 0, LocalDate.of(2021, 7, 16), "receiver7", "category7", "purpose7", 2f, 0f, 6f));
-        this.removeTopElement();
-        this.addContentToTable(new Entry(Entry.options.SPENDING, 0, LocalDate.of(2021, 7, 17), "receiver8", "category8", "purpose8", 3f, 0f, 9f));
     }
 
     public void init() {
@@ -131,18 +124,19 @@ public class Window extends JFrame implements ActionListener {
 
     }
 
+    // TODO improve the layout of the segments of the table
     private void addTable() {
         tableDimension = new Dimension((int) (this.getWidth() * (2f / 3f)), 100);
 
         Panel tableShow = new Panel();
         tableShow.setLayout(new FlowLayout(FlowLayout.CENTER));
         tableShow.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
-        tableShow.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + contentElements)));
+        tableShow.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + maxContentElements)));
         this.add(tableShow, BorderLayout.CENTER);
 
         Panel table = new Panel();
         table.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
-        table.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + contentElements)));
+        table.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + maxContentElements)));
         tableShow.add(table);
 
         // table head row
@@ -172,7 +166,6 @@ public class Window extends JFrame implements ActionListener {
         tableSpending.setBorder(new LineBorder(Color.BLACK, 2));
         tableSpending.setHorizontalAlignment(JLabel.CENTER);
         headRow.add(tableSpending);
-//        JLabel tableIncome = new JLabel(Phrases.tableSpending + ":" + Phrases.tableIncome);
         JLabel tableIncome = new JLabel(Phrases.tableIncome);
         tableIncome.setFont(Phrases.showFontBold);
         tableIncome.setBorder(new LineBorder(Color.BLACK, 2));
@@ -186,23 +179,29 @@ public class Window extends JFrame implements ActionListener {
 
         // table content
         content = new Panel();
-        content.setLayout(new GridLayout(contentElements, 1));
-        content.setPreferredSize(new Dimension(tableDimension.width, (tableDimension.height - 2) * contentElements));
+        content.setLayout(new GridLayout(maxContentElements, 1));
+        content.setPreferredSize(new Dimension(tableDimension.width, (tableDimension.height - 2) * maxContentElements));
         table.add(content);
     }
 
     public void addContentToTable(Entry entry) {
+        if (content.getComponents().length >= maxContentElements) {
+            this.removeTopElement();
+        }
         Panel newEntry = new Panel();
-        newEntry.setSize(content.getWidth(), content.getHeight() / contentElements);
+        newEntry.setSize(content.getWidth(), content.getHeight() / maxContentElements);
         newEntry.setLayout(new GridLayout(1, 6));
-        newEntry.add(buildLabel(JLabel.CENTER, "" + entry.getNumber(),0));
-        newEntry.add(buildLabel(JLabel.CENTER, this.setDateOnTable(entry.getLocalDate()),0));
+        newEntry.add(buildLabel(JLabel.CENTER, "" + entry.getNumber(), 0));
+        newEntry.add(buildLabel(JLabel.CENTER, this.setDateOnTable(entry.getLocalDate()), 0));
 
         //OPTION 1
-        newEntry.add(buildLabel(JLabel.LEFT, "<html>" + entry.getReceiverBy() + "<br>" + entry.getCategory() + "<br>" + entry.getPurpose() + "</html>",2),2);
+        newEntry.add(buildLabel(JLabel.LEFT, "<html>"
+                + (entry.getReceiverBy() == null ? "" : entry.getReceiverBy()) + "<br>"
+                + (entry.getCategory() == null ? "" : entry.getCategory()) + "<br>"
+                + (entry.getPurpose() == null ? "" : entry.getPurpose())
+                + "</html>", 2), 2);
+        newEntry.add(buildLabel(JLabel.CENTER, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €", 0));
         newEntry.add(buildLabel(JLabel.CENTER, entry.getIncome() == 0.0 ? "" : entry.getIncome() + " €", 0));
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €",0));
-
 //        // OPTION 2
 //        newEntry.add(buildLabel(JLabel.CENTER, "",0));
 //        if(entry.getSpending() == 0.0) {
@@ -211,8 +210,7 @@ public class Window extends JFrame implements ActionListener {
 //            newEntry.add(buildLabel(JLabel.RIGHT, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €",0));
 //        }
 //        newEntry.add(buildLabel(JLabel.LEFT, "<html>" + entry.getReceiverBy() + "<br>" + entry.getCategory() + "<br>" + entry.getPurpose() + "</html>",2),2);
-
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getBalance() + " €",0));
+        newEntry.add(buildLabel(JLabel.CENTER, entry.getBalance() + " €", 0));
         newEntry.addMouseListener(new MouseAdapterEntry(this, newEntry, entry));
         content.add(newEntry);
 
@@ -230,15 +228,12 @@ public class Window extends JFrame implements ActionListener {
         label.setBorder(new LineBorder(Color.BLACK, 1));
         label.setHorizontalAlignment(alignment);
         if (!(width == 0)) {
-            label.setPreferredSize(new Dimension((this.content.getWidth() / 6) * width,this.content.getHeight() / contentElements));
+            label.setPreferredSize(new Dimension((this.content.getWidth() / 6) * width, this.content.getHeight() / maxContentElements));
         }
         return label;
     }
 
     private void addControls() throws ParseException {
-
-        int bufferPageEnd = 50;
-
         Panel controls = new Panel();
         controls.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         controls.setPreferredSize(new Dimension((int) (this.getWidth() * (2f / 3f)), ((buttonsDimension.height + 10) * 5) + bufferPageEnd));
@@ -375,7 +370,7 @@ public class Window extends JFrame implements ActionListener {
         controlsDate.setFont(Phrases.inputFont);
         p4.add(controlsDate);
 
-        // TODO date ??? function but not sure if it is perfect ???
+        // improve date ??? function but not sure if it is perfect ???
         inputDate = new JFormattedTextField();
         inputDate.setFormatterFactory(new DefaultFormatterFactory(new MaskFormatter("##.##.####")));
         inputDate.setInputVerifier(new InputVerifier() {
@@ -420,10 +415,85 @@ public class Window extends JFrame implements ActionListener {
         controlsValue.setPreferredSize(textDimensionSmall);
         controlsValue.setFont(Phrases.inputFont);
         p5.add(controlsValue);
-        inputValue = new JFormattedTextField(NumberFormat.getCurrencyInstance());
+
+        char[] validChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
+        inputValue = new JFormattedTextField();
+//        inputValue.setFormatterFactory(new DefaultFormatterFactory());
+        inputValue.setValue("0,00 €");
         inputValue.setFont(Phrases.inputFont);
+        inputValue.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextComponent tc = (JTextComponent) input;
+                String newContent = tc.getText();
+                newContent = newContent.replaceAll(",", "."); // replace ',' to '.'
+                newContent = newContent.replaceAll(" ", "");
+                newContent = newContent.replaceAll("\t", "");
+                newContent = newContent.replaceAll(Character.toString(160), ""); // no-break space (Geschütztes Leerzeichen) removing. ASCI value: 160
+                int euroSymbol = newContent.indexOf("€"); // find the index of the moneySymbol
+                if (euroSymbol != -1) { // shorten the newContent to the area before the first € symbol
+                    newContent = newContent.substring(0, euroSymbol);
+                }
+                if (newContent.indexOf(".") != newContent.lastIndexOf(".")) { // if the input have more than one dot the verification fails
+                    tc.selectAll();
+                    return false;
+                }
+//                for (int i = 0; i < newContent.length(); i++) {
+//                    Character c = newContent.charAt(i);
+//                    System.out.println(c + " :: " + c.hashCode());
+//                }
+                char[] characters = newContent.toCharArray(); // check if the String only have valid Characters
+                for (char c : characters) {
+                    boolean result = false;
+                    for (char c1 : validChars) {
+                        if (c == c1) {
+                            result = true;
+                            break;
+                        }
+                    }
+                    if (!result) { // if a char is invalid the verification fails
+                        tc.selectAll();
+                        return false;
+                    }
+                }
+                // checks if the string is blank or only contains a dot
+                if (newContent.isBlank() || (newContent.contains(".") && newContent.length() == 1)) {
+                    newContent = "0.0";
+                }
+                double d = 0;
+                try {
+                    d = Double.parseDouble(newContent);
+                    if (d > inputValueMax || d < inputValueMin) {
+                        System.out.println("Window.verify: functional");
+                        throw new NumberFormatException();
+                    }
+                } catch (NullPointerException | NumberFormatException e) {
+                    tc.selectAll();
+                    return false;
+                }
+                // shorten the input on two digits behind the comma
+                // improve because it is not a perfect solution
+//                // solution 1:
+//                Double d1 = (double) ((int) (d * 100)) / 100; /* x = Math.floor(x * (10^places)) / (10^places) */
+//                // solution 2:
+//                Float f = d.floatValue() * 100;
+//                Double d10 = f.doubleValue();
+//                Double d11 = Math.floor(d10);
+//                Double d1 = d11 / 100;
+                // solution 3:
+                Double d1 = Math.floor((float) d * 100) / 100;
+                String d2; // Build the String which is displayed
+                switch (d1.toString().substring(d1.toString().indexOf(".") + 1).length()) { // assure that the value have always to digits behind the comma
+                    case 0 -> d2 = d1 + ".00";
+                    case 1 -> d2 = d1 + "0";
+                    default -> d2 = d1 + "";
+                }
+                String s = d2.replaceAll("\\.", ",") + " " + Phrases.moneySymbol; // Add the money symbol
+                ((JTextComponent) input).setText(s); // set the inputValue field to the build String
+                return true;
+            }
+        });
         inputValue.setPreferredSize(inputDimensionSmall);
-        inputValue.setValue(0.0);
         inputValue.setBorder(null);
         focusElements.add(inputValue);
         p5.add(inputValue);
@@ -441,7 +511,7 @@ public class Window extends JFrame implements ActionListener {
 //        System.out.println("Window.focusNext >> component: " + component.getParent());
         int pos = focusElements.indexOf(component.getParent());
 //        System.out.println("Window.focusNext >> pos: " + pos);
-        focusElements.get(pos+1).requestFocus();
+        focusElements.get(pos + 1).requestFocus();
     }
 
     public boolean isInputEmpty() {
@@ -455,7 +525,7 @@ public class Window extends JFrame implements ActionListener {
         inputCategory.setSelectedIndex(-1);
         inputPurpose.setSelectedIndex(-1);
         inputDate.setValue(setDateOnControl(LocalDate.now()));
-        inputValue.setValue(0.0);
+        inputValue.setValue("0,00 €");
     }
 
     private void changeToSpending() {
@@ -463,6 +533,7 @@ public class Window extends JFrame implements ActionListener {
         this.clearInput();
         this.revalidate();
         this.repaint();
+        this.isSpending = true;
     }
 
     private void changeToIncome() {
@@ -470,22 +541,20 @@ public class Window extends JFrame implements ActionListener {
         this.clearInput();
         this.revalidate();
         this.repaint();
+        this.isSpending = false;
     }
 
     public void showEntry(Entry entry) {
         this.clearInput();
         this.changeEnabled(false);
-        if (entry.getOption().equals(Entry.options.INCOME)) {
+        if (entry.getOption().equals(Options.INCOME)) {
             changeToIncome();
-            this.inputValue.setValue(entry.getIncome());
-        } else if (entry.getOption().equals(Entry.options.SPENDING)) {
+        } else if (entry.getOption().equals(Options.SPENDING)) {
             changeToSpending();
-            this.inputValue.setValue(entry.getSpending());
         }
         this.inputReceiver_by.setSelectedItem(entry.getReceiverBy());
         this.inputCategory.setSelectedItem(entry.getCategory());
         this.inputPurpose.setSelectedItem(entry.getPurpose());
-//        System.out.println(setDateOnControl(entry.getLocalDate()));
         this.inputDate.setValue(setDateOnControl(entry.getLocalDate()));
     }
 
@@ -508,47 +577,53 @@ public class Window extends JFrame implements ActionListener {
                 changeToSpending();
             }
             editing = false;
+            adding = true;
         } else if (e.getSource() == income) {
             System.out.println("income");
             if (isInputEmpty()) {
                 changeToIncome();
             }
             editing = false;
+            adding = true;
         } else if (e.getSource() == neu) {
             System.out.println("neu");
             this.clearInput();
             this.changeEnabled(true);
-            editing = true;
+            editing = false;
+            adding = true;
         } else if (e.getSource() == edit) {
             // TODO edit
-            if(!isInputEmpty() && !this.inputReceiver_by.isEnabled()) {
+            if (!isInputEmpty() && !this.inputReceiver_by.isEnabled()) {
                 System.out.println("edit");
                 this.changeEnabled(true);
                 editing = true;
+                adding = false;
             }
         } else if (e.getSource() == enter) {
-            // TODO enter
-            System.out.println("enter");
-            money.enter();
-            editing = false;
+            if (!isInputEmpty() && adding) {
+                System.out.println("enter");
+                money.enter();
+                editing = false;
+                clearInput();
+                adding = true;
+            }
         } else if (e.getSource() == cancel) {
             System.out.println("cancel");
             this.clearInput();
             this.changeEnabled(true);
             editing = false;
+            adding = true;
         } else if (e.getSource() == choiceDate) {
             // TODO choiceDate
             System.out.println("choice date");
         } else if (e.getSource() == calcValue) {
             // TODO calcValue
             System.out.println("calc value");
-        }
-        if (e.getSource() == save) {
+        } else if (e.getSource() == save) {
             // TODO JMenuBar save
             System.out.println("JMenuBar save");
             money.save();
-        }
-        if (e.getSource() == exit) {
+        } else if (e.getSource() == exit) {
             // TODO JMenuBar exit
             System.out.println("JMenuBar exit");
             money.save();
@@ -577,16 +652,20 @@ public class Window extends JFrame implements ActionListener {
 
     // GETTER && SETTER
 
+    public boolean isSpending() {
+        return isSpending;
+    }
+
     public boolean isEditing() {
         return editing;
     }
 
-    public int getContentElements() {
-        return contentElements;
+    public int getMaxContentElements() {
+        return maxContentElements;
     }
 
-    public void setContentElements(int contentElements) {
-        this.contentElements = contentElements;
+    public void setMaxContentElements(int maxContentElements) {
+        this.maxContentElements = maxContentElements;
     }
 
     public String getInputReceiverBy() {
@@ -607,7 +686,7 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public double getInputValue() {
-        return (double) inputValue.getValue();
+        return Double.parseDouble(inputValue.getValue().toString().replaceAll(",", ".").replaceAll(" " + Phrases.moneySymbol, ""));
     }
 
     public Panel getContent() {
