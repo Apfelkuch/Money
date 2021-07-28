@@ -14,6 +14,7 @@ public class Money {
 
     private ArrayList<Entry> entries;
     private int currentEntry;
+    private int topEntry;
 
     private ArrayList<String> list_receiverBy;
     private ArrayList<String> list_categories;
@@ -47,6 +48,8 @@ public class Money {
         entries.add(new Entry(Options.INCOME, 7, LocalDate.of(2021, 7, 16), "receiver7", "category7", "purpose7", 0f, 2f, 6f));
         entries.add(new Entry(Options.INCOME, 8, LocalDate.of(2021, 7, 17), "receiver8", "category8", "purpose8", 0f, 3f, 9f));
 
+        topEntry = 1;
+
         for (Entry e : entries) {
             window.addContentToTable(e);
         }
@@ -69,27 +72,104 @@ public class Money {
         if (option == Options.SPENDING) {
             spending = window.getInputValue();
             income = 0.0;
-            balance = entries.get(entries.size()-1).getBalance() - spending;
+            if (entries.isEmpty()) {
+                balance = -spending;
+            } else {
+                balance = entries.get(entries.size() - 1).getBalance() - spending;
+            }
         } else {
             spending = 0.0;
             income = window.getInputValue();
-            balance = entries.get(entries.size()-1).getBalance() + income;
+            if (entries.isEmpty()) {
+                balance = income;
+            } else {
+                balance = entries.get(entries.size() - 1).getBalance() + income;
+            }
         }
         Entry entry = new Entry(option, number, date, receiverBy, category, purpose, spending, income, balance);
         entries.add(entry);
+        if (entries.size() >= window.getMaxContentElements()) {
+            topEntry += 1;
+        }
         window.addContentToTable(entry);
     }
 
     public void edit(Entry entry) {
         // TODO edit methode
+        currentEntry = entries.indexOf(entry);
+//        System.out.println("Money.edit >> currentEntry: " + currentEntry);
+    }
+
+    public void confirmEdit() {
+        // get entry which is edited
+        Entry tempEntry = entries.get(currentEntry);
+
+        // get the new date from the input
+        LocalDate date = window.getInputLocalDate();
+        String receiverBy = window.getInputReceiverBy();
+        String category = window.getInputCategory();
+        String purpose = window.getInputPurpose();
+        double spending;
+        double income;
+        double balance;
+        if (tempEntry.getOption() == Options.SPENDING) {
+            spending = window.getInputValue();
+            income = 0.0;
+            if (currentEntry == 0) {
+                balance = -spending;
+            } else {
+                balance = entries.get(currentEntry - 1).getBalance() - spending;
+            }
+        } else {
+            spending = 0.0;
+            income = window.getInputValue();
+            if (currentEntry == 0) {
+                balance = income;
+            } else {
+                balance = entries.get(entries.size() - 1).getBalance() + income;
+            }
+        }
+
+        // set a new entry at the place of the edited entry
+        entries.set(currentEntry, new Entry(tempEntry.getOption(), tempEntry.getNumber(), date, receiverBy, category, purpose, spending, income, balance));
+
+        // update all following entries.
+        for (int i = currentEntry; i < entries.size(); i++) {
+            entries.get(i).update(currentEntry == 0 ? 0 : entries.get(i - 1).getBalance());
+        }
+
+        // update the showing
+        updateAllEntries();
+
     }
 
     public void save() {
         // TODO save the program
     }
 
-    // GETTER && SETTER
+    public void moveTopEntry(int amount) {
+        topEntry += amount; // move the topEntry with the amount
 
+        // adjust topEntry
+        if (topEntry < 0) {
+            topEntry = 0;
+        }
+        if (topEntry > entries.size() - window.getMaxContentElements()) {
+            topEntry = entries.size() - window.getMaxContentElements();
+        }
+
+        // update the GUI
+        updateAllEntries();
+    }
+
+    public void updateAllEntries() {
+        window.clearEntries();
+        for (int i = 0; i < window.getMaxContentElements(); i++) {
+            window.addContentToTable(entries.get(topEntry + i));
+        }
+    }
+
+    // GETTER && SETTER
 
     public ArrayList<String> getList_receiverBy() {
         return list_receiverBy;

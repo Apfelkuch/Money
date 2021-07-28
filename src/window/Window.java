@@ -11,10 +11,14 @@ import utilitis.Options;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.text.*;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
-import java.awt.event.*;
-import java.text.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ public class Window extends JFrame implements ActionListener {
     private JMenuItem exit;
 
     // table
+    // TODO JTable
     private JLabel controlsReceiver_by;
     private Panel content;
     private int maxContentElements = 7;
@@ -46,6 +51,7 @@ public class Window extends JFrame implements ActionListener {
 
     // controls
     private Panel input;
+    // TODO JTabbedPane
     private CustomJButton spending;
     private CustomJButton income;
     private boolean isSpending = true;
@@ -124,8 +130,8 @@ public class Window extends JFrame implements ActionListener {
 
     }
 
-    // TODO improve the layout of the segments of the table
     private void addTable() {
+        // TODO improve the layout of the segments of the table
         tableDimension = new Dimension((int) (this.getWidth() * (2f / 3f)), 100);
 
         Panel tableShow = new Panel();
@@ -191,17 +197,17 @@ public class Window extends JFrame implements ActionListener {
         Panel newEntry = new Panel();
         newEntry.setSize(content.getWidth(), content.getHeight() / maxContentElements);
         newEntry.setLayout(new GridLayout(1, 6));
-        newEntry.add(buildLabel(JLabel.CENTER, "" + entry.getNumber(), 0));
-        newEntry.add(buildLabel(JLabel.CENTER, this.setDateOnTable(entry.getLocalDate()), 0));
+        newEntry.add(buildLabel(JLabel.CENTER, "" + entry.getNumber(), Phrases.normalFontColor));
+        newEntry.add(buildLabel(JLabel.CENTER, this.setDateOnTable(entry.getLocalDate()), Phrases.normalFontColor));
 
         //OPTION 1
         newEntry.add(buildLabel(JLabel.LEFT, "<html>"
                 + (entry.getReceiverBy() == null ? "" : entry.getReceiverBy()) + "<br>"
                 + (entry.getCategory() == null ? "" : entry.getCategory()) + "<br>"
                 + (entry.getPurpose() == null ? "" : entry.getPurpose())
-                + "</html>", 2), 2);
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €", 0));
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getIncome() == 0.0 ? "" : entry.getIncome() + " €", 0));
+                + "</html>", Phrases.normalFontColor), 2);
+        newEntry.add(buildLabel(JLabel.CENTER, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €", Phrases.normalFontColor));
+        newEntry.add(buildLabel(JLabel.CENTER, entry.getIncome() == 0.0 ? "" : entry.getIncome() + " €", Phrases.normalFontColor));
 //        // OPTION 2
 //        newEntry.add(buildLabel(JLabel.CENTER, "",0));
 //        if(entry.getSpending() == 0.0) {
@@ -210,7 +216,7 @@ public class Window extends JFrame implements ActionListener {
 //            newEntry.add(buildLabel(JLabel.RIGHT, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €",0));
 //        }
 //        newEntry.add(buildLabel(JLabel.LEFT, "<html>" + entry.getReceiverBy() + "<br>" + entry.getCategory() + "<br>" + entry.getPurpose() + "</html>",2),2);
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getBalance() + " €", 0));
+        newEntry.add(buildLabel(JLabel.CENTER, entry.getBalance() + " €", entry.getBalance() < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
         newEntry.addMouseListener(new MouseAdapterEntry(this, newEntry, entry));
         content.add(newEntry);
 
@@ -222,14 +228,12 @@ public class Window extends JFrame implements ActionListener {
         this.content.remove(0);
     }
 
-    private JLabel buildLabel(int alignment, String content, int width) {
+    private JLabel buildLabel(int alignment, String content, Color fontColor) {
         JLabel label = new JLabel(content);
+        label.setForeground(fontColor);
         label.setFont(Phrases.showFontPlain);
         label.setBorder(new LineBorder(Color.BLACK, 1));
         label.setHorizontalAlignment(alignment);
-        if (!(width == 0)) {
-            label.setPreferredSize(new Dimension((this.content.getWidth() / 6) * width, this.content.getHeight() / maxContentElements));
-        }
         return label;
     }
 
@@ -549,8 +553,10 @@ public class Window extends JFrame implements ActionListener {
         this.changeEnabled(false);
         if (entry.getOption().equals(Options.INCOME)) {
             changeToIncome();
+            this.inputValue.setValue(entry.getIncome().toString().replaceAll("\\.", ",") + " €");
         } else if (entry.getOption().equals(Options.SPENDING)) {
             changeToSpending();
+            this.inputValue.setValue(entry.getSpending().toString().replaceAll("\\.", ",") + " €");
         }
         this.inputReceiver_by.setSelectedItem(entry.getReceiverBy());
         this.inputCategory.setSelectedItem(entry.getCategory());
@@ -600,9 +606,15 @@ public class Window extends JFrame implements ActionListener {
                 adding = false;
             }
         } else if (e.getSource() == enter) {
-            if (!isInputEmpty() && adding) {
+            if (!isInputEmpty() && adding && !editing) {
                 System.out.println("enter");
                 money.enter();
+                editing = false;
+                clearInput();
+                adding = true;
+            } else if (editing) {
+                System.out.println("confirm edit");
+                money.confirmEdit();
                 editing = false;
                 clearInput();
                 adding = true;
@@ -633,6 +645,7 @@ public class Window extends JFrame implements ActionListener {
 
     public void edit(Entry entry) {
         money.edit(entry);
+        adding = false;
     }
 
     public String setDateOnTable(LocalDate date) {
@@ -648,6 +661,10 @@ public class Window extends JFrame implements ActionListener {
         stringBuilder.append(".");
         stringBuilder.append(date.getYear() < 10 ? "0" + date.getYear() : date.getYear());
         return stringBuilder.toString();
+    }
+
+    public void clearEntries() {
+        content.removeAll();
     }
 
     // GETTER && SETTER
@@ -689,7 +706,8 @@ public class Window extends JFrame implements ActionListener {
         return Double.parseDouble(inputValue.getValue().toString().replaceAll(",", ".").replaceAll(" " + Phrases.moneySymbol, ""));
     }
 
-    public Panel getContent() {
-        return content;
+    public int getEntriesOnTable() {
+        return content.getComponentCount();
     }
+
 }

@@ -46,6 +46,9 @@ public class Phrases {
     public static Color COLOR_TABLE_BACKGROUND = null;
     public static Color COLOR_TABLE_CONTENT_BACKGROUND = Color.LIGHT_GRAY;
 
+    public static Color normalFontColor = Color.BLACK;
+    public static Color minusFontColor = Color.RED;
+
     // input
     public static String moneySymbol = "€";
 }

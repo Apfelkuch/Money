@@ -28,6 +28,10 @@ public class Entry {
         this.balance = balance;
     }
 
+    public void update(double previousBalance) {
+        this.balance = previousBalance + income - spending;
+    }
+
     // GETTER && SETTER
 
     public int getNumber() {
