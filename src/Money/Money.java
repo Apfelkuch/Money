@@ -1,5 +1,7 @@
 package Money;
 
+import Phrases.Phrases;
+import Save.Save;
 import storage.Load;
 import utilitis.Options;
 import window.Window;
@@ -16,6 +18,7 @@ public class Money {
     private int currentEntry;
     private int topEntry;
 
+    // TODO manage the lists
     private ArrayList<String> list_receiverBy;
     private ArrayList<String> list_categories;
     private ArrayList<String> list_purpose;
@@ -55,10 +58,6 @@ public class Money {
         }
     }
 
-    public void neu() {
-        // TODO neu methode
-    }
-
     public void enter() {
         Options option = window.isSpending() ? Options.SPENDING : Options.INCOME;
         int number = entries.size();
@@ -95,7 +94,6 @@ public class Money {
     }
 
     public void edit(Entry entry) {
-        // TODO edit methode
         currentEntry = entries.indexOf(entry);
 //        System.out.println("Money.edit >> currentEntry: " + currentEntry);
     }
@@ -145,6 +143,7 @@ public class Money {
 
     public void save() {
         // TODO save the program
+        Save.save(this, Phrases.PATH);
     }
 
     public void moveTopEntry(int amount) {
@@ -170,6 +169,10 @@ public class Money {
     }
 
     // GETTER && SETTER
+
+    public ArrayList<Entry> getEntries() {
+        return entries;
+    }
 
     public ArrayList<String> getList_receiverBy() {
         return list_receiverBy;

@@ -32,6 +32,22 @@ public class Entry {
         this.balance = previousBalance + income - spending;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(option.toString()).append(Character.toString(160));
+        stringBuilder.append(number).append(Character.toString(160));
+        stringBuilder.append(date.toString()).append(Character.toString(160));
+        stringBuilder.append(receiverBy).append(Character.toString(160));
+        stringBuilder.append(category).append(Character.toString(160));
+        stringBuilder.append(purpose).append(Character.toString(160));
+        stringBuilder.append(spending).append(Character.toString(160));
+        stringBuilder.append(income).append(Character.toString(160));
+        stringBuilder.append(balance).append(Character.toString(160)); /* if the line causes trouble use the line beneath*/
+//        stringBuilder.append(balance);
+        return stringBuilder.toString();
+    }
+
     // GETTER && SETTER
 
     public int getNumber() {

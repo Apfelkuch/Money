@@ -16,6 +16,7 @@ public class Phrases {
         }
 
     }
+
     public static Font showFontBold = new Font("arial", Font.BOLD, 20);
     public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
     public static Font inputFont = new Font("arial", Font.BOLD, 12);
@@ -51,4 +52,9 @@ public class Phrases {
 
     // input
     public static String moneySymbol = "€";
+
+    // save and load
+    public static final String CONTROL_VALUE = "Version 1" + Character.toString(160) + Character.toString(160);
+    public static final String PATH = System.getProperties().getProperty("user.dir") + "\\Money\\save.txt";
+
 }

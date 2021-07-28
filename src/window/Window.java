@@ -17,6 +17,8 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -70,7 +72,7 @@ public class Window extends JFrame implements ActionListener {
     private CustomJButton calcValue;
 
     // improve
-    private int inputValueMax = 999990;
+    private int inputValueMax = Integer.parseInt("1000000000") ;
     private int inputValueMin = -999990;
 
     private ArrayList<Component> focusElements;
@@ -476,16 +478,7 @@ public class Window extends JFrame implements ActionListener {
                     return false;
                 }
                 // shorten the input on two digits behind the comma
-                // improve because it is not a perfect solution
-//                // solution 1:
-//                Double d1 = (double) ((int) (d * 100)) / 100; /* x = Math.floor(x * (10^places)) / (10^places) */
-//                // solution 2:
-//                Float f = d.floatValue() * 100;
-//                Double d10 = f.doubleValue();
-//                Double d11 = Math.floor(d10);
-//                Double d1 = d11 / 100;
-                // solution 3:
-                Double d1 = Math.floor((float) d * 100) / 100;
+                Double d1 = new BigDecimal(Double.toString(d)).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 String d2; // Build the String which is displayed
                 switch (d1.toString().substring(d1.toString().indexOf(".") + 1).length()) { // assure that the value have always to digits behind the comma
                     case 0 -> d2 = d1 + ".00";
@@ -598,7 +591,6 @@ public class Window extends JFrame implements ActionListener {
             editing = false;
             adding = true;
         } else if (e.getSource() == edit) {
-            // TODO edit
             if (!isInputEmpty() && !this.inputReceiver_by.isEnabled()) {
                 System.out.println("edit");
                 this.changeEnabled(true);
@@ -636,7 +628,6 @@ public class Window extends JFrame implements ActionListener {
             System.out.println("JMenuBar save");
             money.save();
         } else if (e.getSource() == exit) {
-            // TODO JMenuBar exit
             System.out.println("JMenuBar exit");
             money.save();
             System.exit(1);
