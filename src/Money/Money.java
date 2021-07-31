@@ -41,21 +41,32 @@ public class Money {
 
         window = new Window("Money", this);
 
-        // TODO for testing
-        entries.add(new Entry(Options.INCOME, 1, LocalDate.of(2021, Calendar.AUGUST, 10), "receiver1", "category1", "purpose1", 0f, 1f, 1f));
-        entries.add(new Entry(Options.INCOME, 2, LocalDate.of(2021, Calendar.AUGUST, 11), "receiver2", "category2", "purpose2", 0f, 2f, 3f));
-        entries.add(new Entry(Options.INCOME, 3, LocalDate.of(2021, 7, 12), "receiver3", "category3", "purpose3", 0f, 3f, 6f));
-        entries.add(new Entry(Options.SPENDING, 4, LocalDate.of(2021, 7, 13), "receiver4", "category4", "purpose4", 1f, 0f, 5f));
-        entries.add(new Entry(Options.SPENDING, 5, LocalDate.of(2021, 7, 14), "receiver5", "category5", "purpose5", 2f, 0f, 3f));
-        entries.add(new Entry(Options.INCOME, 6, LocalDate.of(2021, 7, 15), "receiver6", "category6", "purpose6", 0f, 1f, 4f));
-        entries.add(new Entry(Options.INCOME, 7, LocalDate.of(2021, 7, 16), "receiver7", "category7", "purpose7", 0f, 2f, 6f));
-        entries.add(new Entry(Options.INCOME, 8, LocalDate.of(2021, 7, 17), "receiver8", "category8", "purpose8", 0f, 3f, 9f));
+        // loading
 
-        topEntry = 1;
+        entries = new ArrayList<>();
 
-        for (Entry e : entries) {
-            window.addContentToTable(e);
+        boolean loading = Load.load(this, Phrases.PATH, window.getMaxContentElements());
+        if (loading) {
+            System.out.println("Entries loaded");
+        } else {
+            System.out.println("No Entries loaded");
         }
+
+//        // values for testing
+//        entries.add(new Entry(Options.INCOME, 1, LocalDate.of(2021, java.util.Calendar.AUGUST, 10), "receiver1", "category1", "purpose1", 0f, 1f, 1f));
+//        entries.add(new Entry(Options.INCOME, 2, LocalDate.of(2021, java.util.Calendar.AUGUST, 11), "receiver2", "category2", "purpose2", 0f, 2f, 3f));
+//        entries.add(new Entry(Options.INCOME, 3, LocalDate.of(2021, 7, 12), "receiver3", "category3", "purpose3", 0f, 3f, 6f));
+//        entries.add(new Entry(Options.SPENDING, 4, LocalDate.of(2021, 7, 13), "receiver4", "category4", "purpose4", 1f, 0f, 5f));
+//        entries.add(new Entry(Options.SPENDING, 5, LocalDate.of(2021, 7, 14), "receiver5", "category5", "purpose5", 2f, 0f, 3f));
+//        entries.add(new Entry(Options.INCOME, 6, LocalDate.of(2021, 7, 15), "receiver6", "category6", "purpose6", 0f, 1f, 4f));
+//        entries.add(new Entry(Options.INCOME, 7, LocalDate.of(2021, 7, 16), "receiver7", "category7", "purpose7", 0f, 2f, 6f));
+//        entries.add(new Entry(Options.INCOME, 8, LocalDate.of(2021, 7, 17), "receiver8", "category8", "purpose8", 0f, 3f, 9f));
+//
+//        topEntry = 1;
+//
+//        for (Entry e : entries) {
+//            window.addContentToTable(e);
+//        }
     }
 
     public void enter() {
