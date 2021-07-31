@@ -188,6 +188,7 @@ public class Window extends JFrame implements ActionListener {
         content.setLayout(new GridLayout(maxContentElements, 1));
         content.setPreferredSize(new Dimension(tableDimension.width, (tableDimension.height - 2) * maxContentElements));
 
+        // TODO adjust that the scrolling is smoother
         content.addMouseWheelListener(e -> money.moveTopEntry((int) e.getPreciseWheelRotation()));
 
         table.add(content);
