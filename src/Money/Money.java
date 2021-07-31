@@ -141,7 +141,7 @@ public class Money {
 
         // update all following entries.
         for (int i = currentEntry; i < entries.size(); i++) {
-            entries.get(i).update(currentEntry == 0 ? 0 : entries.get(i - 1).getBalance());
+            entries.get(i).updateBalance(currentEntry == 0 ? 0 : entries.get(i - 1).getBalance());
         }
 
         // update the showing
@@ -173,8 +173,22 @@ public class Money {
 
     public void updateAllEntries() {
         window.clearEntries();
+        if (topEntry + window.getMaxContentElements() > entries.size()) {
+            topEntry = entries.size() - window.getMaxContentElements();
+            if (topEntry < 0) topEntry = 0;
+        }
         for (int i = 0; i < window.getMaxContentElements(); i++) {
+            if (topEntry + i >= entries.size()) {
+                return;
+            }
             window.addContentToTable(entries.get(topEntry + i));
+        }
+    }
+
+    public void updateNumbers(Entry entry) {
+        int current = entries.indexOf(entry);
+        for (int i = current; i < entries.size(); i++) {
+            entries.get(i).updateNumber(entries.get(i).getNumber() - 1);
         }
     }
 

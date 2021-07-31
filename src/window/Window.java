@@ -221,7 +221,7 @@ public class Window extends JFrame implements ActionListener {
 //        }
 //        newEntry.add(buildLabel(JLabel.LEFT, "<html>" + entry.getReceiverBy() + "<br>" + entry.getCategory() + "<br>" + entry.getPurpose() + "</html>",2),2);
         newEntry.add(buildLabel(JLabel.CENTER, entry.getBalance() + " €", entry.getBalance() < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
-        newEntry.addMouseListener(new MouseAdapterEntry(this, newEntry, entry));
+        newEntry.addMouseListener(new MouseAdapterEntry(this, newEntry, entry, money));
         content.add(newEntry);
 
         this.revalidate();

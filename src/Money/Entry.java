@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public class Entry {
 
-    private final int number;
+    private int number;
     private final LocalDate date;
     private final String receiverBy;
     private final String category;
@@ -28,8 +28,12 @@ public class Entry {
         this.balance = balance;
     }
 
-    public void update(double previousBalance) {
+    public void updateBalance(double previousBalance) {
         this.balance = previousBalance + income - spending;
+    }
+
+    public void updateNumber(int number) {
+        this.number = number;
     }
 
     @Override
