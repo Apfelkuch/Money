@@ -22,8 +22,6 @@ public class Load {
                 s = bufferedReader.readLine();
                 if (s == null) break;
                 content.append(s);
-                s = null;
-
             }
 
             // read control value
@@ -37,8 +35,8 @@ public class Load {
             // read entries
             String[] entries = content.substring(Phrases.CONTROL_VALUE.length()).split(Character.toString(160) + Character.toString(160));
 
-            for (int i = 0; i < entries.length; i++) {
-                String[] ev = entries[i].split(Character.toString(160));
+            for (String stringEntry : entries) {
+                String[] ev = stringEntry.split(Character.toString(160));
                 Options option;
                 if (ev[0].equals(Options.INCOME.toString())) {
                     option = Options.INCOME;

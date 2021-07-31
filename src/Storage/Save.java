@@ -1,4 +1,4 @@
-package Save;
+package Storage;
 
 import Money.Money;
 import Money.Entry;

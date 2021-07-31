@@ -6,15 +6,15 @@ import java.time.LocalDate;
 
 public class Entry {
 
-    private int number;
-    private LocalDate date;
-    private String receiverBy;
-    private String category;
-    private String purpose;
-    private double spending;
-    private double income;
+    private final int number;
+    private final LocalDate date;
+    private final String receiverBy;
+    private final String category;
+    private final String purpose;
+    private final double spending;
+    private final double income;
     private double balance;
-    private Options option;
+    private final Options option;
 
     public Entry(Options option, int number, LocalDate date, String receiverBy, String category, String purpose, double spending, double income, double balance) {
         this.option = option;
@@ -34,18 +34,16 @@ public class Entry {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(option.toString()).append(Character.toString(160));
-        stringBuilder.append(number).append(Character.toString(160));
-        stringBuilder.append(date.toString()).append(Character.toString(160));
-        stringBuilder.append(receiverBy).append(Character.toString(160));
-        stringBuilder.append(category).append(Character.toString(160));
-        stringBuilder.append(purpose).append(Character.toString(160));
-        stringBuilder.append(spending).append(Character.toString(160));
-        stringBuilder.append(income).append(Character.toString(160));
-        stringBuilder.append(balance).append(Character.toString(160)); /* if the line causes trouble use the line beneath*/
-//        stringBuilder.append(balance);
-        return stringBuilder.toString();
+        return option.toString() + Character.toString(160) +
+                number + Character.toString(160) +
+                date.toString() + Character.toString(160) +
+                receiverBy + Character.toString(160) +
+                category + Character.toString(160) +
+                purpose + Character.toString(160) +
+                spending + Character.toString(160) +
+                income + Character.toString(160) +
+//                balance + Character.toString(160); /* if the line causes trouble use the line beneath*/
+                balance;
     }
 
     // GETTER && SETTER
@@ -86,40 +84,5 @@ public class Entry {
         return balance;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public void setLocalDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setReceiverBy(String receiverBy) {
-        this.receiverBy = receiverBy;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
-
-    public void setSpending(float spending) {
-        this.spending = spending;
-    }
-
-    public void setIncome(float income) {
-        this.income = income;
-    }
-
-    public void setBalance(float balance) {
-        this.balance = balance;
-    }
-
-    public void setOption(Options option) {
-        this.option = option;
-    }
 }
 

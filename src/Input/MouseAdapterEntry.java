@@ -29,7 +29,7 @@ public class MouseAdapterEntry extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
         panel.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
-        if(window.isInputEmpty() || !window.isEditing()) {
+        if (window.isInputEmpty() || !window.isEditing()) {
             window.showEntry(entry);
             window.edit(entry);
         }

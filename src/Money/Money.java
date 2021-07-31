@@ -1,33 +1,30 @@
 package Money;
 
 import Phrases.Phrases;
-import Save.Save;
-import storage.Load;
+import Storage.Save;
+import Storage.Load;
 import utilitis.Options;
 import window.Window;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Money {
 
     private final Window window;
 
-    private ArrayList<Entry> entries;
+    private final ArrayList<Entry> entries;
     private int currentEntry;
-    private int topEntry;
+    private int topEntry = 0;
 
     // TODO manage the lists
-    private ArrayList<String> list_receiverBy;
-    private ArrayList<String> list_categories;
-    private ArrayList<String> list_purpose;
+    private final ArrayList<String> list_receiverBy;
+    private final ArrayList<String> list_categories;
+    private final ArrayList<String> list_purpose;
 
     public Money() {
 
-        entries = new ArrayList<>();
-        entries = Load.loadEntries();
-
+        new Phrases();
 
         // TODO preload the lists
         list_receiverBy = new ArrayList<>();
@@ -152,9 +149,8 @@ public class Money {
 
     }
 
-    public void save() {
-        // TODO save the program
-        Save.save(this, Phrases.PATH);
+    public boolean save() {
+        return Save.save(this, Phrases.PATH);
     }
 
     public void moveTopEntry(int amount) {

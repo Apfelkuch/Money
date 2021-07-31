@@ -37,18 +37,18 @@ public class Window extends JFrame implements ActionListener {
     // TODO JTable
     private JLabel controlsReceiver_by;
     private Panel content;
-    private int maxContentElements = 7;
+    private final int maxContentElements = 7;
 
     // dimensions
     private Dimension tableDimension;
     // dimensions control
-    private int bufferPageEnd = 40;
-    private Dimension buttonsDimension = new Dimension(120, 20);
-    private Dimension inputDimensionBig = new Dimension(400, 20);
-    private Dimension inputDimensionSmall = new Dimension(100, 20);
-    private Dimension textDimensionBig = new Dimension(100, 20);
-    private Dimension textDimensionSmall = new Dimension(50, 20);
-    private Dimension extraButton = new Dimension(20, 20);
+    private final int bufferPageEnd = 40;
+    private final Dimension buttonsDimension = new Dimension(120, 20);
+    private final Dimension inputDimensionBig = new Dimension(400, 20);
+    private final Dimension inputDimensionSmall = new Dimension(100, 20);
+    private final Dimension textDimensionBig = new Dimension(100, 20);
+    private final Dimension textDimensionSmall = new Dimension(50, 20);
+    private final Dimension extraButton = new Dimension(20, 20);
 
 
     // controls
@@ -72,10 +72,10 @@ public class Window extends JFrame implements ActionListener {
     private CustomJButton calcValue;
 
     // improve
-    private int inputValueMax = Integer.parseInt("1000000000") ;
-    private int inputValueMin = -999990;
+    private final int inputValueMax = Integer.parseInt("1000000000");
+    private final int inputValueMin = Integer.parseInt("-1000000000");
 
-    private ArrayList<Component> focusElements;
+    private final ArrayList<Component> focusElements;
 
     private boolean editing = false;
     private boolean adding = true;
@@ -95,24 +95,20 @@ public class Window extends JFrame implements ActionListener {
 
         this.money = money;
 
-        this.init();
+        // init
+        focusElements = new ArrayList<>();
+
         this.buildMenuBar();
         this.addTable();
         try {
             this.addControls();
         } catch (ParseException e) {
             e.printStackTrace();
+            System.exit(10);
         }
 
         this.revalidate();
         this.repaint();
-
-    }
-
-    public void init() {
-        new Phrases();
-
-        focusElements = new ArrayList<>();
 
     }
 
@@ -242,7 +238,7 @@ public class Window extends JFrame implements ActionListener {
     private void addControls() throws ParseException {
         Panel controls = new Panel();
         controls.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        controls.setPreferredSize(new Dimension((int) (this.getWidth() * (2f / 3f)), ((buttonsDimension.height + 10) * 5) + bufferPageEnd));
+        controls.setPreferredSize(new Dimension(tableDimension.width, ((buttonsDimension.height + 10) * 5) + bufferPageEnd));
         controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
         this.add(controls, BorderLayout.PAGE_END);
 
@@ -319,7 +315,7 @@ public class Window extends JFrame implements ActionListener {
         controlsReceiver_by.setPreferredSize(textDimensionBig);
         controlsReceiver_by.setFont(Phrases.inputFont);
         p1.add(controlsReceiver_by);
-        inputReceiver_by = new CustomJComboBox<String>(money.getList_receiverBy().toArray(new String[0]));
+        inputReceiver_by = new CustomJComboBox<>(money.getList_receiverBy().toArray(new String[0]));
         inputReceiver_by.setFont(Phrases.inputFont);
         inputReceiver_by.setPreferredSize(inputDimensionBig);
         inputReceiver_by.setEditable(true);
@@ -337,7 +333,7 @@ public class Window extends JFrame implements ActionListener {
         ControlsCategory.setPreferredSize(textDimensionBig);
         ControlsCategory.setFont(Phrases.inputFont);
         p2.add(ControlsCategory);
-        inputCategory = new CustomJComboBox<String>(money.getList_categories().toArray(new String[0]));
+        inputCategory = new CustomJComboBox<>(money.getList_categories().toArray(new String[0]));
         inputCategory.setFont(Phrases.inputFont);
         inputCategory.setPreferredSize(inputDimensionBig);
         inputCategory.setEditable(true);
@@ -354,7 +350,7 @@ public class Window extends JFrame implements ActionListener {
         controlsPurpose.setPreferredSize(textDimensionBig);
         controlsPurpose.setFont(Phrases.inputFont);
         p3.add(controlsPurpose);
-        inputPurpose = new CustomJComboBox<String>(money.getList_purpose().toArray(new String[0]));
+        inputPurpose = new CustomJComboBox<>(money.getList_purpose().toArray(new String[0]));
         inputPurpose.setFont(Phrases.inputFont);
         inputPurpose.setPreferredSize(inputDimensionBig);
         inputPurpose.setEditable(true);
@@ -466,11 +462,12 @@ public class Window extends JFrame implements ActionListener {
                 if (newContent.isBlank() || (newContent.contains(".") && newContent.length() == 1)) {
                     newContent = "0.0";
                 }
-                double d = 0;
+                double d;
                 try {
                     d = Double.parseDouble(newContent);
+                    System.out.println(inputValueMin + " -> " + inputValueMax);
                     if (d > inputValueMax || d < inputValueMin) {
-                        System.out.println("Window.verify: functional");
+                        System.out.println("\033[1;31m" + "[Error] Window.inputValue.Verifier: value is out of bounds" + "\033[0m");
                         throw new NumberFormatException();
                     }
                 } catch (NullPointerException | NumberFormatException e) {
@@ -624,13 +621,13 @@ public class Window extends JFrame implements ActionListener {
             // TODO calcValue
             System.out.println("calc value");
         } else if (e.getSource() == save) {
-            // TODO JMenuBar save
             System.out.println("JMenuBar save");
             money.save();
         } else if (e.getSource() == exit) {
             System.out.println("JMenuBar exit");
-            money.save();
-            System.exit(1);
+            if (money.save()) {
+                System.exit(1);
+            }
         }
     }
 
@@ -645,13 +642,11 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public String setDateOnControl(LocalDate date) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(date.getDayOfMonth() < 10 ? "0" + date.getDayOfMonth() : date.getDayOfMonth());
-        stringBuilder.append(".");
-        stringBuilder.append(date.getMonthValue() < 10 ? "0" + date.getMonthValue() : date.getMonthValue());
-        stringBuilder.append(".");
-        stringBuilder.append(date.getYear() < 10 ? "0" + date.getYear() : date.getYear());
-        return stringBuilder.toString();
+        return (date.getDayOfMonth() < 10 ? "0" + date.getDayOfMonth() : date.getDayOfMonth()) +
+                "." +
+                (date.getMonthValue() < 10 ? "0" + date.getMonthValue() : date.getMonthValue()) +
+                "." +
+                (date.getYear() < 10 ? "0" + date.getYear() : date.getYear());
     }
 
     public void clearEntries() {
@@ -670,10 +665,6 @@ public class Window extends JFrame implements ActionListener {
 
     public int getMaxContentElements() {
         return maxContentElements;
-    }
-
-    public void setMaxContentElements(int maxContentElements) {
-        this.maxContentElements = maxContentElements;
     }
 
     public String getInputReceiverBy() {
@@ -695,10 +686,6 @@ public class Window extends JFrame implements ActionListener {
 
     public double getInputValue() {
         return Double.parseDouble(inputValue.getValue().toString().replaceAll(",", ".").replaceAll(" " + Phrases.moneySymbol, ""));
-    }
-
-    public int getEntriesOnTable() {
-        return content.getComponentCount();
     }
 
 }
