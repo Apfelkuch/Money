@@ -68,7 +68,7 @@ public class Money {
 
     public void enter() {
         Options option = window.isSpending() ? Options.SPENDING : Options.INCOME;
-        int number = entries.size();
+        int number = entries.size() + 1;
         LocalDate date = window.getInputLocalDate();
         String receiverBy = window.getInputReceiverBy();
         String category = window.getInputCategory();
@@ -154,6 +154,7 @@ public class Money {
     }
 
     public void moveTopEntry(int amount) {
+        int oldTopEntry = topEntry;
         topEntry += amount; // move the topEntry with the amount
 
         // adjust topEntry
@@ -163,6 +164,8 @@ public class Money {
         if (topEntry > entries.size() - window.getMaxContentElements()) {
             topEntry = entries.size() - window.getMaxContentElements();
         }
+
+        if (oldTopEntry == topEntry) return;
 
         // update the GUI
         updateAllEntries();

@@ -79,6 +79,7 @@ public class Window extends JFrame implements ActionListener {
 
     private boolean editing = false;
     private boolean adding = true;
+    private boolean entryShown = false;
 
     // logic
     private final Money money;
@@ -186,6 +187,9 @@ public class Window extends JFrame implements ActionListener {
         content = new Panel();
         content.setLayout(new GridLayout(maxContentElements, 1));
         content.setPreferredSize(new Dimension(tableDimension.width, (tableDimension.height - 2) * maxContentElements));
+
+        content.addMouseWheelListener(e -> money.moveTopEntry((int) e.getPreciseWheelRotation()));
+
         table.add(content);
     }
 
@@ -441,10 +445,6 @@ public class Window extends JFrame implements ActionListener {
                     tc.selectAll();
                     return false;
                 }
-//                for (int i = 0; i < newContent.length(); i++) {
-//                    Character c = newContent.charAt(i);
-//                    System.out.println(c + " :: " + c.hashCode());
-//                }
                 char[] characters = newContent.toCharArray(); // check if the String only have valid Characters
                 for (char c : characters) {
                     boolean result = false;
@@ -466,8 +466,8 @@ public class Window extends JFrame implements ActionListener {
                 double d;
                 try {
                     d = Double.parseDouble(newContent);
-                    System.out.println(inputValueMin + " -> " + inputValueMax);
                     if (d > inputValueMax || d < inputValueMin) {
+                        // improve maybe show it to the user if this is the cause
                         System.out.println("\033[1;31m" + "[Error] Window.inputValue.Verifier: value is out of bounds" + "\033[0m");
                         throw new NumberFormatException();
                     }
@@ -546,6 +546,7 @@ public class Window extends JFrame implements ActionListener {
     public void showEntry(Entry entry) {
         this.clearInput();
         this.changeEnabled(false);
+        entryShown = true;
         if (entry.getOption().equals(Options.INCOME)) {
             changeToIncome();
             this.inputValue.setValue(entry.getIncome().toString().replaceAll("\\.", ",") + " €");
@@ -573,49 +574,55 @@ public class Window extends JFrame implements ActionListener {
         this.revalidate();
         this.repaint();
         if (e.getSource() == spending) {
-            System.out.println("spending");
+//            System.out.println("spending");
+            entryShown = false;
             if (isInputEmpty()) {
                 changeToSpending();
             }
             editing = false;
             adding = true;
         } else if (e.getSource() == income) {
-            System.out.println("income");
+//            System.out.println("income");
+            entryShown = false;
             if (isInputEmpty()) {
                 changeToIncome();
             }
             editing = false;
             adding = true;
         } else if (e.getSource() == neu) {
-            System.out.println("neu");
+//            System.out.println("neu");
+            entryShown = false;
             this.clearInput();
             this.changeEnabled(true);
             this.changeToSpending();
             editing = false;
             adding = true;
         } else if (e.getSource() == edit) {
+            entryShown = false;
             if (!isInputEmpty() && !this.inputReceiver_by.isEnabled()) {
-                System.out.println("edit");
+//                System.out.println("edit");
                 this.changeEnabled(true);
                 editing = true;
                 adding = false;
             }
         } else if (e.getSource() == enter) {
+            entryShown = false;
             if (!isInputEmpty() && adding && !editing) {
-                System.out.println("enter");
+//                System.out.println("enter");
                 money.enter();
                 editing = false;
                 clearInput();
                 adding = true;
             } else if (editing) {
-                System.out.println("confirm edit");
+//                System.out.println("confirm edit");
                 money.confirmEdit();
                 editing = false;
                 clearInput();
                 adding = true;
             }
         } else if (e.getSource() == cancel) {
-            System.out.println("cancel");
+//            System.out.println("cancel");
+            entryShown = false;
             this.clearInput();
             this.changeEnabled(true);
             editing = false;
@@ -627,10 +634,10 @@ public class Window extends JFrame implements ActionListener {
             // TODO calcValue
             System.out.println("calc value");
         } else if (e.getSource() == save) {
-            System.out.println("JMenuBar save");
+//            System.out.println("JMenuBar save");
             money.save();
         } else if (e.getSource() == exit) {
-            System.out.println("JMenuBar exit");
+//            System.out.println("JMenuBar exit");
             if (money.save()) {
                 System.exit(1);
             }
@@ -667,6 +674,10 @@ public class Window extends JFrame implements ActionListener {
 
     public boolean isEditing() {
         return editing;
+    }
+
+    public boolean isEntryShown() {
+        return entryShown;
     }
 
     public int getMaxContentElements() {
