@@ -102,6 +102,7 @@ public class Window extends JFrame implements ActionListener {
         this.addTable();
         try {
             this.addControls();
+            this.changeToSpending();
         } catch (ParseException e) {
             e.printStackTrace();
             System.exit(10);
@@ -311,7 +312,7 @@ public class Window extends JFrame implements ActionListener {
 
         Panel p1 = new Panel();
         p1.setLayout(new FlowLayout(FlowLayout.LEFT));
-        controlsReceiver_by = new JLabel(Phrases.receiver);
+        controlsReceiver_by = new JLabel("");
         controlsReceiver_by.setPreferredSize(textDimensionBig);
         controlsReceiver_by.setFont(Phrases.inputFont);
         p1.add(controlsReceiver_by);
@@ -525,6 +526,8 @@ public class Window extends JFrame implements ActionListener {
     private void changeToSpending() {
         this.controlsReceiver_by.setText(Phrases.receiver);
         this.clearInput();
+        this.spending.setBackground(getBackground().darker());
+        this.income.setBackground(getBackground());
         this.revalidate();
         this.repaint();
         this.isSpending = true;
@@ -533,6 +536,8 @@ public class Window extends JFrame implements ActionListener {
     private void changeToIncome() {
         this.controlsReceiver_by.setText(Phrases.by);
         this.clearInput();
+        this.spending.setBackground(getBackground());
+        this.income.setBackground(getBackground().darker());
         this.revalidate();
         this.repaint();
         this.isSpending = false;
@@ -585,6 +590,7 @@ public class Window extends JFrame implements ActionListener {
             System.out.println("neu");
             this.clearInput();
             this.changeEnabled(true);
+            this.changeToSpending();
             editing = false;
             adding = true;
         } else if (e.getSource() == edit) {
