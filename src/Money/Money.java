@@ -5,6 +5,7 @@ import Storage.Save;
 import Storage.Load;
 import utilitis.Options;
 import window.Window;
+import window.startingWindow;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class Money {
     private final ArrayList<String> list_purpose;
 
     public Money() {
+
+        startingWindow startingWindow = new startingWindow();
 
         new Phrases();
 
@@ -64,6 +67,10 @@ public class Money {
 //        for (Entry e : entries) {
 //            window.addContentToTable(e);
 //        }
+
+        startingWindow.dispose();
+        window.setVisible(true);
+
     }
 
     public void enter() {

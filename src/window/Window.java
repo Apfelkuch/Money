@@ -34,7 +34,7 @@ public class Window extends JFrame implements ActionListener {
     // table
     // TODO JTable
     private JLabel controlsReceiver_by;
-    private Panel content;
+    private JPanel content;
     private final int maxContentElements = 7;
 
     // dimensions
@@ -50,7 +50,7 @@ public class Window extends JFrame implements ActionListener {
 
 
     // controls
-    private Panel input;
+    private JPanel input;
     // TODO JTabbedPane
     private CustomJButton spending;
     private CustomJButton income;
@@ -73,7 +73,7 @@ public class Window extends JFrame implements ActionListener {
     private final int inputValueMax = Integer.parseInt("1000000000");
     private final int inputValueMin = Integer.parseInt("-1000000000");
 
-    private final ArrayList<Component> focusElements;
+    private final ArrayList<JComponent> focusElements;
 
     private boolean editing = false;
     private boolean adding = true;
@@ -90,7 +90,6 @@ public class Window extends JFrame implements ActionListener {
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
-        this.setVisible(true);
 
         this.money = money;
 
@@ -130,21 +129,22 @@ public class Window extends JFrame implements ActionListener {
 
     private void addTable() {
         // TODO improve the layout of the segments of the table
-        tableDimension = new Dimension((int) (this.getWidth() * (2f / 3f)), 100);
+        int maxWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        tableDimension = new Dimension((int) (maxWidth * (2f / 3f)), 100);
 
-        Panel tableShow = new Panel();
+        JPanel tableShow = new JPanel();
         tableShow.setLayout(new FlowLayout(FlowLayout.CENTER));
         tableShow.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
         tableShow.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + maxContentElements)));
         this.add(tableShow, BorderLayout.CENTER);
 
-        Panel table = new Panel();
+        JPanel table = new JPanel();
         table.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
         table.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + maxContentElements)));
         tableShow.add(table);
 
         // table head row
-        Panel headRow = new Panel();
+        JPanel headRow = new JPanel();
         headRow.setLayout(new GridLayout(1, 6));
         headRow.setPreferredSize(tableDimension);
         headRow.setBackground(Phrases.COLOR_HEAD_ROW);
@@ -182,9 +182,10 @@ public class Window extends JFrame implements ActionListener {
         headRow.add(tableBalance);
 
         // table content
-        content = new Panel();
+        content = new JPanel();
         content.setLayout(new GridLayout(maxContentElements, 1));
         content.setPreferredSize(new Dimension(tableDimension.width, (tableDimension.height - 2) * maxContentElements));
+        content.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
 
         // TODO adjust that the scrolling is smoother
         content.addMouseWheelListener(e -> money.moveTopEntry((int) e.getPreciseWheelRotation()));
@@ -207,14 +208,14 @@ public class Window extends JFrame implements ActionListener {
     }
 
     private void addControls() throws ParseException {
-        Panel controls = new Panel();
+        JPanel controls = new JPanel();
         controls.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         controls.setPreferredSize(new Dimension(tableDimension.width, ((buttonsDimension.height + 10) * 5) + bufferPageEnd));
         controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
         this.add(controls, BorderLayout.PAGE_END);
 
         // control Buttons
-        Panel controlButtons = new Panel();
+        JPanel controlButtons = new JPanel();
         controlButtons.setBackground(Phrases.COLOR_CONTROLS);
         controlButtons.setLayout(new FlowLayout(FlowLayout.LEFT));
         controlButtons.setPreferredSize(new Dimension(controls.getPreferredSize().width, buttonsDimension.height + 10));
@@ -235,7 +236,7 @@ public class Window extends JFrame implements ActionListener {
         controlButtons.add(income);
 
         // control Buttons I
-        Panel controlButtonsI = new Panel();
+        JPanel controlButtonsI = new JPanel();
         controlButtonsI.setBackground(Phrases.COLOR_CONTROLS_INPUT);
         controlButtonsI.setLayout(new FlowLayout(FlowLayout.LEFT));
         controlButtonsI.setPreferredSize(controlButtons.getPreferredSize());
@@ -270,17 +271,17 @@ public class Window extends JFrame implements ActionListener {
         controlButtonsI.add(cancel);
 
         // input
-        input = new Panel();
+        input = new JPanel();
         input.setLayout(new GridLayout(1, 2));
         input.setPreferredSize(new Dimension(controls.getPreferredSize().width, (buttonsDimension.height + 10) * 3));
         input.setBackground(controlButtonsI.getBackground());
         controls.add(input);
 
-        Panel inputLeft = new Panel();
+        JPanel inputLeft = new JPanel();
         inputLeft.setLayout(new GridLayout(3, 1));
         input.add(inputLeft);
 
-        Panel p1 = new Panel();
+        JPanel p1 = new JPanel();
         p1.setLayout(new FlowLayout(FlowLayout.LEFT));
         controlsReceiver_by = new JLabel("");
         controlsReceiver_by.setPreferredSize(textDimensionBig);
@@ -298,7 +299,7 @@ public class Window extends JFrame implements ActionListener {
         p1.add(inputReceiver_by);
         inputLeft.add(p1);
 
-        Panel p2 = new Panel();
+        JPanel p2 = new JPanel();
         p2.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel ControlsCategory = new JLabel(Phrases.category);
         ControlsCategory.setPreferredSize(textDimensionBig);
@@ -315,7 +316,7 @@ public class Window extends JFrame implements ActionListener {
         p2.add(inputCategory);
         inputLeft.add(p2);
 
-        Panel p3 = new Panel();
+        JPanel p3 = new JPanel();
         p3.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel controlsPurpose = new JLabel(Phrases.purpose);
         controlsPurpose.setPreferredSize(textDimensionBig);
@@ -332,11 +333,11 @@ public class Window extends JFrame implements ActionListener {
         p3.add(inputPurpose);
         inputLeft.add(p3);
 
-        Panel inputRight = new Panel();
+        JPanel inputRight = new JPanel();
         inputRight.setLayout(new GridLayout(3, 1));
         input.add(inputRight);
 
-        Panel p4 = new Panel();
+        JPanel p4 = new JPanel();
         p4.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel controlsDate = new JLabel(Phrases.date);
         controlsDate.setPreferredSize(textDimensionSmall);
@@ -382,7 +383,7 @@ public class Window extends JFrame implements ActionListener {
         p4.add(choiceDate);
         inputRight.add(p4);
 
-        Panel p5 = new Panel();
+        JPanel p5 = new JPanel();
         p5.setLayout(new FlowLayout(FlowLayout.LEFT));
         JLabel controlsValue = new JLabel(Phrases.value);
         controlsValue.setPreferredSize(textDimensionSmall);

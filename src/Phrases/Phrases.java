@@ -43,8 +43,8 @@ public class Phrases {
     public static Color COLOR_HEAD_ROW = Color.GRAY;
     public static Color COLOR_CONTROLS = Color.GRAY;
     public static Color COLOR_CONTROLS_INPUT = Color.LIGHT_GRAY;
-    public static Color COLOR_CONTROL_BACKGROUND = null;
-    public static Color COLOR_TABLE_BACKGROUND = null;
+    public static Color COLOR_CONTROL_BACKGROUND = Color.LIGHT_GRAY;
+    public static Color COLOR_TABLE_BACKGROUND = Color.LIGHT_GRAY;
     public static Color COLOR_TABLE_CONTENT_BACKGROUND = Color.LIGHT_GRAY;
 
     public static Color normalFontColor = Color.BLACK;
