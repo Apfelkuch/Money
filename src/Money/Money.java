@@ -32,7 +32,7 @@ public class Money {
         list_receiverBy.add("you");
         list_receiverBy.add("are");
         list_receiverBy.add("lucky");
-        list_receiverBy.add("brot von MEffert");
+        list_receiverBy.add("happy");
         list_categories = new ArrayList<>(list_receiverBy);
         list_purpose = new ArrayList<>(list_receiverBy);
 
@@ -93,7 +93,7 @@ public class Money {
                 balance = entries.get(entries.size() - 1).getBalance() + income;
             }
         }
-        Entry entry = new Entry(option, number, date, receiverBy, category, purpose, spending, income, balance);
+        Entry entry = new Entry(option, number, date, receiverBy, category, purpose, spending, income, balance, this);
         entries.add(entry);
         if (entries.size() >= window.getMaxContentElements()) {
             topEntry += 1;
@@ -137,7 +137,7 @@ public class Money {
         }
 
         // set a new entry at the place of the edited entry
-        entries.set(currentEntry, new Entry(tempEntry.getOption(), tempEntry.getNumber(), date, receiverBy, category, purpose, spending, income, balance));
+        entries.set(currentEntry, new Entry(tempEntry.getOption(), tempEntry.getNumber(), date, receiverBy, category, purpose, spending, income, balance, this));
 
         // update all following entries.
         for (int i = currentEntry; i < entries.size(); i++) {

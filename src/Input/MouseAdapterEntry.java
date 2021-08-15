@@ -6,17 +6,16 @@ import Phrases.Phrases;
 import window.Window;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class MouseAdapterEntry extends MouseAdapter {
     private final Window window;
     private final Entry entry;
-    private final Panel panel;
+    private final JPanel panel;
     private final Money money;
 
-    public MouseAdapterEntry(Window window, Panel panel, Entry entry, Money money) {
+    public MouseAdapterEntry(Window window, JPanel panel, Entry entry, Money money) {
         this.window = window;
         this.panel = panel;
         this.entry = entry;

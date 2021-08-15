@@ -52,7 +52,8 @@ public class Load {
                         ev[5],
                         Double.parseDouble(ev[6]),
                         Double.parseDouble(ev[7]),
-                        Double.parseDouble(ev[8])
+                        Double.parseDouble(ev[8]),
+                        money
                 );
                 money.getEntries().add(entry);
             }

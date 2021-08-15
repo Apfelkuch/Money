@@ -1,7 +1,6 @@
 package window;
 
 import Input.KeyAdapterInput;
-import Input.MouseAdapterEntry;
 import Money.Entry;
 import Phrases.Phrases;
 import Money.Money;
@@ -22,7 +21,6 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -198,31 +196,7 @@ public class Window extends JFrame implements ActionListener {
         if (content.getComponents().length >= maxContentElements) {
             this.removeTopElement();
         }
-        Panel newEntry = new Panel();
-        newEntry.setSize(content.getWidth(), content.getHeight() / maxContentElements);
-        newEntry.setLayout(new GridLayout(1, 6));
-        newEntry.add(buildLabel(JLabel.CENTER, "" + entry.getNumber(), Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, this.setDateOnTable(entry.getLocalDate()), Phrases.normalFontColor));
-
-        //OPTION 1
-        newEntry.add(buildLabel(JLabel.LEFT, "<html>"
-                + (entry.getReceiverBy() == null ? "" : entry.getReceiverBy()) + "<br>"
-                + (entry.getCategory() == null ? "" : entry.getCategory()) + "<br>"
-                + (entry.getPurpose() == null ? "" : entry.getPurpose())
-                + "</html>", Phrases.normalFontColor), 2);
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €", Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getIncome() == 0.0 ? "" : entry.getIncome() + " €", Phrases.normalFontColor));
-//        // OPTION 2
-//        newEntry.add(buildLabel(JLabel.CENTER, "",0));
-//        if(entry.getSpending() == 0.0) {
-//            newEntry.add(buildLabel(JLabel.LEFT, entry.getIncome() == 0.0 ? "" : entry.getIncome() + " €",0));
-//        } else {
-//            newEntry.add(buildLabel(JLabel.RIGHT, entry.getSpending() == 0.0 ? "" : entry.getSpending() + " €",0));
-//        }
-//        newEntry.add(buildLabel(JLabel.LEFT, "<html>" + entry.getReceiverBy() + "<br>" + entry.getCategory() + "<br>" + entry.getPurpose() + "</html>",2),2);
-        newEntry.add(buildLabel(JLabel.CENTER, entry.getBalance() + " €", entry.getBalance() < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
-        newEntry.addMouseListener(new MouseAdapterEntry(this, newEntry, entry, money));
-        content.add(newEntry);
+        content.add(entry.showEntry(content.getWidth(), content.getHeight() / maxContentElements, this));
 
         this.revalidate();
         this.repaint();
@@ -230,15 +204,6 @@ public class Window extends JFrame implements ActionListener {
 
     public void removeTopElement() {
         this.content.remove(0);
-    }
-
-    private JLabel buildLabel(int alignment, String content, Color fontColor) {
-        JLabel label = new JLabel(content);
-        label.setForeground(fontColor);
-        label.setFont(Phrases.showFontPlain);
-        label.setBorder(new LineBorder(Color.BLACK, 1));
-        label.setHorizontalAlignment(alignment);
-        return label;
     }
 
     private void addControls() throws ParseException {
@@ -648,11 +613,6 @@ public class Window extends JFrame implements ActionListener {
     public void edit(Entry entry) {
         money.edit(entry);
         adding = false;
-    }
-
-    public String setDateOnTable(LocalDate date) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return date.format(dateTimeFormatter);
     }
 
     public String setDateOnControl(LocalDate date) {
