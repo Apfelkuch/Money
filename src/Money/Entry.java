@@ -50,9 +50,9 @@ public class Entry {
         return option.toString() + Character.toString(160) +
                 number + Character.toString(160) +
                 localDate.toString() + Character.toString(160) +
-                receiverBy + Character.toString(160) +
-                category + Character.toString(160) +
-                purpose + Character.toString(160) +
+                (receiverBy == null ? Character.toString(177) : receiverBy) + Character.toString(160) +
+                (category == null ? Character.toString(177) : category) + Character.toString(160) +
+                (purpose == null ? Character.toString(177) : purpose) + Character.toString(160) +
                 spending + Character.toString(160) +
                 income + Character.toString(160) +
                 balance;
@@ -73,8 +73,8 @@ public class Entry {
                 + (purpose == null ? "" : purpose)
                 + "</html>", Phrases.normalFontColor), 2);
 
-        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.SPENDING) ? "" : spending + " €", Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.INCOME) ? "" : income + " €", Phrases.normalFontColor));
+        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.SPENDING) ? spending + " €" : "", Phrases.normalFontColor));
+        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.INCOME) ? income + " €" : "", Phrases.normalFontColor));
         newEntry.add(buildLabel(JLabel.CENTER, balance + " €", balance < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
         newEntry.addMouseListener(new MouseAdapterEntry(window, newEntry, this, money));
 

@@ -57,4 +57,11 @@ public class Phrases {
     public static final String CONTROL_VALUE = "Version 1" + Character.toString(160) + Character.toString(160);
     public static final String PATH = System.getProperties().getProperty("user.dir") + "\\Money\\save.txt";
 
+    public static final int LIST_JUMP_VALUE = 8;
+
+    // special characters
+    // decimal
+    //      160 : as divider
+    //      177 : as placeholder for a empty content
+
 }

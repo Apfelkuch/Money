@@ -2,8 +2,8 @@ package window;
 
 import Input.KeyAdapterInput;
 import Money.Entry;
-import Phrases.Phrases;
 import Money.Money;
+import Phrases.Phrases;
 import utilitis.CustomJButton;
 import utilitis.CustomJComboBox;
 import utilitis.Options;
@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Window extends JFrame implements ActionListener {
@@ -128,7 +129,7 @@ public class Window extends JFrame implements ActionListener {
     }
 
     private void addTable() {
-        // TODO improve the layout of the segments of the table
+        // TODO improvement the layout of the segments of the table
         int maxWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         tableDimension = new Dimension((int) (maxWidth * (2f / 3f)), 100);
 
@@ -287,7 +288,7 @@ public class Window extends JFrame implements ActionListener {
         controlsReceiver_by.setPreferredSize(textDimensionBig);
         controlsReceiver_by.setFont(Phrases.inputFont);
         p1.add(controlsReceiver_by);
-        inputReceiver_by = new CustomJComboBox<>(money.getList_receiverBy().toArray(new String[0]));
+        inputReceiver_by = new CustomJComboBox<>(new String[0]);
         inputReceiver_by.setFont(Phrases.inputFont);
         inputReceiver_by.setPreferredSize(inputDimensionBig);
         inputReceiver_by.setEditable(true);
@@ -305,7 +306,7 @@ public class Window extends JFrame implements ActionListener {
         ControlsCategory.setPreferredSize(textDimensionBig);
         ControlsCategory.setFont(Phrases.inputFont);
         p2.add(ControlsCategory);
-        inputCategory = new CustomJComboBox<>(money.getList_categories().toArray(new String[0]));
+        inputCategory = new CustomJComboBox<>(new String[0]);
         inputCategory.setFont(Phrases.inputFont);
         inputCategory.setPreferredSize(inputDimensionBig);
         inputCategory.setEditable(true);
@@ -322,7 +323,7 @@ public class Window extends JFrame implements ActionListener {
         controlsPurpose.setPreferredSize(textDimensionBig);
         controlsPurpose.setFont(Phrases.inputFont);
         p3.add(controlsPurpose);
-        inputPurpose = new CustomJComboBox<>(money.getList_purpose().toArray(new String[0]));
+        inputPurpose = new CustomJComboBox<>(new String[0]);
         inputPurpose.setFont(Phrases.inputFont);
         inputPurpose.setPreferredSize(inputDimensionBig);
         inputPurpose.setEditable(true);
@@ -533,6 +534,24 @@ public class Window extends JFrame implements ActionListener {
         this.inputPurpose.setEnabled(enabled);
         this.inputDate.setEnabled(enabled);
         this.inputValue.setEnabled(enabled);
+    }
+
+    public void setInputReceiver_by(String[] strings) {
+        System.out.println("Window.setInputReceiver_by >> strings: " + Arrays.toString(strings));
+        inputReceiver_by.setModel(new DefaultComboBoxModel<>(strings));
+        inputReceiver_by.setSelectedItem(null);
+    }
+
+    public void setInputCategory(String[] strings) {
+        System.out.println("Window.setInputCategory >> strings: " + Arrays.toString(strings));
+        inputCategory.setModel(new DefaultComboBoxModel<>(strings));
+        inputCategory.setSelectedItem(null);
+    }
+
+    public void setInputPurpose(String[] strings) {
+        System.out.println("Window.setInputPurpose >> strings: " + Arrays.toString(strings));
+        inputPurpose.setModel(new DefaultComboBoxModel<>(strings));
+        inputPurpose.setSelectedItem(null);
     }
 
     // TODO complete the actions and the functionality.

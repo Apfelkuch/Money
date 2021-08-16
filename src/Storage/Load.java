@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 public class Load {
 
+    // TODO need better loading because the data is to much for a String to handle
     public static boolean load(Money money, String path, int maxContentElements) {
         try {
             FileReader fileReader = new FileReader(path);
@@ -43,19 +44,29 @@ public class Load {
                 } else {
                     option = Options.SPENDING;
                 }
+                System.out.println(ev[3].hashCode());
+                System.out.println(ev[4].hashCode());
+                System.out.println(ev[5].hashCode());
+                String receiveBy = ev[3].equals(Character.toString(177)) ? "" : ev[3];
+                String category = ev[4].equals(Character.toString(177)) ? "" : ev[4];
+                String purpose = ev[5].equals(Character.toString(177)) ? "" : ev[5];
                 Entry entry = new Entry(
-                        option,
-                        Integer.parseInt(ev[1]),
-                        LocalDate.parse(ev[2]),
-                        ev[3],
-                        ev[4],
-                        ev[5],
-                        Double.parseDouble(ev[6]),
-                        Double.parseDouble(ev[7]),
-                        Double.parseDouble(ev[8]),
-                        money
+                        option,                     // option
+                        Integer.parseInt(ev[1]),    // number
+                        LocalDate.parse(ev[2]),     // date
+                        receiveBy,                  // receiveBy
+                        category,                   // category
+                        purpose,                    // purpose
+                        Double.parseDouble(ev[6]),  // spending
+                        Double.parseDouble(ev[7]),  // income
+                        Double.parseDouble(ev[8]),  // balance
+                        money                       // reference to money
                 );
                 money.getEntries().add(entry);
+                // load the JComboBoxDate
+                money.addToPreListReceiverBy(receiveBy);
+                money.addToPreListCategories(category);
+                money.addToPreListPurpose(purpose);
             }
 
             // load the last entries on the table
