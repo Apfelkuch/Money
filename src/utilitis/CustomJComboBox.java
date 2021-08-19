@@ -21,7 +21,7 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
 
     private Window window;
 
-    public CustomJComboBox(final Type[] array) {
+    public CustomJComboBox(Type[] array) {
         super(array);
         setEditor(new BasicComboBoxEditor());
         setEditable(true);

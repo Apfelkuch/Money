@@ -6,18 +6,16 @@ import java.io.IOException;
 
 public class Phrases {
 
-    // Font
+    // Fonts
     public Phrases() {
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
             graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("res/arial.ttf")));
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
-            return;
         }
 
     }
-
 
     public static Font showFontBold = new Font("arial", Font.BOLD, 20);
     public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
@@ -45,8 +43,22 @@ public class Phrases {
     public static Color COLOR_HEAD_ROW = Color.GRAY;
     public static Color COLOR_CONTROLS = Color.GRAY;
     public static Color COLOR_CONTROLS_INPUT = Color.LIGHT_GRAY;
-    public static Color COLOR_CONTROL_BACKGROUND = null;
-    public static Color COLOR_TABLE_BACKGROUND = null;
+    public static Color COLOR_CONTROL_BACKGROUND = Color.LIGHT_GRAY;
+    public static Color COLOR_TABLE_BACKGROUND = Color.LIGHT_GRAY;
     public static Color COLOR_TABLE_CONTENT_BACKGROUND = Color.LIGHT_GRAY;
+
+    public static Color normalFontColor = Color.BLACK;
+    public static Color minusFontColor = Color.RED;
+
+    // input
+    public static String moneySymbol = "€";
+
+    // save and load
+    public static final char DIVIDER = (char) 160;
+    public static final char PLACEHOLDER = (char) 177;
+    public static final String CONTROL_VALUE = "Version 1" + Phrases.DIVIDER + Phrases.DIVIDER;
+    public static final String PATH = System.getProperties().getProperty("user.dir") + "\\Money\\save.txt";
+
+    public static final int LIST_JUMP_VALUE = 8;
 
 }

@@ -4,6 +4,7 @@
 
 test
 .rest
+Money
 
 # ignore intelliJ
 out
