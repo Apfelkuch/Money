@@ -48,23 +48,21 @@ public class Money {
 
         boolean loading = Load.load(this, Phrases.PATH, window.getMaxContentElements());
         if (loading) {
-            System.out.println("Entries loaded");
+            System.out.println("Money.Money >> Entries loaded");
         } else {
-            System.out.println("No Entries loaded");
+            System.out.println("Money.Money >> No Entries loaded");
+            System.exit(1);
         }
 
 //        // testing entries
-//        entries.add(new Entry(Options.INCOME, 1, LocalDate.of(2021, 7, 10), "receiver1", "category1", "purpose1", 0f, 1f, 1f, this));
-//        entries.add(new Entry(Options.INCOME, 2, LocalDate.of(2021, 7, 11), "receiver1", "category2", "purpose2", 0f, 2f, 3f, this));
-//        entries.add(new Entry(Options.INCOME, 3, LocalDate.of(2021, 7, 12), "receiver1", "category3", "purpose3", 0f, 3f, 6f, this));
-//        entries.add(new Entry(Options.SPENDING, 4, LocalDate.of(2021, 7, 13), "receiver1", "category4", "purpose4", 1f, 0f, 5f, this));
-//        entries.add(new Entry(Options.SPENDING, 5, LocalDate.of(2021, 7, 14), "receiver1", "category5", "purpose5", 2f, 0f, 3f, this));
-//        entries.add(new Entry(Options.INCOME, 6, LocalDate.of(2021, 7, 15), "receiver1", "category6", "purpose6", 0f, 1f, 4f, this));
-//        entries.add(new Entry(Options.INCOME, 7, LocalDate.of(2021, 7, 16), "receiver1", "category7", "purpose7", 0f, 2f, 6f, this));
-//        entries.add(new Entry(Options.INCOME, 8, LocalDate.of(2021, 7, 17), "receiver1", "category8", "purpose8", 0f, 3f, 9f, this));
-//        entries.add(new Entry(Options.INCOME, 9, LocalDate.of(2021, 7, 17), "receiver1", "category9", "purpose9", 0f, 0f, 9f, this));
+//        int preload = 10000;
+//        for (int i = 0; i < preload; i++) {
+//            entries.add(new Entry(Options.INCOME, i + 1, LocalDate.of(2021, 7, 10), "receiver", "category", "purpose", 0f, 0f, 0f, this));
+//        }
+//        int n = entries.size();
+//        entries.add(new Entry(Options.INCOME, n + 1, LocalDate.of(2021, 7, 10), "receiver1", "category1", "purpose1", 0f, 99f, 99f, this));
 //
-//        topEntry = 1;
+//        topEntry = preload + 1 - 7;
 //
 //        for (Entry e : entries) {
 //            window.addContentToTable(e);
@@ -283,7 +281,6 @@ public class Money {
         if (!finish) { // if the content is not in the pre_list the content is added to the pre_list
             pre_list_receiverBy.add(new StringInteger(content, 1));
         }
-        System.out.println(Arrays.toString(list_receiverBy.toArray()));
     }
 
     public void addToPreListCategories(String content) {

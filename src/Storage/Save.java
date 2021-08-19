@@ -37,8 +37,8 @@ public class Save {
             // save all the entries
             for (Entry entry : money.getEntries()) {
                 pw.print(entry.toString());
-                pw.print(Character.toString(160));
-                pw.print(Character.toString(160));
+                pw.print(Phrases.DIVIDER);
+                pw.print(Phrases.DIVIDER);
             }
 
             pw.flush();

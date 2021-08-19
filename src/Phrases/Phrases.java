@@ -54,14 +54,11 @@ public class Phrases {
     public static String moneySymbol = "€";
 
     // save and load
-    public static final String CONTROL_VALUE = "Version 1" + Character.toString(160) + Character.toString(160);
+    public static final char DIVIDER = (char) 160;
+    public static final char PLACEHOLDER = (char) 177;
+    public static final String CONTROL_VALUE = "Version 1" + Phrases.DIVIDER + Phrases.DIVIDER;
     public static final String PATH = System.getProperties().getProperty("user.dir") + "\\Money\\save.txt";
 
     public static final int LIST_JUMP_VALUE = 8;
-
-    // special characters
-    // decimal
-    //      160 : as divider
-    //      177 : as placeholder for a empty content
 
 }

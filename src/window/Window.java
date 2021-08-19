@@ -537,19 +537,19 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public void setInputReceiver_by(String[] strings) {
-        System.out.println("Window.setInputReceiver_by >> strings: " + Arrays.toString(strings));
+//        System.out.println("Window.setInputReceiver_by >> strings: " + Arrays.toString(strings));
         inputReceiver_by.setModel(new DefaultComboBoxModel<>(strings));
         inputReceiver_by.setSelectedItem(null);
     }
 
     public void setInputCategory(String[] strings) {
-        System.out.println("Window.setInputCategory >> strings: " + Arrays.toString(strings));
+//        System.out.println("Window.setInputCategory >> strings: " + Arrays.toString(strings));
         inputCategory.setModel(new DefaultComboBoxModel<>(strings));
         inputCategory.setSelectedItem(null);
     }
 
     public void setInputPurpose(String[] strings) {
-        System.out.println("Window.setInputPurpose >> strings: " + Arrays.toString(strings));
+//        System.out.println("Window.setInputPurpose >> strings: " + Arrays.toString(strings));
         inputPurpose.setModel(new DefaultComboBoxModel<>(strings));
         inputPurpose.setSelectedItem(null);
     }

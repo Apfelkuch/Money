@@ -47,14 +47,14 @@ public class Entry {
 
     @Override
     public String toString() {
-        return option.toString() + Character.toString(160) +
-                number + Character.toString(160) +
-                localDate.toString() + Character.toString(160) +
-                (receiverBy == null ? Character.toString(177) : receiverBy) + Character.toString(160) +
-                (category == null ? Character.toString(177) : category) + Character.toString(160) +
-                (purpose == null ? Character.toString(177) : purpose) + Character.toString(160) +
-                spending + Character.toString(160) +
-                income + Character.toString(160) +
+        return option.toString() + Phrases.DIVIDER +
+                number + Phrases.DIVIDER +
+                localDate.toString() + Phrases.DIVIDER +
+                (receiverBy == null ? Phrases.PLACEHOLDER : receiverBy) + Phrases.DIVIDER +
+                (category == null ? Phrases.PLACEHOLDER : category) + Phrases.DIVIDER +
+                (purpose == null ? Phrases.PLACEHOLDER : purpose) + Phrases.DIVIDER +
+                spending + Phrases.DIVIDER +
+                income + Phrases.DIVIDER +
                 balance;
     }
 
