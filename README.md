@@ -7,4 +7,4 @@ You can also see how much money should be left in the pocket.
 Moreover, you can luck up the incomes and spending to a later point of time.
 
 [comment]: <> (image data)
-[build_money]:  https://github.com/Apfelkuch/Money/tree/master/res/money.png "money"
+[build_money]:  res\money.png "money"
