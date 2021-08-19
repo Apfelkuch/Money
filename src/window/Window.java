@@ -188,7 +188,6 @@ public class Window extends JFrame implements ActionListener {
         content.setPreferredSize(new Dimension(tableDimension.width, (tableDimension.height - 2) * maxContentElements));
         content.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
 
-        // TODO adjust that the scrolling is smoother
         content.addMouseWheelListener(e -> money.moveTopEntry((int) e.getPreciseWheelRotation()));
 
         table.add(content);
