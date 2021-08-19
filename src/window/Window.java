@@ -71,8 +71,8 @@ public class Window extends JFrame implements ActionListener {
     private CustomJButton calcValue;
 
     // improve
-    private final int inputValueMax = Integer.parseInt("1000000000");
-    private final int inputValueMin = Integer.parseInt("-1000000000");
+    private final int inputValueMax = Integer.parseInt("10000");
+    private final int inputValueMin = Integer.parseInt("-1");
 
     private final ArrayList<JComponent> focusElements;
 
