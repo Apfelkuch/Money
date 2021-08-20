@@ -16,13 +16,15 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 public class Window extends JFrame implements ActionListener {
@@ -31,6 +33,8 @@ public class Window extends JFrame implements ActionListener {
     private JMenuBar menuBar;
     private JMenuItem save;
     private JMenuItem exit;
+    private Label path;
+    private JMenuItem deletePaths;
 
     // table
     // TODO JTable
@@ -118,13 +122,37 @@ public class Window extends JFrame implements ActionListener {
 
         // Option
         JMenu options = new JMenu(Phrases.options);
+
         menuBar.add(options);
         save = new JMenuItem(Phrases.save);
         save.addActionListener(this);
         options.add(save);
+
         exit = new JMenuItem(Phrases.exit);
         exit.addActionListener(this);
         options.add(exit);
+
+        deletePaths = new JMenuItem(Phrases.deletePaths);
+        deletePaths.addActionListener(this);
+        options.add(deletePaths);
+
+        path = new Label(money.getPath());
+        path.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
+                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int returnVal = fileChooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    String selectedFilePath = selectedFile.getPath();
+                    money.setPath(selectedFilePath);
+                    path.setText(selectedFilePath);
+                }
+            }
+        });
+        options.add(path);
 
     }
 
@@ -626,6 +654,8 @@ public class Window extends JFrame implements ActionListener {
             if (money.save()) {
                 System.exit(1);
             }
+        } else if (e.getSource() == deletePaths) {
+            money.clearPaths();
         }
     }
 

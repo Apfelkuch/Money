@@ -6,14 +6,22 @@ import Phrases.Phrases;
 import utilitis.Options;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Load {
 
     // improve for better loading because the amount of data can grow infinitely
     public static boolean load(Money money, String path, int maxContentElements) {
         try {
+            File file = new File(path);
+            if (!file.exists()) {
+                System.out.println("No file found");
+                return false;
+            }
+
             FileReader fileReader = new FileReader(path);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -30,7 +38,6 @@ public class Load {
             String controlValue = content.substring(0, Phrases.CONTROL_VALUE.length());
             if (!controlValue.equals(Phrases.CONTROL_VALUE)) {
                 throw new IllegalArgumentException("Save path does not contain the control value");
-//                return false;
             }
 
 
@@ -38,7 +45,8 @@ public class Load {
             String[] entries = content.substring(Phrases.CONTROL_VALUE.length()).split(Character.toString(160) + Character.toString(160));
 
             for (String stringEntry : entries) {
-                Load.LoadEntry(stringEntry, money);
+                if (!stringEntry.isBlank())
+                    Load.LoadEntry(stringEntry, money);
             }
 
             // load the last entries on the table
@@ -95,8 +103,38 @@ public class Load {
         money.addToPreListPurpose(purpose);
     }
 
+    public static ArrayList<String> loadPaths(String path) {
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                System.out.println("No file found");
+                return new ArrayList<>();
+            }
+
+            FileReader fileReader = new FileReader(path);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            // read control value
+            String controlValue = bufferedReader.readLine();
+            if (!controlValue.equals(Phrases.CONTROL_VALUE)) {
+                throw new IllegalArgumentException("Save path does not contain the control value");
+            }
+
+            ArrayList<String> paths = new ArrayList<>();
+            while (true) {
+                String s = bufferedReader.readLine();
+                if (s == null) break;
+                paths.add(s);
+            }
+            return paths;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
 //    public static void main(String[] args) {
-//        Load.load("D:\\Git\\intelliJ\\Money\\Money\\save.txt", 1000, null, 6);
+//        Load.load("D:\\Git\\intelliJ\\Money\\Money\\save.money", 1000, null, 6);
 //    }
 //
 //    public static boolean load(String path, int buffer, Money money, int maxContentElements) {
