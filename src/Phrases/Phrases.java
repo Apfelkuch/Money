@@ -65,6 +65,11 @@ public class Phrases {
     public static final String searchFile = "Suche ein File";
     public static final String deletePaths = "Lösche alle Dateivorschläge";
 
+    public static final String deleteEntry = "Eintrag löschen";
+    public static final String deleteEntryMessage = "Bestätige den Eintrag zu löschen.\nNummer: ";
+    public static Color EXTRA_WINDOW_FOREGROUND = Color.BLACK;
+    public static Color EXTRA_WINDOW_BACKGROUND = Color.LIGHT_GRAY;
+
 
     public static final int LIST_JUMP_VALUE = 8;
 

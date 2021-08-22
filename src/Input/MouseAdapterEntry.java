@@ -36,6 +36,7 @@ public class MouseAdapterEntry extends MouseAdapter {
             window.showEntry(entry);
             window.edit(entry);
         } else if (e.getButton() == MouseEvent.BUTTON3) {
+//            int result = ExtraWindow.confirmDialog(window, Phrases.deleteEntry, Phrases.deleteEntryMessage + entry.getNumber(), Phrases.inputFont, Phrases.EXTRA_WINDOW_BACKGROUND, Phrases.EXTRA_WINDOW_FOREGROUND);
             int result = JOptionPane.showConfirmDialog(window, "Will you delete Entry: " + entry.getNumber());
             if (result == JOptionPane.YES_OPTION) {
                 money.updateNumbers(entry);
