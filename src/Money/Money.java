@@ -258,11 +258,29 @@ public class Money {
         }
     }
 
-    public void updateNumbers(Entry entry) {
+    public void updateAfterEntryDelete(Entry entry) {
         int current = entries.indexOf(entry);
+        boolean updateBalance = false;
+
         for (int i = current; i < entries.size(); i++) {
+            // update the following entry numbers
             entries.get(i).updateNumber(entries.get(i).getNumber() - 1);
+
+            // update the following entry balances
+            if (updateBalance){
+                entries.get(i).updateBalance(entries.get(i - 1).getBalance());
+            }
+            if (i == current + 1) {
+                entries.get(i).updateBalance(entries.get(i - 2).getBalance());
+                updateBalance = true;
+            }
         }
+
+        // remove the entry
+        entries.remove(entry);
+
+        // update the GUI
+        updateAllEntries();
     }
 
     public void addToPreListReceiverBy(String content) {
