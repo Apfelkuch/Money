@@ -66,7 +66,7 @@ public class Phrases {
     public static final String deletePaths = "Lösche alle Dateivorschläge";
 
     public static final String deleteEntry = "Eintrag löschen";
-    public static final String deleteEntryMessage = "Bestätige den Eintrag zu löschen.\nNummer: ";
+    public static final String deleteEntryMessage = "Lösche Eintrag: ";
     public static Color EXTRA_WINDOW_FOREGROUND = Color.BLACK;
     public static Color EXTRA_WINDOW_BACKGROUND = Color.LIGHT_GRAY;
 
