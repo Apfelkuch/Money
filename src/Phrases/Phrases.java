@@ -70,6 +70,10 @@ public class Phrases {
     public static Color EXTRA_WINDOW_FOREGROUND = Color.BLACK;
     public static Color EXTRA_WINDOW_BACKGROUND = Color.LIGHT_GRAY;
 
+    public static String valueOutOfBounce = "Die Eingabe ist zu groß";
+    public static String invalidInput = "Falsche Eingabe";
+    public static String invalidInputChar = "Verbotene Zeichen verwendet.";
+
 
     public static final int LIST_JUMP_VALUE = 8;
 

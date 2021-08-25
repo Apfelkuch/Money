@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -437,6 +439,7 @@ public class Window extends JFrame implements ActionListener {
                     newContent = newContent.substring(0, euroSymbol);
                 }
                 if (newContent.indexOf(".") != newContent.lastIndexOf(".")) { // if the input have more than one dot the verification fails
+                    showPopup(inputValue.getLocationOnScreen().x,inputValue.getLocationOnScreen().y + inputValue.getHeight(),Phrases.invalidInput);
                     tc.selectAll();
                     return false;
                 }
@@ -450,6 +453,7 @@ public class Window extends JFrame implements ActionListener {
                         }
                     }
                     if (!result) { // if a char is invalid the verification fails
+                        showPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInputChar);
                         tc.selectAll();
                         return false;
                     }
@@ -467,6 +471,7 @@ public class Window extends JFrame implements ActionListener {
                         throw new NumberFormatException();
                     }
                 } catch (NullPointerException | NumberFormatException e) {
+                    showPopup(inputValue.getLocationOnScreen().x,inputValue.getLocationOnScreen().y + inputValue.getHeight(),Phrases.valueOutOfBounce);
                     tc.selectAll();
                     return false;
                 }
@@ -494,6 +499,20 @@ public class Window extends JFrame implements ActionListener {
         p5.add(calcValue);
         inputRight.add(p5);
 
+    }
+
+    private void showPopup(int x, int y, String message) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(new JLabel(message));
+        popupMenu.setLocation(x, y);
+        popupMenu.setVisible(true);
+        java.util.Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                popupMenu.setVisible(false);
+            }
+        }, 2000);
     }
 
     public void focusNext() {
