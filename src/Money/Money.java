@@ -5,6 +5,7 @@ import Storage.Save;
 import Storage.Load;
 import utilitis.Options;
 import utilitis.StringInteger;
+import window.ChoseFile;
 import window.Window;
 import window.startingWindow;
 
@@ -14,20 +15,31 @@ import java.util.Arrays;
 
 public class Money {
 
-    private final Window window;
+    private Window window;
 
-    private final ArrayList<Entry> entries;
+    private final ArrayList<Entry> entries = new ArrayList<>();
     private int currentEntry;
     private int topEntry = 0;
 
-    private final ArrayList<String> list_receiverBy;
-    private final ArrayList<StringInteger> pre_list_receiverBy;
-    private final ArrayList<String> list_categories;
-    private final ArrayList<StringInteger> pre_list_categories;
-    private final ArrayList<String> list_purpose;
-    private final ArrayList<StringInteger> pre_list_purpose;
+    private final ArrayList<String> list_receiverBy = new ArrayList<>();
+    private final ArrayList<StringInteger> pre_list_receiverBy = new ArrayList<>();
+    private final ArrayList<String> list_categories = new ArrayList<>();
+    private final ArrayList<StringInteger> pre_list_categories = new ArrayList<>();
+    private final ArrayList<String> list_purpose = new ArrayList<>();
+    private final ArrayList<StringInteger> pre_list_purpose = new ArrayList<>();
+
+    private String path;
+    private ArrayList<String> paths;
 
     public Money() {
+
+        paths = Load.loadPaths(Phrases.PATH + "//" + Phrases.FILE_PATHS);
+
+        path = ChoseFile.inputDialog(null, Phrases.choseFile, paths.toArray(new String[0]));
+
+        if (path == null) {
+            return;
+        }
 
         startingWindow startingWindow = new startingWindow();
 
@@ -35,23 +47,13 @@ public class Money {
 
         window = new Window("Money", this);
 
-        pre_list_receiverBy = new ArrayList<>();
-        pre_list_categories = new ArrayList<>();
-        pre_list_purpose = new ArrayList<>();
-
         // loading
 
-        entries = new ArrayList<>();
-        list_receiverBy = new ArrayList<>();
-        list_categories = new ArrayList<>();
-        list_purpose = new ArrayList<>();
-
-        boolean loading = Load.load(this, Phrases.PATH, window.getMaxContentElements());
+        boolean loading = Load.load(this, path + "\\" + Phrases.FILENAME, window.getMaxContentElements());
         if (loading) {
             System.out.println("Money.Money >> Entries loaded");
         } else {
             System.out.println("Money.Money >> No Entries loaded");
-            System.exit(1);
         }
 
 //        // testing entries
@@ -214,10 +216,17 @@ public class Money {
     }
 
     public boolean save() {
-        return Save.save(this, Phrases.PATH);
+        if (!paths.contains(path)) {
+            paths.add(path);
+        }
+        Save.saveFiles(Phrases.PATH + "//" + Phrases.FILE_PATHS, paths.toArray(new String[0]));
+        return Save.save(this, path + "//" + Phrases.FILENAME);
     }
 
     public void moveTopEntry(int amount) {
+        if (amount == 0) {
+            return;
+        }
         int oldTopEntry = topEntry;
         topEntry += amount; // move the topEntry with the amount
 
@@ -249,11 +258,29 @@ public class Money {
         }
     }
 
-    public void updateNumbers(Entry entry) {
+    public void updateAfterEntryDelete(Entry entry) {
         int current = entries.indexOf(entry);
+        boolean updateBalance = false;
+
         for (int i = current; i < entries.size(); i++) {
+            // update the following entry numbers
             entries.get(i).updateNumber(entries.get(i).getNumber() - 1);
+
+            // update the following entry balances
+            if (updateBalance){
+                entries.get(i).updateBalance(entries.get(i - 1).getBalance());
+            }
+            if (i == current + 1) {
+                entries.get(i).updateBalance(entries.get(i - 2).getBalance());
+                updateBalance = true;
+            }
         }
+
+        // remove the entry
+        entries.remove(entry);
+
+        // update the GUI
+        updateAllEntries();
     }
 
     public void addToPreListReceiverBy(String content) {
@@ -337,6 +364,10 @@ public class Money {
         }
     }
 
+    public void clearPaths() {
+        paths.clear();
+    }
+
     // GETTER && SETTER
 
     public ArrayList<Entry> getEntries() {
@@ -355,5 +386,12 @@ public class Money {
         return list_purpose;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 }
 

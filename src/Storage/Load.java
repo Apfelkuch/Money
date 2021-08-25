@@ -6,14 +6,22 @@ import Phrases.Phrases;
 import utilitis.Options;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Load {
 
     // improve for better loading because the amount of data can grow infinitely
     public static boolean load(Money money, String path, int maxContentElements) {
         try {
+            File file = new File(path);
+            if (!file.exists()) {
+                System.out.println("No file found");
+                return false;
+            }
+
             FileReader fileReader = new FileReader(path);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -30,7 +38,6 @@ public class Load {
             String controlValue = content.substring(0, Phrases.CONTROL_VALUE.length());
             if (!controlValue.equals(Phrases.CONTROL_VALUE)) {
                 throw new IllegalArgumentException("Save path does not contain the control value");
-//                return false;
             }
 
 
@@ -38,7 +45,8 @@ public class Load {
             String[] entries = content.substring(Phrases.CONTROL_VALUE.length()).split(Character.toString(160) + Character.toString(160));
 
             for (String stringEntry : entries) {
-                Load.LoadEntry(stringEntry, money);
+                if (!stringEntry.isBlank())
+                    Load.LoadEntry(stringEntry, money);
             }
 
             // load the last entries on the table
@@ -70,9 +78,6 @@ public class Load {
         } else {
             option = Options.SPENDING;
         }
-//        System.out.println("Load.LoadEntry >> ev[3].hashCode(): " + ev[3].hashCode());
-//        System.out.println("Load.LoadEntry >> ev[4].hashCode(): " + ev[4].hashCode());
-//        System.out.println("Load.LoadEntry >> ev[5].hashCode(): " + ev[5].hashCode());
         String receiveBy = ev[3].equals(Character.toString(177)) ? "" : ev[3];
         String category = ev[4].equals(Character.toString(177)) ? "" : ev[4];
         String purpose = ev[5].equals(Character.toString(177)) ? "" : ev[5];
@@ -95,61 +100,40 @@ public class Load {
         money.addToPreListPurpose(purpose);
     }
 
-//    public static void main(String[] args) {
-//        Load.load("D:\\Git\\intelliJ\\Money\\Money\\save.txt", 1000, null, 6);
-//    }
-//
-//    public static boolean load(String path, int buffer, Money money, int maxContentElements) {
-//        try {
-//            FileReader fileReader = new FileReader(path);
-//            BufferedReader bufferedReader = new BufferedReader(fileReader);
-//            ArrayList<Character> chars = new ArrayList<>();
-//            boolean control = false;
-//            while (true) {
-//                int a = bufferedReader.read();
-//                if (a == -1) { // jump in if the file is completely read and processed
-//                    // load the last entries on the table
-////                    int size = money.getEntries().size();
-////                    int pos = size - maxContentElements;
-////                    if (pos < 0) {
-////                        pos = 0;
-////                    }
-////                    money.moveTopEntry(pos);
-//                    fileReader.close();
-//                    bufferedReader.close();
-//                    return true;
-//                }
-//                chars.add(Character.toChars(a)[0]);
-//                if (chars.size() >= buffer) {
-//                    // work with the text
-//                    StringBuilder s = new StringBuilder();
-//                    for (char c : chars) {
-//                        s.append(c);
-//                    }
-//                    if (!control) {
-//                        // read control value
-//                        System.out.println(s);
-//                        String controlValue = s.substring(0, Phrases.CONTROL_VALUE.length());
-//                        for (Character c : controlValue.toCharArray()) {
-//                            System.out.println(c.hashCode());
-//                        }
-//                        if (!controlValue.equals(Phrases.CONTROL_VALUE)) {
-//                            throw new IllegalArgumentException("Save path does not contain the control value");
-//                        }
-//                        control = true;
-////                        for (int i = 0; i < controlValue.length(); i++) {
-////                            chars.remove(0);
-////                        }
-//                        chars.subList(0, Phrases.CONTROL_VALUE.length()).clear();
-//                        continue;
-//                    }
-//                    System.out.print(s.toString());
-//                    chars.clear();
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
+    /**
+     * Loads the paths of possible save locations into the program.
+     *
+     * @param path The path where the paths are saved.
+     * @return A Array List with Strings which contains all paths.
+     */
+    public static ArrayList<String> loadPaths(String path) {
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                System.out.println("No file found");
+                return new ArrayList<>();
+            }
+
+            FileReader fileReader = new FileReader(path);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            // read control value
+            String controlValue = bufferedReader.readLine();
+            if (!controlValue.equals(Phrases.CONTROL_VALUE)) {
+                throw new IllegalArgumentException("Save path does not contain the control value");
+            }
+
+            ArrayList<String> paths = new ArrayList<>();
+            while (true) {
+                String s = bufferedReader.readLine();
+                if (s == null) break;
+                paths.add(s);
+            }
+            return paths;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
 }

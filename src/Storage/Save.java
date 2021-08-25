@@ -50,4 +50,30 @@ public class Save {
         return false;
     }
 
+    public static boolean saveFiles(String path, String[] paths) {
+        try {
+            File file = new File(path);
+            if (!file.getParentFile().isDirectory()) {
+                if (!file.getParentFile().mkdirs()) {
+                    throw new IllegalArgumentException("Path directory is not be created");
+                }
+            }
+            file.createNewFile();
+
+            // print to paths to the file
+            PrintWriter printWriter = new PrintWriter(file);
+            printWriter.println(Phrases.CONTROL_VALUE);
+            for (String s : paths) {
+                printWriter.println(s);
+            }
+
+            printWriter.flush();
+            printWriter.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
