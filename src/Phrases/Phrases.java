@@ -52,6 +52,8 @@ public class Phrases {
 
     // input
     public static String moneySymbol = "€";
+    public static final int inputValueMax = Integer.parseInt("10000");
+    public static final int inputValueMin = Integer.parseInt("-1");
 
     // save and load
     public static final char DIVIDER = (char) 160;

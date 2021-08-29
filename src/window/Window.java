@@ -39,7 +39,6 @@ public class Window extends JFrame implements ActionListener {
     private JMenuItem deletePaths;
 
     // table
-    // TODO JTable
     private JLabel controlsReceiver_by;
     private JPanel content;
     private final int maxContentElements = 7;
@@ -58,7 +57,6 @@ public class Window extends JFrame implements ActionListener {
 
     // controls
     private JPanel input;
-    // TODO JTabbedPane
     private CustomJButton spending;
     private CustomJButton income;
     private boolean isSpending = true;
@@ -76,9 +74,6 @@ public class Window extends JFrame implements ActionListener {
     private JFormattedTextField inputValue;
     private CustomJButton calcValue;
 
-    // improve
-    private final int inputValueMax = Integer.parseInt("10000");
-    private final int inputValueMin = Integer.parseInt("-1");
 
     private final ArrayList<JComponent> focusElements;
 
@@ -465,8 +460,7 @@ public class Window extends JFrame implements ActionListener {
                 double d;
                 try {
                     d = Double.parseDouble(newContent);
-                    if (d > inputValueMax || d < inputValueMin) {
-                        // improve maybe show it to the user if this is the cause
+                    if (d > Phrases.inputValueMax || d < Phrases.inputValueMin) {
                         System.out.println("\033[1;31m" + "[Error] Window.inputValue.Verifier: value is out of bounds" + "\033[0m");
                         throw new NumberFormatException();
                     }
@@ -517,9 +511,7 @@ public class Window extends JFrame implements ActionListener {
 
     public void focusNext() {
         Component component = getFocusOwner();
-//        System.out.println("Window.focusNext >> component: " + component.getParent());
         int pos = focusElements.indexOf(component.getParent());
-//        System.out.println("Window.focusNext >> pos: " + pos);
         focusElements.get(pos + 1).requestFocus();
     }
 
