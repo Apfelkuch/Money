@@ -52,6 +52,8 @@ public class Phrases {
 
     // input
     public static String moneySymbol = "€";
+    public static final int inputValueMax = Integer.parseInt("10000");
+    public static final int inputValueMin = Integer.parseInt("-1");
 
     // save and load
     public static final char DIVIDER = (char) 160;
@@ -66,9 +68,13 @@ public class Phrases {
     public static final String deletePaths = "Lösche alle Dateivorschläge";
 
     public static final String deleteEntry = "Eintrag löschen";
-    public static final String deleteEntryMessage = "Bestätige den Eintrag zu löschen.\nNummer: ";
+    public static final String deleteEntryMessage = "Lösche Eintrag: ";
     public static Color EXTRA_WINDOW_FOREGROUND = Color.BLACK;
     public static Color EXTRA_WINDOW_BACKGROUND = Color.LIGHT_GRAY;
+
+    public static String valueOutOfBounce = "Die Eingabe ist zu groß";
+    public static String invalidInput = "Falsche Eingabe";
+    public static String invalidInputChar = "Verbotene Zeichen verwendet.";
 
 
     public static final int LIST_JUMP_VALUE = 8;

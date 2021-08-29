@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -37,7 +39,6 @@ public class Window extends JFrame implements ActionListener {
     private JMenuItem deletePaths;
 
     // table
-    // TODO JTable
     private JLabel controlsReceiver_by;
     private JPanel content;
     private final int maxContentElements = 7;
@@ -56,7 +57,6 @@ public class Window extends JFrame implements ActionListener {
 
     // controls
     private JPanel input;
-    // TODO JTabbedPane
     private CustomJButton spending;
     private CustomJButton income;
     private boolean isSpending = true;
@@ -74,9 +74,6 @@ public class Window extends JFrame implements ActionListener {
     private JFormattedTextField inputValue;
     private CustomJButton calcValue;
 
-    // improve
-    private final int inputValueMax = Integer.parseInt("10000");
-    private final int inputValueMin = Integer.parseInt("-1");
 
     private final ArrayList<JComponent> focusElements;
 
@@ -437,6 +434,7 @@ public class Window extends JFrame implements ActionListener {
                     newContent = newContent.substring(0, euroSymbol);
                 }
                 if (newContent.indexOf(".") != newContent.lastIndexOf(".")) { // if the input have more than one dot the verification fails
+                    showPopup(inputValue.getLocationOnScreen().x,inputValue.getLocationOnScreen().y + inputValue.getHeight(),Phrases.invalidInput);
                     tc.selectAll();
                     return false;
                 }
@@ -450,6 +448,7 @@ public class Window extends JFrame implements ActionListener {
                         }
                     }
                     if (!result) { // if a char is invalid the verification fails
+                        showPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInputChar);
                         tc.selectAll();
                         return false;
                     }
@@ -461,12 +460,12 @@ public class Window extends JFrame implements ActionListener {
                 double d;
                 try {
                     d = Double.parseDouble(newContent);
-                    if (d > inputValueMax || d < inputValueMin) {
-                        // improve maybe show it to the user if this is the cause
+                    if (d > Phrases.inputValueMax || d < Phrases.inputValueMin) {
                         System.out.println("\033[1;31m" + "[Error] Window.inputValue.Verifier: value is out of bounds" + "\033[0m");
                         throw new NumberFormatException();
                     }
                 } catch (NullPointerException | NumberFormatException e) {
+                    showPopup(inputValue.getLocationOnScreen().x,inputValue.getLocationOnScreen().y + inputValue.getHeight(),Phrases.valueOutOfBounce);
                     tc.selectAll();
                     return false;
                 }
@@ -496,11 +495,23 @@ public class Window extends JFrame implements ActionListener {
 
     }
 
+    private void showPopup(int x, int y, String message) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(new JLabel(message));
+        popupMenu.setLocation(x, y);
+        popupMenu.setVisible(true);
+        java.util.Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                popupMenu.setVisible(false);
+            }
+        }, 2000);
+    }
+
     public void focusNext() {
         Component component = getFocusOwner();
-//        System.out.println("Window.focusNext >> component: " + component.getParent());
         int pos = focusElements.indexOf(component.getParent());
-//        System.out.println("Window.focusNext >> pos: " + pos);
         focusElements.get(pos + 1).requestFocus();
     }
 
