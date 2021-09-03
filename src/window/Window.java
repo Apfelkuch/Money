@@ -14,22 +14,25 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class Window extends JFrame implements ActionListener {
+
+    // layers
+    private JLayeredPane layeredPane;
+    private JPanel mainLayer;
+
+    // overlays
+    JPanel calculator;
+    CustomJButton back;
 
     // menu bar
     private JMenuBar menuBar;
@@ -91,14 +94,44 @@ public class Window extends JFrame implements ActionListener {
         this.setSize(1300, 1100);
         this.setResizable(true);
         this.setLocationRelativeTo(null);
-        this.setLayout(new BorderLayout());
+
+        layeredPane = new JLayeredPane();
+        this.add(layeredPane);
 
         this.money = money;
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+//                    System.out.println("Window.componentResized: functional");
+//                    Dimension size = e.getComponent().getSize();
+//                    mainLayer.setSize(size.width, size.height);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        });
 
         // init
         focusElements = new ArrayList<>();
 
         this.buildMenuBar();
+
+        mainLayer = new JPanel();
+        mainLayer.setLayout(new BorderLayout());
+        mainLayer.setSize(this.getSize());
         this.addTable();
         try {
             this.addControls();
@@ -107,10 +140,31 @@ public class Window extends JFrame implements ActionListener {
             e.printStackTrace();
             System.exit(10);
         }
+        mainLayer.setBackground(Color.CYAN);
+        layeredPane.add(mainLayer, 0);
+
+        initOverlay();
+        layeredPane.add(calculator, 1);
+        layeredPane.add(back,1);
 
         this.revalidate();
         this.repaint();
 
+    }
+
+    public void initOverlay() {
+        // building the calculator
+        calculator = new JPanel();
+        calculator.add(new JLabel("Calculator"));
+        calculator.setBackground(Color.GREEN);
+        calculator.setLayout(new FlowLayout());
+        back = new CustomJButton("Back");
+        back.addActionListener(e -> {
+            layeredPane.setPosition(calculator, -1);
+            layeredPane.setPosition(back,-1);
+            disable(mainLayer, false);
+        });
+        back.setBounds(10,10,100,25);
     }
 
     public void buildMenuBar() {
@@ -162,7 +216,7 @@ public class Window extends JFrame implements ActionListener {
         tableShow.setLayout(new FlowLayout(FlowLayout.CENTER));
         tableShow.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
         tableShow.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + maxContentElements)));
-        this.add(tableShow, BorderLayout.CENTER);
+        mainLayer.add(tableShow, BorderLayout.CENTER);
 
         JPanel table = new JPanel();
         table.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
@@ -237,7 +291,7 @@ public class Window extends JFrame implements ActionListener {
         controls.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         controls.setPreferredSize(new Dimension(tableDimension.width, ((buttonsDimension.height + 10) * 5) + bufferPageEnd));
         controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
-        this.add(controls, BorderLayout.PAGE_END);
+        mainLayer.add(controls, BorderLayout.PAGE_END);
 
         // control Buttons
         JPanel controlButtons = new JPanel();
@@ -434,7 +488,7 @@ public class Window extends JFrame implements ActionListener {
                     newContent = newContent.substring(0, euroSymbol);
                 }
                 if (newContent.indexOf(".") != newContent.lastIndexOf(".")) { // if the input have more than one dot the verification fails
-                    showPopup(inputValue.getLocationOnScreen().x,inputValue.getLocationOnScreen().y + inputValue.getHeight(),Phrases.invalidInput);
+                    showPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInput);
                     tc.selectAll();
                     return false;
                 }
@@ -465,7 +519,7 @@ public class Window extends JFrame implements ActionListener {
                         throw new NumberFormatException();
                     }
                 } catch (NullPointerException | NumberFormatException e) {
-                    showPopup(inputValue.getLocationOnScreen().x,inputValue.getLocationOnScreen().y + inputValue.getHeight(),Phrases.valueOutOfBounce);
+                    showPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.valueOutOfBounce);
                     tc.selectAll();
                     return false;
                 }
@@ -657,6 +711,12 @@ public class Window extends JFrame implements ActionListener {
         } else if (e.getSource() == calcValue) {
             // TODO calcValue
             System.out.println("calc value");
+            this.disable(mainLayer,true);
+            layeredPane.setPosition(mainLayer, -1);
+//            calculator.setVisible(true);
+            calculator.setBounds(calcValue.getLocationOnScreen().x-50, calcValue.getLocationOnScreen().y-100, 100, 125);
+            calculator.revalidate();
+            calculator.repaint();
         } else if (e.getSource() == save) {
 //            System.out.println("JMenuBar save");
             money.save();
@@ -667,6 +727,15 @@ public class Window extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == deletePaths) {
             money.clearPaths();
+        }
+    }
+
+    private void disable(Container panel, boolean disabled) {
+        for (Component c : panel.getComponents()) {
+            if (c instanceof Container) {
+                disable((Container) c, disabled);
+            }
+            c.setEnabled(!disabled);
         }
     }
 
