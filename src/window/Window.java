@@ -34,12 +34,14 @@ public class Window extends JFrame implements ActionListener {
     // overlays
     private miniCalculator miniCalculator;
     private choseDate choseDate;
+    private Settings settings;
 
     // menu bar
     private JMenuItem save;
     private JMenuItem exit;
     private JMenuItem path;
     private JMenuItem deletePaths;
+    private JMenuItem menuItemSettings;
 
     // table
     private JLabel controlsReceiver_by;
@@ -109,6 +111,7 @@ public class Window extends JFrame implements ActionListener {
                 // adjust the position of the windows if the frame is resized
                 if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
                 if (choseDate != null) choseDate.setLocation(choiceDate.getLocationOnScreen());
+                if (settings != null) settings.setLocation(null);
                 // adjust the count of the content elements on the table
                 if (content.getHeight() >= ((maxContentElements + 1) * contentHeight)) {
                     updateMaxContentElements(1);
@@ -126,6 +129,7 @@ public class Window extends JFrame implements ActionListener {
                 // adjust the position of the windows if the frame is moved
                 if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
                 if (choseDate != null) choseDate.setLocation(choiceDate.getLocationOnScreen());
+                if (settings != null) settings.setLocation(null);
             }
         });
 
@@ -208,6 +212,10 @@ public class Window extends JFrame implements ActionListener {
         path = new JMenuItem(money.getPath());
         path.addActionListener(this);
         options.add(path);
+
+        menuItemSettings = new JMenuItem(Phrases.settings);
+        menuItemSettings.addActionListener(this);
+        options.add(menuItemSettings);
 
     }
 
@@ -753,6 +761,8 @@ public class Window extends JFrame implements ActionListener {
                 money.setPath(selectedFilePath);
                 path.setText(selectedFilePath);
             }
+        } else if (e.getSource() == menuItemSettings) {
+            settings = new Settings(null, this);
         }
     }
 
@@ -822,6 +832,10 @@ public class Window extends JFrame implements ActionListener {
 
     public void setMiniCalculator(window.miniCalculator miniCalculator) {
         this.miniCalculator = miniCalculator;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
     private void setMaxContentElements(int maxContentElements) {

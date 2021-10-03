@@ -100,6 +100,16 @@ public class Phrases {
     public static String invalidInput = "Falsche Eingabe";
     public static String invalidInputChar = "Verbotene Zeichen verwendet.";
 
+    // settings
+    public static String settings = "Einstellungen";
+    public static String colorTable = "Hintergrund der Einträge";
+    public static String colorTableHeadRow = "Einträge Kopfzeile";
+    public static String colorSplit = "Trennung von Eingabe und Einträgen";
+    public static String colorControl = "Hintergrund der Eingabe";
+    public static String colorControl1 = "Hintergrund Eingabe 1";
+    public static String colorControl2 = "Hintergrund Eingabe 2";
+    public static String colorControl3 = "Hintergrund Eingabe 3";
+    public static String colorButton = "Knopffarbe";
 
     /**
      * The number of times a receiver, by, category or purpose must be used before it is shown be default in the drop down menu.
