@@ -1,8 +1,8 @@
 package Money;
 
 import Phrases.Phrases;
-import Storage.Save;
 import Storage.Load;
+import Storage.Save;
 import utilitis.Options;
 import utilitis.StringInteger;
 import window.ChoseFile;
@@ -11,7 +11,6 @@ import window.startingWindow;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Money {
 
@@ -20,6 +19,7 @@ public class Money {
     private final ArrayList<Entry> entries = new ArrayList<>();
     private int currentEntry;
     private int topEntry = 0;
+    private int oldTopEntry;
 
     private final ArrayList<String> list_receiverBy = new ArrayList<>();
     private final ArrayList<StringInteger> pre_list_receiverBy = new ArrayList<>();
@@ -29,19 +29,21 @@ public class Money {
     private final ArrayList<StringInteger> pre_list_purpose = new ArrayList<>();
 
     private String path;
-    private ArrayList<String> paths;
+    private final ArrayList<String> paths;
 
     public Money() {
 
         paths = Load.loadPaths(Phrases.PATH + "//" + Phrases.FILE_PATHS);
 
-        path = ChoseFile.inputDialog(null, Phrases.choseFile, paths.toArray(new String[0]));
+        startingWindow startingWindow = new startingWindow();
+
+        path = ChoseFile.inputDialog(startingWindow, Phrases.choseFile, paths.toArray(new String[0]));
 
         if (path == null) {
+            startingWindow.dispose();
             return;
         }
 
-        startingWindow startingWindow = new startingWindow();
 
         new Phrases();
 
@@ -267,7 +269,7 @@ public class Money {
             entries.get(i).updateNumber(entries.get(i).getNumber() - 1);
 
             // update the following entry balances
-            if (updateBalance){
+            if (updateBalance) {
                 entries.get(i).updateBalance(entries.get(i - 1).getBalance());
             }
             if (i == current + 1) {
@@ -366,6 +368,14 @@ public class Money {
 
     public void clearPaths() {
         paths.clear();
+    }
+
+    public void saveOldTopEntry() {
+        this.oldTopEntry = topEntry;
+    }
+
+    public void loadOldTopEntry() {
+        this.topEntry = oldTopEntry;
     }
 
     // GETTER && SETTER
