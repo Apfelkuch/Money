@@ -61,6 +61,9 @@ public class calculator {
                 }
             }
         }
+        if (operators.size() == 0) {
+            return;
+        }
 //        System.out.println("MiniCalculator.calc.operators >> " + Arrays.toString(operators.toArray(new IntChar[0])));
 
         // divide the text in different numbers between the operators
@@ -81,7 +84,7 @@ public class calculator {
 
         // calculate the result
         BigDecimal emptyMarker = new BigDecimal(Phrases.inputValueMin - 1);
-        MathContext mathContext = new MathContext(2, RoundingMode.DOWN);
+        MathContext mathContext = new MathContext(3, RoundingMode.DOWN);
         // calculate multiplication and division from left to right
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).character == '*') { // multiplication
@@ -127,6 +130,7 @@ public class calculator {
         // show the result
         try {
             content = result + "";
+//            System.out.println("calculator.calc >> content: " + content);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -136,7 +140,10 @@ public class calculator {
         if (content.equals("")) {
             return Float.parseFloat("0");
         }
-        return Float.parseFloat(result.toString());
+        if (result != null) {
+            return Float.parseFloat(result.toString());
+        }
+        return Float.parseFloat(content);
     }
 
     private BigDecimal[] trimArray(BigDecimal[] array, BigDecimal emptyMarker) {

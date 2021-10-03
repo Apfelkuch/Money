@@ -105,10 +105,10 @@ public class miniCalculator extends Overlays {
         zero.setPreferredSize(buttonDim);
         zero.addActionListener(e -> textField.setText(textField.getText() + zero.getText()));
         numPad.add(zero, 13);
-        CustomJButton calc = new CustomJButton("=");
-        calc.setPreferredSize(buttonDim);
-        calc.addActionListener(e -> calc());
-        numPad.add(calc, 14);
+        CustomJButton comma = new CustomJButton(",");
+        comma.setPreferredSize(buttonDim);
+        comma.addActionListener(e -> textField.setText(textField.getText() + comma.getText()));
+        numPad.add(comma, 14);
         CustomJButton division = new CustomJButton("/");
         division.setPreferredSize(buttonDim);
         division.addActionListener(e -> textField.setText(textField.getText() + division.getText()));
@@ -123,7 +123,10 @@ public class miniCalculator extends Overlays {
         numPad.add(back, 16);
         CustomJButton use = new CustomJButton("use");
         use.setPreferredSize(new Dimension(2 * buttonDim.width, buttonDim.height));
-        use.addActionListener(e -> use());
+        use.addActionListener(e -> {
+            calc();
+            use();
+        });
         numPad.add(use, 17);
 
         jPanel.add(numPad);
@@ -133,7 +136,7 @@ public class miniCalculator extends Overlays {
     private void calc() {
         if (textField.getText().isBlank())
             return;
-        calculator.setTextField(textField.getText());
+        calculator.setTextField(textField.getText().replaceAll(",", "."));
         calculator.calc();
         textField.setText(calculator.getResult() + "");
         calculated = true;
@@ -146,23 +149,27 @@ public class miniCalculator extends Overlays {
         if (textField.getText().isBlank()) {
             return;
         }
-        super.moneyWindow.setInputValue(String.valueOf(calculator.getResult()).replaceAll("\\.", ",") + "0 " + Phrases.moneySymbol);
+        super.moneyWindow.setInputValue(String.valueOf(calculator.getResult()).replaceAll("\\.", ",") + Phrases.moneySymbol);
         this.dispose();
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+        if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE && textField.getText().length() > 0) {
             textField.setText(textField.getText().substring(0, textField.getText().length() - 1));
-        } else if ( e.getKeyChar() == KeyEvent.VK_DELETE) {
+            calculated = false;
+        } else if (e.getKeyChar() == KeyEvent.VK_DELETE) {
             textField.setText("");
+            calculated = false;
         } else if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
             this.dispose();
             super.moneyWindow.setMiniCalculator(null);
-        } else if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+        } else if (e.getKeyChar() == KeyEvent.VK_ENTER && !calculated) {
             this.calc();
+        } else if (e.getKeyChar() == KeyEvent.VK_ENTER && calculated) {
             this.use();
-        } else if (!Character.isAlphabetic(e.getKeyChar())) {
+        } else if (!Character.isAlphabetic(e.getKeyChar()) && !(e.getKeyChar() == KeyEvent.VK_BACK_SPACE)) {
+            calculated = false;
             for (Character c : calculator.validChars) {
                 if (e.getKeyCode() == c.hashCode()) {
                     return;
