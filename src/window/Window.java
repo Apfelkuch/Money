@@ -21,48 +21,52 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class Window extends JFrame implements ActionListener {
 
     // layers
-    private JLayeredPane layeredPane;
-    private JPanel mainLayer;
+    private final JPanel mainLayer;
 
     // overlays
-    JPanel calculator;
-    CustomJButton back;
+    private miniCalculator miniCalculator;
+    private choseDate choseDate;
 
     // menu bar
-    private JMenuBar menuBar;
     private JMenuItem save;
     private JMenuItem exit;
-    private Label path;
+    private JMenuItem path;
     private JMenuItem deletePaths;
 
     // table
     private JLabel controlsReceiver_by;
     private JPanel content;
-    private final int maxContentElements = 7;
+    private final int contentHeight = 50;
+    private int maxContentElements = 4;
+    private int oldMaxContentElements;
 
     // dimensions
-    private Dimension tableDimension;
+    private final Dimension maxInputDim = new Dimension(900, 0);
     // dimensions control
-    private final int bufferPageEnd = 40;
-    private final Dimension buttonsDimension = new Dimension(120, 20);
-    private final Dimension inputDimensionBig = new Dimension(400, 20);
+    private final Dimension buttonsDimension = new Dimension(100, 25);
+    private final Dimension inputDimensionBig = new Dimension(200, 20);
     private final Dimension inputDimensionSmall = new Dimension(100, 20);
-    private final Dimension textDimensionBig = new Dimension(100, 20);
+    private final Dimension textDimensionBig = new Dimension(80, 20);
     private final Dimension textDimensionSmall = new Dimension(50, 20);
-    private final Dimension extraButton = new Dimension(20, 20);
+    public static final Dimension extraButton = new Dimension(20, 20);
 
 
     // controls
-    private JPanel input;
+    private JPanel controlPanel;
+    private JPanel controls;
+    private int oldControlsWidth;
+
     private CustomJButton spending;
     private CustomJButton income;
-    private boolean isSpending = true;
+    private boolean isSpending;
 
     private CustomJButton neu;
     private CustomJButton edit;
@@ -90,86 +94,100 @@ public class Window extends JFrame implements ActionListener {
     public Window(String title, Money money) {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle(title);
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.setSize(1300, 1100);
+        // start the window Maximized
+//        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setSize(600,470);
+        this.setMinimumSize(this.getSize());
         this.setResizable(true);
         this.setLocationRelativeTo(null);
-
-        layeredPane = new JLayeredPane();
-        this.add(layeredPane);
 
         this.money = money;
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-//                    System.out.println("Window.componentResized: functional");
-//                    Dimension size = e.getComponent().getSize();
-//                    mainLayer.setSize(size.width, size.height);
+                // adjust the position of the windows if the frame is resized
+                if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
+                if (choseDate != null) choseDate.setLocation(choiceDate.getLocationOnScreen());
+                // adjust the count of the content elements on the table
+                if (content.getHeight() >= ((maxContentElements + 1) * contentHeight)) {
+                    updateMaxContentElements(1);
+                }
+                if (content.getHeight() < (maxContentElements * contentHeight)) {
+                    updateMaxContentElements(-1);
+                }
+                // adjust the input control size
+                controls.setSize(new Dimension(Math.min(controlPanel.getWidth(), maxInputDim.width), controls.getHeight()));
+                controls.setPreferredSize(controls.getSize());
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-
+                // adjust the position of the windows if the frame is moved
+                if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
+                if (choseDate != null) choseDate.setLocation(choiceDate.getLocationOnScreen());
             }
+        });
 
+        this.addWindowStateListener(new WindowStateListener() {
             @Override
-            public void componentShown(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-
+            public void windowStateChanged(WindowEvent e) {
+                if (e.getOldState() == Frame.NORMAL) { // leave from normal: save the old maxContentElements and controlsPanel width. And adjust the values.
+//                    System.out.println("windowStateListener >> oldState = normal");
+                    oldMaxContentElements = maxContentElements;
+                    money.saveOldTopEntry();
+                    oldControlsWidth = controls.getWidth();
+                    revalidate();
+                    setMaxContentElements(content.getHeight() / contentHeight);
+                    controls.setSize(new Dimension(Math.min(controlPanel.getWidth(), maxInputDim.width), controls.getHeight()));
+                    controls.setPreferredSize(controls.getSize());
+                }
+                if (e.getNewState() == Frame.NORMAL) { // return to normal: set the maxContentElements and controlsPanel width to the saved one.
+//                    System.out.println("windowStateListener >> newState = normal");
+                    // adjust the maxContentElements
+                    money.loadOldTopEntry();
+                    setMaxContentElements(oldMaxContentElements);
+                    controls.setSize(new Dimension(oldControlsWidth, controls.getHeight()));
+                    controls.setPreferredSize(controls.getSize());
+                }
+                revalidate();
+                repaint();
             }
         });
 
         // init
         focusElements = new ArrayList<>();
 
-        this.buildMenuBar();
-
         mainLayer = new JPanel();
         mainLayer.setLayout(new BorderLayout());
-        mainLayer.setSize(this.getSize());
+        this.buildMenuBar();
         this.addTable();
         try {
             this.addControls();
+            this.isSpending = false;
             this.changeToSpending();
         } catch (ParseException e) {
             e.printStackTrace();
             System.exit(10);
         }
-        mainLayer.setBackground(Color.CYAN);
-        layeredPane.add(mainLayer, 0);
+        mainLayer.setBackground(Phrases.MAIN_LAYER_BACKGROUND);
+        this.setContentPane(mainLayer);
 
-        initOverlay();
-        layeredPane.add(calculator, 1);
-        layeredPane.add(back,1);
 
         this.revalidate();
         this.repaint();
 
     }
 
-    public void initOverlay() {
-        // building the calculator
-        calculator = new JPanel();
-        calculator.add(new JLabel("Calculator"));
-        calculator.setBackground(Color.GREEN);
-        calculator.setLayout(new FlowLayout());
-        back = new CustomJButton("Back");
-        back.addActionListener(e -> {
-            layeredPane.setPosition(calculator, -1);
-            layeredPane.setPosition(back,-1);
-            disable(mainLayer, false);
-        });
-        back.setBounds(10,10,100,25);
+    private void updateMaxContentElements(int amount) {
+        maxContentElements += amount;
+        content.setLayout(new GridLayout(maxContentElements, 1));
+        money.updateAllEntries();
     }
 
     public void buildMenuBar() {
-        menuBar = new JMenuBar();
-        this.setJMenuBar(menuBar);
+        JMenuBar menuBar = new JMenuBar();
+        mainLayer.add(menuBar, BorderLayout.NORTH);
 
         // Option
         JMenu options = new JMenu(Phrases.options);
@@ -187,48 +205,23 @@ public class Window extends JFrame implements ActionListener {
         deletePaths.addActionListener(this);
         options.add(deletePaths);
 
-        path = new Label(money.getPath());
-        path.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
-                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int returnVal = fileChooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    String selectedFilePath = selectedFile.getPath();
-                    money.setPath(selectedFilePath);
-                    path.setText(selectedFilePath);
-                }
-            }
-        });
+        path = new JMenuItem(money.getPath());
+        path.addActionListener(this);
         options.add(path);
 
     }
 
     private void addTable() {
-        // TODO improvement the layout of the segments of the table
-        int maxWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        tableDimension = new Dimension((int) (maxWidth * (2f / 3f)), 100);
-
-        JPanel tableShow = new JPanel();
-        tableShow.setLayout(new FlowLayout(FlowLayout.CENTER));
-        tableShow.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
-        tableShow.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + maxContentElements)));
-        mainLayer.add(tableShow, BorderLayout.CENTER);
-
         JPanel table = new JPanel();
+        table.setLayout(new BorderLayout());
         table.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
-        table.setPreferredSize(new Dimension(tableDimension.width, tableDimension.height * (1 + maxContentElements)));
-        tableShow.add(table);
+        mainLayer.add(table, BorderLayout.CENTER);
 
         // table head row
         JPanel headRow = new JPanel();
         headRow.setLayout(new GridLayout(1, 6));
-        headRow.setPreferredSize(tableDimension);
-        headRow.setBackground(Phrases.COLOR_HEAD_ROW);
-        table.add(headRow);
+        headRow.setBackground(Phrases.COLOR_TABLE_HEAD_ROW);
+        table.add(headRow, BorderLayout.NORTH);
 
         JLabel tableNumber = new JLabel(Phrases.number);
         tableNumber.setFont(Phrases.showFontBold);
@@ -264,12 +257,16 @@ public class Window extends JFrame implements ActionListener {
         // table content
         content = new JPanel();
         content.setLayout(new GridLayout(maxContentElements, 1));
-        content.setPreferredSize(new Dimension(tableDimension.width, (tableDimension.height - 2) * maxContentElements));
         content.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
 
         content.addMouseWheelListener(e -> money.moveTopEntry((int) e.getPreciseWheelRotation()));
 
-        table.add(content);
+        table.add(content, BorderLayout.CENTER);
+
+        // split
+        JPanel split = new JPanel();
+        split.setBackground(Phrases.COLOR_TABLE_SPLIT);
+        table.add(split, BorderLayout.SOUTH);
     }
 
     public void addContentToTable(Entry entry) {
@@ -287,17 +284,20 @@ public class Window extends JFrame implements ActionListener {
     }
 
     private void addControls() throws ParseException {
-        JPanel controls = new JPanel();
-        controls.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        controls.setPreferredSize(new Dimension(tableDimension.width, ((buttonsDimension.height + 10) * 5) + bufferPageEnd));
+        controls = new JPanel();
+        controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
         controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
-        mainLayer.add(controls, BorderLayout.PAGE_END);
+
+        controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        controlPanel.setBackground(Phrases.COLOR_CONTROL_PANEL_BACKGROUND);
+        controlPanel.add(controls);
+        mainLayer.add(controlPanel, BorderLayout.SOUTH);
+
 
         // control Buttons
         JPanel controlButtons = new JPanel();
-        controlButtons.setBackground(Phrases.COLOR_CONTROLS);
-        controlButtons.setLayout(new FlowLayout(FlowLayout.LEFT));
-        controlButtons.setPreferredSize(new Dimension(controls.getPreferredSize().width, buttonsDimension.height + 10));
+        controlButtons.setBackground(Phrases.COLOR_CONTROL_1);
+        controlButtons.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtons);
 
         spending = new CustomJButton(Phrases.tableSpending);
@@ -316,9 +316,8 @@ public class Window extends JFrame implements ActionListener {
 
         // control Buttons I
         JPanel controlButtonsI = new JPanel();
-        controlButtonsI.setBackground(Phrases.COLOR_CONTROLS_INPUT);
-        controlButtonsI.setLayout(new FlowLayout(FlowLayout.LEFT));
-        controlButtonsI.setPreferredSize(controlButtons.getPreferredSize());
+        controlButtonsI.setBackground(Phrases.COLOR_CONTROL_2);
+        controlButtonsI.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtonsI);
 
         neu = new CustomJButton(Phrases.neu);
@@ -350,78 +349,73 @@ public class Window extends JFrame implements ActionListener {
         controlButtonsI.add(cancel);
 
         // input
-        input = new JPanel();
-        input.setLayout(new GridLayout(1, 2));
-        input.setPreferredSize(new Dimension(controls.getPreferredSize().width, (buttonsDimension.height + 10) * 3));
+        JPanel input = new JPanel();
+        input.setLayout(new GridLayout(3, 2));
+        input.setMaximumSize(maxInputDim);
         input.setBackground(controlButtonsI.getBackground());
+        input.setBackground(Phrases.COLOR_CONTROL_3);
         controls.add(input);
 
-        JPanel inputLeft = new JPanel();
-        inputLeft.setLayout(new GridLayout(3, 1));
-        input.add(inputLeft);
-
-        JPanel p1 = new JPanel();
-        p1.setLayout(new FlowLayout(FlowLayout.LEFT));
+        // receiverBy
+        JPanel jPanelReceiverBy = new JPanel();
+        jPanelReceiverBy.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jPanelReceiverBy.setOpaque(false);
         controlsReceiver_by = new JLabel("");
         controlsReceiver_by.setPreferredSize(textDimensionBig);
         controlsReceiver_by.setFont(Phrases.inputFont);
-        p1.add(controlsReceiver_by);
-        inputReceiver_by = new CustomJComboBox<>(new String[0]);
+        jPanelReceiverBy.add(controlsReceiver_by);
+        inputReceiver_by = new CustomJComboBox<>(new String[0], this);
         inputReceiver_by.setFont(Phrases.inputFont);
         inputReceiver_by.setPreferredSize(inputDimensionBig);
         inputReceiver_by.setEditable(true);
         inputReceiver_by.setSelectedItem(null);
         inputReceiver_by.addActionListener(this);
         inputReceiver_by.addKeyListener(new KeyAdapterInput(this));
-        inputReceiver_by.setWindow(this);
         focusElements.add(inputReceiver_by);
-        p1.add(inputReceiver_by);
-        inputLeft.add(p1);
+        jPanelReceiverBy.add(inputReceiver_by);
 
-        JPanel p2 = new JPanel();
-        p2.setLayout(new FlowLayout(FlowLayout.LEFT));
+        // category
+        JPanel jPanelCategory = new JPanel();
+        jPanelCategory.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jPanelCategory.setOpaque(false);
         JLabel ControlsCategory = new JLabel(Phrases.category);
         ControlsCategory.setPreferredSize(textDimensionBig);
         ControlsCategory.setFont(Phrases.inputFont);
-        p2.add(ControlsCategory);
-        inputCategory = new CustomJComboBox<>(new String[0]);
+        jPanelCategory.add(ControlsCategory);
+        inputCategory = new CustomJComboBox<>(new String[0], this);
         inputCategory.setFont(Phrases.inputFont);
         inputCategory.setPreferredSize(inputDimensionBig);
         inputCategory.setEditable(true);
         inputCategory.setSelectedItem(null);
         inputCategory.addActionListener(this);
-        inputCategory.setWindow(this);
         focusElements.add(inputCategory);
-        p2.add(inputCategory);
-        inputLeft.add(p2);
+        jPanelCategory.add(inputCategory);
 
-        JPanel p3 = new JPanel();
-        p3.setLayout(new FlowLayout(FlowLayout.LEFT));
+        // purpose
+        JPanel jPanelPurpose = new JPanel();
+        jPanelPurpose.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jPanelPurpose.setOpaque(false);
         JLabel controlsPurpose = new JLabel(Phrases.purpose);
         controlsPurpose.setPreferredSize(textDimensionBig);
         controlsPurpose.setFont(Phrases.inputFont);
-        p3.add(controlsPurpose);
-        inputPurpose = new CustomJComboBox<>(new String[0]);
+        jPanelPurpose.add(controlsPurpose);
+        inputPurpose = new CustomJComboBox<>(new String[0], this);
         inputPurpose.setFont(Phrases.inputFont);
         inputPurpose.setPreferredSize(inputDimensionBig);
         inputPurpose.setEditable(true);
         inputPurpose.setSelectedItem(null);
         inputPurpose.addActionListener(this);
-        inputPurpose.setWindow(this);
         focusElements.add(inputPurpose);
-        p3.add(inputPurpose);
-        inputLeft.add(p3);
+        jPanelPurpose.add(inputPurpose);
 
-        JPanel inputRight = new JPanel();
-        inputRight.setLayout(new GridLayout(3, 1));
-        input.add(inputRight);
-
-        JPanel p4 = new JPanel();
-        p4.setLayout(new FlowLayout(FlowLayout.LEFT));
+        // date
+        JPanel jPanelDate = new JPanel();
+        jPanelDate.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jPanelDate.setOpaque(false);
         JLabel controlsDate = new JLabel(Phrases.date);
         controlsDate.setPreferredSize(textDimensionSmall);
         controlsDate.setFont(Phrases.inputFont);
-        p4.add(controlsDate);
+        jPanelDate.add(controlsDate);
 
         // improve date ??? function but not sure if it is perfect ???
         inputDate = new JFormattedTextField();
@@ -454,25 +448,31 @@ public class Window extends JFrame implements ActionListener {
         inputDate.setBorder(null);
         inputDate.setValue(setDateOnControl(LocalDate.now()));
         focusElements.add(inputDate);
-        p4.add(inputDate);
+        jPanelDate.add(inputDate);
         choiceDate = new CustomJButton();
         choiceDate.setPreferredSize(extraButton);
         choiceDate.addActionListener(this);
+        choiceDate.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                choseDate.keyTyped(e);
+            }
+        });
         focusElements.add(choiceDate);
-        p4.add(choiceDate);
-        inputRight.add(p4);
+        jPanelDate.add(choiceDate);
 
-        JPanel p5 = new JPanel();
-        p5.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JPanel jPanelValue = new JPanel();
+        jPanelValue.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jPanelValue.setOpaque(false);
         JLabel controlsValue = new JLabel(Phrases.value);
         controlsValue.setPreferredSize(textDimensionSmall);
         controlsValue.setFont(Phrases.inputFont);
-        p5.add(controlsValue);
+        jPanelValue.add(controlsValue);
 
         char[] validChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
         inputValue = new JFormattedTextField();
 //        inputValue.setFormatterFactory(new DefaultFormatterFactory());
-        inputValue.setValue("0,00 €");
+        inputValue.setValue("0,00 " + Phrases.moneySymbol);
         inputValue.setFont(Phrases.inputFont);
         inputValue.setInputVerifier(new InputVerifier() {
             @Override
@@ -483,8 +483,8 @@ public class Window extends JFrame implements ActionListener {
                 newContent = newContent.replaceAll(" ", "");
                 newContent = newContent.replaceAll("\t", "");
                 newContent = newContent.replaceAll(Character.toString(160), ""); // no-break space (Geschütztes Leerzeichen) removing. ASCI value: 160
-                int euroSymbol = newContent.indexOf("€"); // find the index of the moneySymbol
-                if (euroSymbol != -1) { // shorten the newContent to the area before the first € symbol
+                int euroSymbol = newContent.indexOf(Phrases.moneySymbol); // find the index of the moneySymbol
+                if (euroSymbol != -1) { // shorten the newContent to the area before the first moneySymbol
                     newContent = newContent.substring(0, euroSymbol);
                 }
                 if (newContent.indexOf(".") != newContent.lastIndexOf(".")) { // if the input have more than one dot the verification fails
@@ -539,13 +539,26 @@ public class Window extends JFrame implements ActionListener {
         inputValue.setPreferredSize(inputDimensionSmall);
         inputValue.setBorder(null);
         focusElements.add(inputValue);
-        p5.add(inputValue);
+        jPanelValue.add(inputValue);
         calcValue = new CustomJButton();
         calcValue.setPreferredSize(extraButton);
         calcValue.addActionListener(this);
+        calcValue.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (miniCalculator != null)
+                    miniCalculator.keyTyped(e);
+            }
+        });
         focusElements.add(calcValue);
-        p5.add(calcValue);
-        inputRight.add(p5);
+        jPanelValue.add(calcValue);
+
+
+        input.add(jPanelReceiverBy);
+        input.add(jPanelDate);
+        input.add(jPanelCategory);
+        input.add(jPanelValue);
+        input.add(jPanelPurpose);
 
     }
 
@@ -580,24 +593,28 @@ public class Window extends JFrame implements ActionListener {
         inputCategory.setSelectedIndex(-1);
         inputPurpose.setSelectedIndex(-1);
         inputDate.setValue(setDateOnControl(LocalDate.now()));
-        inputValue.setValue("0,00 €");
+        inputValue.setValue("0,00 " + Phrases.moneySymbol);
     }
 
     private void changeToSpending() {
+        if (isSpending)
+            return;
         this.controlsReceiver_by.setText(Phrases.receiver);
         this.clearInput();
-        this.spending.setBackground(getBackground().darker());
-        this.income.setBackground(getBackground());
+        this.income.setBackground(spending.getBackground());
+        this.spending.setBackground(spending.getBackground().darker());
         this.revalidate();
         this.repaint();
         this.isSpending = true;
     }
 
     private void changeToIncome() {
+        if (!isSpending)
+            return;
         this.controlsReceiver_by.setText(Phrases.by);
         this.clearInput();
-        this.spending.setBackground(getBackground());
-        this.income.setBackground(getBackground().darker());
+        this.spending.setBackground(income.getBackground());
+        this.income.setBackground(income.getBackground().darker());
         this.revalidate();
         this.repaint();
         this.isSpending = false;
@@ -609,10 +626,10 @@ public class Window extends JFrame implements ActionListener {
         entryShown = true;
         if (entry.getOption().equals(Options.INCOME)) {
             changeToIncome();
-            this.inputValue.setValue(entry.getIncome().toString().replaceAll("\\.", ",") + " €");
+            this.inputValue.setValue(entry.getIncome().toString().replaceAll("\\.", ",") + " " + Phrases.moneySymbol);
         } else if (entry.getOption().equals(Options.SPENDING)) {
             changeToSpending();
-            this.inputValue.setValue(entry.getSpending().toString().replaceAll("\\.", ",") + " €");
+            this.inputValue.setValue(entry.getSpending().toString().replaceAll("\\.", ",") + " " + Phrases.moneySymbol);
         }
         this.inputReceiver_by.setSelectedItem(entry.getReceiverBy());
         this.inputCategory.setSelectedItem(entry.getCategory());
@@ -708,15 +725,11 @@ public class Window extends JFrame implements ActionListener {
         } else if (e.getSource() == choiceDate) {
             // TODO choiceDate
             System.out.println("choice date");
+            choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
         } else if (e.getSource() == calcValue) {
             // TODO calcValue
             System.out.println("calc value");
-            this.disable(mainLayer,true);
-            layeredPane.setPosition(mainLayer, -1);
-//            calculator.setVisible(true);
-            calculator.setBounds(calcValue.getLocationOnScreen().x-50, calcValue.getLocationOnScreen().y-100, 100, 125);
-            calculator.revalidate();
-            calculator.repaint();
+            miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
         } else if (e.getSource() == save) {
 //            System.out.println("JMenuBar save");
             money.save();
@@ -726,16 +739,20 @@ public class Window extends JFrame implements ActionListener {
                 System.exit(1);
             }
         } else if (e.getSource() == deletePaths) {
+//            System.out.println("JMenuBar deletePaths")
             money.clearPaths();
-        }
-    }
-
-    private void disable(Container panel, boolean disabled) {
-        for (Component c : panel.getComponents()) {
-            if (c instanceof Container) {
-                disable((Container) c, disabled);
+        } else if (e.getSource() == path) {
+//            System.out.println("JMenuBar path")
+            JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
+            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnVal = fileChooser.showOpenDialog(null);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                String selectedFilePath = selectedFile.getPath();
+                money.setPath(selectedFilePath);
+                path.setText(selectedFilePath);
             }
-            c.setEnabled(!disabled);
         }
     }
 
@@ -795,4 +812,21 @@ public class Window extends JFrame implements ActionListener {
         return Double.parseDouble(inputValue.getValue().toString().replaceAll(",", ".").replaceAll(" " + Phrases.moneySymbol, ""));
     }
 
+    public void setInputValue(String value) {
+        this.inputValue.setValue(value);
+    }
+
+    public void setChoseDate(window.choseDate choseDate) {
+        this.choseDate = choseDate;
+    }
+
+    public void setMiniCalculator(window.miniCalculator miniCalculator) {
+        this.miniCalculator = miniCalculator;
+    }
+
+    private void setMaxContentElements(int maxContentElements) {
+        this.maxContentElements = maxContentElements;
+        content.setLayout(new GridLayout(maxContentElements, 1));
+        money.updateAllEntries();
+    }
 }

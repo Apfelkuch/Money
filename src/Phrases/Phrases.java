@@ -17,10 +17,14 @@ public class Phrases {
 
     }
 
-    public static Font showFontBold = new Font("arial", Font.BOLD, 20);
-    public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
+    // Fonts
+//    public static Font showFontBold = new Font("arial", Font.BOLD, 20);
+    public static Font showFontBold = new Font("arial", Font.BOLD, 12);
+    //    public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
+    public static Font showFontPlain = new Font("arial", Font.PLAIN, 12);
     public static Font inputFont = new Font("arial", Font.BOLD, 12);
 
+    // The Text on th GUI
     public static String number = "Nr.";
     public static String date = "Datum";
     public static String receiver = "Empfänger";
@@ -35,19 +39,39 @@ public class Phrases {
     public static String cancel = "Abbrechen";
     public static String by = "Von";
     public static String value = "Betrag";
-    // menu bar
+    // The Text on the menu bar
     public static String options = "options";
     public static String save = "save";
     public static String exit = "exit";
 
-    public static Color COLOR_HEAD_ROW = Color.GRAY;
-    public static Color COLOR_CONTROLS = Color.GRAY;
-    public static Color COLOR_CONTROLS_INPUT = Color.LIGHT_GRAY;
-    public static Color COLOR_CONTROL_BACKGROUND = Color.LIGHT_GRAY;
-    public static Color COLOR_TABLE_BACKGROUND = Color.LIGHT_GRAY;
-    public static Color COLOR_TABLE_CONTENT_BACKGROUND = Color.LIGHT_GRAY;
 
+    // color from Color pallets (source = 'https://www.canva.com/de_de/lernen/schoene-farbpaletten-und-farbkombinationen/')
+    public static Color[] own = new Color[]
+            {Color.LIGHT_GRAY, Color.decode("#3A5199") /*Blue*/,
+                    Color.decode("#E1B80D"), Color.decode("#EFB509"), Color.decode("#D8990F"), Color.decode("#CD7213") /*Orange*/};
+
+
+    public static Color MAIN_LAYER_BACKGROUND = null;
+
+    public static Color COLOR_TABLE_BACKGROUND = Phrases.own[0];
+    public static Color COLOR_TABLE_CONTENT_BACKGROUND = null;
+    public static Color COLOR_TABLE_HEAD_ROW = COLOR_TABLE_BACKGROUND == null ? null : COLOR_TABLE_BACKGROUND.darker();
+    public static Color COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker().darker();
+    public static Color COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0];
+    public static Color COLOR_CONTROL_BACKGROUND = null;
+    public static Color COLOR_CONTROL_1 = Phrases.own[0].darker().darker();
+    public static Color COLOR_CONTROL_2 = Phrases.own[0].darker().darker();
+    public static Color COLOR_CONTROL_3 = Phrases.own[0];
+    //    public static Color COLOR_BUTTON = Phrases.own[1].brighter();
+    public static Color COLOR_BUTTON = Phrases.own[0].darker();
+
+    /**
+     * The color for a positive balance
+     */
     public static Color normalFontColor = Color.BLACK;
+    /**
+     * The color for a negative balance
+     */
     public static Color minusFontColor = Color.RED;
 
     // input
@@ -77,6 +101,9 @@ public class Phrases {
     public static String invalidInputChar = "Verbotene Zeichen verwendet.";
 
 
+    /**
+     * The number of times a receiver, by, category or purpose must be used before it is shown be default in the drop down menu.
+     */
     public static final int LIST_JUMP_VALUE = 8;
 
 }

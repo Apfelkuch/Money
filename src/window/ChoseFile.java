@@ -19,9 +19,9 @@ public class ChoseFile {
 
     private final JPanel panel;
 
-    public ChoseFile(String title, String[] paths) {
+    public ChoseFile(String title, String[] paths, JFrame parent) {
 
-        dialog = new JDialog();
+        dialog = new JDialog(parent);
         dialog.setTitle(title);
         dialog.setModal(true);
 
@@ -115,8 +115,8 @@ public class ChoseFile {
         return returnString;
     }
 
-    public static String inputDialog(Component parent, String title, String[] paths) {
-        ChoseFile f = new ChoseFile(title, paths);
+    public static String inputDialog(JFrame parent, String title, String[] paths) {
+        ChoseFile f = new ChoseFile(title, paths, parent);
         return f.inputDialog(parent);
     }
 

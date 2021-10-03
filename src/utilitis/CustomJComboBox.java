@@ -1,5 +1,6 @@
 package utilitis;
 
+import Phrases.Phrases;
 import window.Window;
 
 import javax.swing.*;
@@ -7,7 +8,6 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.text.BadLocationException;
-import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -21,7 +21,7 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
 
     private Window window;
 
-    public CustomJComboBox(Type[] array) {
+    public CustomJComboBox(Type[] array, Window window) {
         super(array);
         setEditor(new BasicComboBoxEditor());
         setEditable(true);
@@ -29,11 +29,12 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
             @Override
             protected JButton createArrowButton() {
                 super.createArrowButton();
-                JButton b = new BasicArrowButton(BasicArrowButton.SOUTH, Color.LIGHT_GRAY, null, Color.GRAY, null);
+                JButton b = new BasicArrowButton(BasicArrowButton.SOUTH, Phrases.COLOR_BUTTON, null, Phrases.COLOR_BUTTON.darker(), null);
                 b.setBorder(BorderFactory.createRaisedBevelBorder());
                 return b;
             }
         });
+        this.window = window;
     }
 
     @Override
@@ -58,7 +59,10 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
                 public void keyReleased(KeyEvent event) {
                     char key = event.getKeyChar();
                     if (key == '\n') {
-                        window.focusNext();
+                        if (window != null) {
+                            window.focusNext();
+                        }
+                        return;
                     }
                     if (!(Character.isLetterOrDigit(key) || Character.isSpaceChar(key))) return;
                     caretPos = textField.getCaretPosition();
