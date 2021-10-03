@@ -53,9 +53,8 @@ public class Phrases {
 
     public static Color MAIN_LAYER_BACKGROUND = null;
 
-    public static Color COLOR_TABLE_BACKGROUND = Phrases.own[0];
-    public static Color COLOR_TABLE_CONTENT_BACKGROUND = null;
-    public static Color COLOR_TABLE_HEAD_ROW = COLOR_TABLE_BACKGROUND == null ? null : COLOR_TABLE_BACKGROUND.darker();
+    public static Color COLOR_TABLE_CONTENT_BACKGROUND = Phrases.own[0];
+    public static Color COLOR_TABLE_HEAD_ROW = COLOR_TABLE_CONTENT_BACKGROUND == null ? null : COLOR_TABLE_CONTENT_BACKGROUND.darker();
     public static Color COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker().darker();
     public static Color COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0];
     public static Color COLOR_CONTROL_BACKGROUND = null;

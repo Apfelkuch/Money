@@ -40,7 +40,7 @@ public class Settings extends Overlays {
         settings.setLayout(new FlowLayout(FlowLayout.LEFT));
         content.add(settings, BorderLayout.CENTER);
 
-        settings.add(buildColorPickPanel(Phrases.colorTable, Phrases.COLOR_TABLE_BACKGROUND));
+        settings.add(buildColorPickPanel(Phrases.colorTable, Phrases.COLOR_TABLE_CONTENT_BACKGROUND));
         settings.add(buildColorPickPanel(Phrases.colorTableHeadRow, Phrases.COLOR_TABLE_HEAD_ROW));
         settings.add(buildColorPickPanel(Phrases.colorSplit, Phrases.COLOR_TABLE_SPLIT));
         settings.add(buildColorPickPanel(Phrases.colorControl, Phrases.COLOR_CONTROL_PANEL_BACKGROUND));

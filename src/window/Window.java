@@ -222,7 +222,6 @@ public class Window extends JFrame implements ActionListener {
     private void addTable() {
         JPanel table = new JPanel();
         table.setLayout(new BorderLayout());
-        table.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
         mainLayer.add(table, BorderLayout.CENTER);
 
         // table head row
@@ -265,7 +264,7 @@ public class Window extends JFrame implements ActionListener {
         // table content
         content = new JPanel();
         content.setLayout(new GridLayout(maxContentElements, 1));
-        content.setBackground(Phrases.COLOR_TABLE_BACKGROUND);
+        content.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
 
         content.addMouseWheelListener(e -> money.moveTopEntry((int) e.getPreciseWheelRotation()));
 
