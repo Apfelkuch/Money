@@ -73,9 +73,9 @@ public class Entry {
                 + (purpose == null ? "" : purpose)
                 + "</html>", Phrases.normalFontColor), 2);
 
-        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.SPENDING) ? spending + " €" : "", Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.INCOME) ? income + " €" : "", Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, balance + " €", balance < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
+        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.SPENDING) ? spending + " " + Phrases.moneySymbol : "", Phrases.normalFontColor));
+        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.INCOME) ? income + " " + Phrases.moneySymbol : "", Phrases.normalFontColor));
+        newEntry.add(buildLabel(JLabel.CENTER, balance + " " + Phrases.moneySymbol, balance < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
         newEntry.addMouseListener(new MouseAdapterEntry(window, newEntry, this, money));
 
         return newEntry;
