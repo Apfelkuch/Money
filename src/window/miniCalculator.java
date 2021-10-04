@@ -25,7 +25,6 @@ public class miniCalculator extends Overlays {
         calculator = new calculator();
     }
 
-    // TODO make the equal to a comma and calculate with comma numbers.
     @Override
     public void build(java.awt.Window window) {
         buttonDim = new Dimension(25, 25);
@@ -124,8 +123,11 @@ public class miniCalculator extends Overlays {
         CustomJButton use = new CustomJButton("use");
         use.setPreferredSize(new Dimension(2 * buttonDim.width, buttonDim.height));
         use.addActionListener(e -> {
-            calc();
-            use();
+            if (calculated) {
+                use();
+            } else {
+                calc();
+            }
         });
         numPad.add(use, 17);
 

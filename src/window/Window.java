@@ -84,7 +84,7 @@ public class Window extends JFrame implements ActionListener {
     private CustomJButton calcValue;
 
 
-    private final ArrayList<JComponent> focusElements;
+    private final ArrayList<Container> focusElements;
 
     private boolean editing = false;
     private boolean adding = true;
@@ -584,8 +584,11 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public void focusNext() {
-        Component component = getFocusOwner();
-        int pos = focusElements.indexOf(component.getParent());
+        Component component = getFocusOwner().getParent();
+        if (component == null) {
+            return;
+        }
+        int pos = focusElements.indexOf(component);
         focusElements.get(pos + 1).requestFocus();
     }
 
@@ -734,9 +737,8 @@ public class Window extends JFrame implements ActionListener {
             System.out.println("choice date");
             choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
         } else if (e.getSource() == calcValue) {
-            // TODO calcValue
-            System.out.println("calc value");
-            miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
+//            System.out.println("calc value");
+miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
         } else if (e.getSource() == save) {
 //            System.out.println("JMenuBar save");
             money.save();
