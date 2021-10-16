@@ -1,7 +1,7 @@
 package Storage;
 
-import Money.Money;
 import Money.Entry;
+import Money.Money;
 import Phrases.Phrases;
 
 import java.io.File;

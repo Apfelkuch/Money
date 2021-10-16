@@ -98,7 +98,7 @@ public class Window extends JFrame implements ActionListener {
         this.setTitle(title);
         // start the window Maximized
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.setSize(600,470);
+        this.setSize(600, 470);
         this.setMinimumSize(this.getSize());
         this.setResizable(true);
         this.setLocationRelativeTo(null);
@@ -738,7 +738,7 @@ public class Window extends JFrame implements ActionListener {
             choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
         } else if (e.getSource() == calcValue) {
 //            System.out.println("calc value");
-miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
+            miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
         } else if (e.getSource() == save) {
 //            System.out.println("JMenuBar save");
             money.save();

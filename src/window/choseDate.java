@@ -60,6 +60,9 @@ public class choseDate extends Overlays {
 
     @Override
     public void setLocation(Point p) {
+        if (jPanel == null) {
+            return;
+        }
         this.setLocation(
                 p.x - jPanel.getWidth() + Window.extraButton.width,
                 p.y - jPanel.getHeight() + Window.extraButton.height
