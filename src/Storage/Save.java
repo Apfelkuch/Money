@@ -39,6 +39,9 @@ public class Save {
                 pw.print(entry.toString());
                 pw.print(Phrases.DIVIDER);
                 pw.print(Phrases.DIVIDER);
+                if (entry.getNumber() % Phrases.ENTRY_SETS == 0) {
+                    pw.print(Phrases.DIVIDER + "" + Phrases.DIVIDER + "" + Phrases.DIVIDER);
+                }
             }
 
             pw.flush();

@@ -82,8 +82,9 @@ public class Phrases {
 
     // save and load
     public static final Charset CHARSET = StandardCharsets.ISO_8859_1;
+    public static final int ENTRY_SETS = 10000;
 
-    public static final char DIVIDER = (char) 160;
+    public static final char DIVIDER = (char) 160; // 1 = divide , 2 = divide controlValue from Content, 3 = divide entries in 1000 packs
     public static final char PLACEHOLDER = (char) 177;
     public static final String CONTROL_VALUE = "Version 1" + Phrases.DIVIDER + Phrases.DIVIDER;
     public static final String PATH = System.getProperties().getProperty("user.dir") + "\\Money";
