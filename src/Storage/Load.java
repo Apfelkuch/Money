@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class Load {
 
-    // improve for better loading because the amount of data can grow infinitely
     public static boolean load(Money money, String path, int maxContentElements) {
         try {
             File file = new File(path);
@@ -22,31 +21,62 @@ public class Load {
                 return false;
             }
 
-            FileReader fileReader = new FileReader(path);
+            FileReader fileReader = new FileReader(path, Phrases.CHARSET);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
+            boolean controlCheck = false;
+            boolean end = false;
             String s;
-            StringBuilder content = new StringBuilder();
-            while (true) {
-                s = bufferedReader.readLine();
-                if (s == null) break;
-                content.append(s);
-            }
-//            System.out.println("Load.load >> content.length(): " + content.length());
+            StringBuilder content;
+            boolean reading;
+            int divider;
+            while (!end) {
+                content = new StringBuilder();
+                reading = true;
+                divider = 0;
+                while (reading) {
+                    int read = bufferedReader.read();
+                    if (read == -1) { // check if the end is reached
+                        end = true;
+                        break;
+                    }
+                    s = new String(new byte[]{(byte) read}, Phrases.CHARSET); // get the char of the read number
+                    content.append(s); // put the char into the content
+                    if (read == Phrases.DIVIDER) { // count the dividers with are following directly each other
+                        divider++;
+                    } else {
+                        divider = 0;
+                    }
+                    if (divider == 3) { // check for an entrySet end
+                        reading = false;
+                        content.deleteCharAt(content.length() - 1);
+                        content.deleteCharAt(content.length() - 1);
+                        content.deleteCharAt(content.length() - 1);
+                    }
+                }
+//                System.out.println("Load.load >> content.length(): " + content.length());
 
-            // read control value
-            String controlValue = content.substring(0, Phrases.CONTROL_VALUE.length());
-            if (!controlValue.equals(Phrases.CONTROL_VALUE)) {
-                throw new IllegalArgumentException("Save path does not contain the control value");
-            }
+                if (!controlCheck) {
+                    if (content.length() < Phrases.CONTROL_VALUE.length()) {
+                        throw new IllegalArgumentException("Content of the file behind the save path is not valid");
+                    }
+                    // read control value
+                    String controlValue = content.substring(0, Phrases.CONTROL_VALUE.length());
+                    content.delete(0, Phrases.CONTROL_VALUE.length());
+                    if (!controlValue.equals(Phrases.CONTROL_VALUE)) {
+                        throw new IllegalArgumentException("Save path does not contain the control value");
+                    }
+                    controlCheck = true;
+                }
 
 
-            // read entries
-            String[] entries = content.substring(Phrases.CONTROL_VALUE.length()).split(Character.toString(160) + Character.toString(160));
+                // read entries
+                String[] entries = content.toString().split(Character.toString(160) + "" + Character.toString(160));
 
-            for (String stringEntry : entries) {
-                if (!stringEntry.isBlank())
-                    Load.LoadEntry(stringEntry, money);
+                for (String stringEntry : entries) {
+                    if (!stringEntry.isBlank())
+                        Load.LoadEntry(stringEntry, money);
+                }
             }
 
             // load the last entries on the table
@@ -114,7 +144,7 @@ public class Load {
                 return new ArrayList<>();
             }
 
-            FileReader fileReader = new FileReader(path);
+            FileReader fileReader = new FileReader(path, Phrases.CHARSET);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             // read control value

@@ -1,7 +1,7 @@
 package Storage;
 
-import Money.Money;
 import Money.Entry;
+import Money.Money;
 import Phrases.Phrases;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class Save {
 
     private static boolean print(File file, Money money) {
         try {
-            PrintWriter pw = new PrintWriter(file);
+            PrintWriter pw = new PrintWriter(file, Phrases.CHARSET);
 
             // print control value
             pw.print(Phrases.CONTROL_VALUE);
@@ -39,6 +39,9 @@ public class Save {
                 pw.print(entry.toString());
                 pw.print(Phrases.DIVIDER);
                 pw.print(Phrases.DIVIDER);
+                if (entry.getNumber() % Phrases.ENTRY_SETS == 0) {
+                    pw.print(Phrases.DIVIDER + "" + Phrases.DIVIDER + "" + Phrases.DIVIDER);
+                }
             }
 
             pw.flush();
@@ -61,7 +64,7 @@ public class Save {
             file.createNewFile();
 
             // print to paths to the file
-            PrintWriter printWriter = new PrintWriter(file);
+            PrintWriter printWriter = new PrintWriter(file, Phrases.CHARSET);
             printWriter.println(Phrases.CONTROL_VALUE);
             for (String s : paths) {
                 printWriter.println(s);
