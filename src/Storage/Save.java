@@ -29,7 +29,7 @@ public class Save {
 
     private static boolean print(File file, Money money) {
         try {
-            PrintWriter pw = new PrintWriter(file);
+            PrintWriter pw = new PrintWriter(file, Phrases.CHARSET);
 
             // print control value
             pw.print(Phrases.CONTROL_VALUE);
@@ -61,7 +61,7 @@ public class Save {
             file.createNewFile();
 
             // print to paths to the file
-            PrintWriter printWriter = new PrintWriter(file);
+            PrintWriter printWriter = new PrintWriter(file, Phrases.CHARSET);
             printWriter.println(Phrases.CONTROL_VALUE);
             for (String s : paths) {
                 printWriter.println(s);

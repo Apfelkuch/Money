@@ -22,7 +22,7 @@ public class Load {
                 return false;
             }
 
-            FileReader fileReader = new FileReader(path);
+            FileReader fileReader = new FileReader(path, Phrases.CHARSET);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             String s;
@@ -114,7 +114,7 @@ public class Load {
                 return new ArrayList<>();
             }
 
-            FileReader fileReader = new FileReader(path);
+            FileReader fileReader = new FileReader(path, Phrases.CHARSET);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             // read control value

@@ -3,6 +3,8 @@ package Phrases;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Phrases {
 
@@ -79,6 +81,8 @@ public class Phrases {
     public static final int inputValueMin = Integer.parseInt("-1");
 
     // save and load
+    public static final Charset CHARSET = StandardCharsets.ISO_8859_1;
+
     public static final char DIVIDER = (char) 160;
     public static final char PLACEHOLDER = (char) 177;
     public static final String CONTROL_VALUE = "Version 1" + Phrases.DIVIDER + Phrases.DIVIDER;
