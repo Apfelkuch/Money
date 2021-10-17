@@ -1,6 +1,5 @@
 package utilitis;
 
-import Phrases.Phrases;
 import window.Window;
 
 import javax.swing.*;
@@ -29,9 +28,7 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
             @Override
             protected JButton createArrowButton() {
                 super.createArrowButton();
-                JButton b = new BasicArrowButton(BasicArrowButton.SOUTH, Phrases.COLOR_BUTTON, null, Phrases.COLOR_BUTTON.darker(), null);
-                b.setBorder(BorderFactory.createRaisedBevelBorder());
-                return b;
+                return new CustomArrowButton(BasicArrowButton.SOUTH);
             }
         });
         this.window = window;

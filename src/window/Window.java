@@ -424,7 +424,6 @@ public class Window extends JFrame implements ActionListener {
         controlsDate.setFont(Phrases.inputFont);
         jPanelDate.add(controlsDate);
 
-        // improve date ??? function but not sure if it is perfect ???
         inputDate = new JFormattedTextField();
         inputDate.setFormatterFactory(new DefaultFormatterFactory(new MaskFormatter("##.##.####")));
         inputDate.setInputVerifier(new InputVerifier() {
@@ -462,7 +461,9 @@ public class Window extends JFrame implements ActionListener {
         choiceDate.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                choseDate.keyTyped(e);
+                if (choseDate != null) {
+                    choseDate.keyTyped(e);
+                }
             }
         });
         focusElements.add(choiceDate);
@@ -673,7 +674,6 @@ public class Window extends JFrame implements ActionListener {
         inputPurpose.setSelectedItem(null);
     }
 
-    // TODO complete the actions and the functionality.
     @Override
     public void actionPerformed(ActionEvent e) {
         this.revalidate();
@@ -733,9 +733,9 @@ public class Window extends JFrame implements ActionListener {
             editing = false;
             adding = true;
         } else if (e.getSource() == choiceDate) {
-            // TODO choiceDate
-            System.out.println("choice date");
+//            System.out.println("choice date");
             choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
+            choseDate.setLocalDate(this.getInputLocalDate());
         } else if (e.getSource() == calcValue) {
 //            System.out.println("calc value");
             miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
@@ -825,6 +825,10 @@ public class Window extends JFrame implements ActionListener {
 
     public void setInputValue(String value) {
         this.inputValue.setValue(value);
+    }
+
+    public void setInputDate(LocalDate localDate) {
+        this.inputDate.setValue(setDateOnControl(localDate));
     }
 
     public void setChoseDate(window.choseDate choseDate) {
