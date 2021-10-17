@@ -424,7 +424,6 @@ public class Window extends JFrame implements ActionListener {
         controlsDate.setFont(Phrases.inputFont);
         jPanelDate.add(controlsDate);
 
-        // improve date ??? function but not sure if it is perfect ???
         inputDate = new JFormattedTextField();
         inputDate.setFormatterFactory(new DefaultFormatterFactory(new MaskFormatter("##.##.####")));
         inputDate.setInputVerifier(new InputVerifier() {
@@ -675,7 +674,6 @@ public class Window extends JFrame implements ActionListener {
         inputPurpose.setSelectedItem(null);
     }
 
-    // TODO complete the actions and the functionality.
     @Override
     public void actionPerformed(ActionEvent e) {
         this.revalidate();
