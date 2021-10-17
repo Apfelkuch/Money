@@ -12,7 +12,8 @@ import java.awt.event.KeyEvent;
 public class miniCalculator extends Overlays {
 
     private final calculator calculator;
-    private JPanel jPanel;
+    private JPanel contentPanel;
+    private JTextField textField;
 
     private boolean calculated;
 
@@ -20,7 +21,7 @@ public class miniCalculator extends Overlays {
 
     public miniCalculator(Point location, window.Window moneyWindow) {
         super(location, moneyWindow);
-        this.setSize(jPanel.getSize());
+        this.setSize(contentPanel.getSize());
         this.setLocation(location);
         calculator = new calculator();
     }
@@ -29,16 +30,16 @@ public class miniCalculator extends Overlays {
     public void build(java.awt.Window window) {
         buttonDim = new Dimension(25, 25);
 
-        jPanel = new JPanel();
-        jPanel.setSize(5 * buttonDim.width, 7 * buttonDim.height);
-        jPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        jPanel.setBorder(new LineBorder(Color.BLACK, 2));
-        this.add(jPanel);
+        contentPanel = new JPanel();
+        contentPanel.setSize(5 * buttonDim.width, 7 * buttonDim.height);
+        contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        contentPanel.setBorder(new LineBorder(Color.BLACK, 2));
+        this.add(contentPanel);
 
         textField = new JTextField();
         textField.setPreferredSize(new Dimension(4 * buttonDim.width, buttonDim.height));
         textField.setBorder(new LineBorder(Color.BLACK, 1));
-        jPanel.add(textField);
+        contentPanel.add(textField);
 
         JPanel numPad = new JPanel();
         numPad.setPreferredSize(new Dimension(4 * buttonDim.width, 5 * buttonDim.height));
@@ -131,7 +132,7 @@ public class miniCalculator extends Overlays {
         });
         numPad.add(use, 17);
 
-        jPanel.add(numPad);
+        contentPanel.add(numPad);
 
     }
 
@@ -183,12 +184,12 @@ public class miniCalculator extends Overlays {
 
     @Override
     public void setLocation(Point p) {
-        if (jPanel == null) {
+        if (contentPanel == null) {
             return;
         }
         this.setLocation(
-                p.x - jPanel.getWidth() + Window.extraButton.width,
-                p.y - jPanel.getHeight() + Window.extraButton.height
+                p.x - contentPanel.getWidth() + Window.extraButton.width,
+                p.y - contentPanel.getHeight() + Window.extraButton.height
         );
     }
 }

@@ -1,14 +1,11 @@
 package window;
 
-import javax.swing.*;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public abstract class Overlays extends java.awt.Window {
 
     protected window.Window moneyWindow;
-
-    protected JTextField textField;
 
     public Overlays(Point location, window.Window moneyWindow) {
         // window setup
