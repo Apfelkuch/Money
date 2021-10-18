@@ -83,7 +83,7 @@ public class ChoseFile {
 
                 int returnVal = fileChooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    returnString = fileChooser.getSelectedFile().getAbsolutePath();
+                    returnString = fileChooser.getSelectedFile().getParentFile().getAbsolutePath();
                 }
                 dialog.dispose();
             }
