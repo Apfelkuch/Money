@@ -36,6 +36,7 @@ public class Money {
         paths = Load.loadPaths(Phrases.PATH + "//" + Phrases.FILE_PATHS);
 
         startingWindow startingWindow = new startingWindow();
+        startingWindow.setMaxProgressBar(4);
 
         path = ChoseFile.inputDialog(startingWindow, Phrases.choseFile, paths.toArray(new String[0]));
 
@@ -44,10 +45,15 @@ public class Money {
             return;
         }
 
+        startingWindow.addToProgressBar(1);
 
         new Phrases();
 
+        startingWindow.addToProgressBar(1);
+
         window = new Window("Money", this);
+
+        startingWindow.addToProgressBar(1);
 
         // loading
 
@@ -57,6 +63,8 @@ public class Money {
         } else {
             System.out.println("Money.Money >> No Entries loaded");
         }
+
+        startingWindow.addToProgressBar(1);
 
 //        // testing entries
 //        int preload = 10000;
