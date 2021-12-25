@@ -45,7 +45,6 @@ public class ChoseFile {
                     File selectedFile = fileChooser.getSelectedFile();
                     returnString = selectedFile.getPath();
                 }
-                dialog.dispose();
             }
         });
         labelNew.setFont(new Font("arial", Font.BOLD, 15));
@@ -85,7 +84,6 @@ public class ChoseFile {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     returnString = fileChooser.getSelectedFile().getParentFile().getAbsolutePath();
                 }
-                dialog.dispose();
             }
         });
         labelChose.setFont(new Font("arial", Font.BOLD, 15));
