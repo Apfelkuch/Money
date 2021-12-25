@@ -45,7 +45,9 @@ public class Window extends JFrame implements ActionListener {
 
     // table
     private JLabel controlsReceiver_by;
+    private JPanel headRow;
     private JPanel content;
+    private JPanel split;
     private final int contentHeight = 50;
     private int maxContentElements = 4;
     private int oldMaxContentElements;
@@ -65,6 +67,8 @@ public class Window extends JFrame implements ActionListener {
     private JPanel controlPanel;
     private JPanel controls;
     private int oldControlsWidth;
+    private JPanel input;
+    private JPanel controlButtons, controlButtonsI;
 
     private CustomJButton spending;
     private CustomJButton income;
@@ -174,7 +178,6 @@ public class Window extends JFrame implements ActionListener {
             e.printStackTrace();
             System.exit(10);
         }
-        mainLayer.setBackground(Phrases.MAIN_LAYER_BACKGROUND);
         this.setContentPane(mainLayer);
 
 
@@ -225,7 +228,7 @@ public class Window extends JFrame implements ActionListener {
         mainLayer.add(table, BorderLayout.CENTER);
 
         // table head row
-        JPanel headRow = new JPanel();
+        headRow = new JPanel();
         headRow.setLayout(new GridLayout(1, 6));
         headRow.setBackground(Phrases.COLOR_TABLE_HEAD_ROW);
         table.add(headRow, BorderLayout.NORTH);
@@ -271,7 +274,7 @@ public class Window extends JFrame implements ActionListener {
         table.add(content, BorderLayout.CENTER);
 
         // split
-        JPanel split = new JPanel();
+        split = new JPanel();
         split.setBackground(Phrases.COLOR_TABLE_SPLIT);
         table.add(split, BorderLayout.SOUTH);
     }
@@ -302,7 +305,7 @@ public class Window extends JFrame implements ActionListener {
 
 
         // control Buttons
-        JPanel controlButtons = new JPanel();
+        controlButtons = new JPanel();
         controlButtons.setBackground(Phrases.COLOR_CONTROL_1);
         controlButtons.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtons);
@@ -322,7 +325,7 @@ public class Window extends JFrame implements ActionListener {
         controlButtons.add(income);
 
         // control Buttons I
-        JPanel controlButtonsI = new JPanel();
+        controlButtonsI = new JPanel();
         controlButtonsI.setBackground(Phrases.COLOR_CONTROL_2);
         controlButtonsI.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtonsI);
@@ -356,10 +359,9 @@ public class Window extends JFrame implements ActionListener {
         controlButtonsI.add(cancel);
 
         // input
-        JPanel input = new JPanel();
+        input = new JPanel();
         input.setLayout(new GridLayout(3, 2));
         input.setMaximumSize(maxInputDim);
-        input.setBackground(controlButtonsI.getBackground());
         input.setBackground(Phrases.COLOR_CONTROL_3);
         controls.add(input);
 
@@ -674,6 +676,38 @@ public class Window extends JFrame implements ActionListener {
         inputPurpose.setSelectedItem(null);
     }
 
+    public void reload() {
+        // change color of panels
+        headRow.setBackground(Phrases.COLOR_TABLE_HEAD_ROW);
+        content.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
+        split.setBackground(Phrases.COLOR_TABLE_SPLIT);
+        controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
+        controlPanel.setBackground(Phrases.COLOR_CONTROL_PANEL_BACKGROUND);
+        controlButtons.setBackground(Phrases.COLOR_CONTROL_1);
+        controlButtonsI.setBackground(Phrases.COLOR_CONTROL_2);
+        input.setBackground(Phrases.COLOR_CONTROL_3);
+        // change the input button colors
+        spending.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        income.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        neu.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        edit.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        enter.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        cancel.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        choiceDate.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        calcValue.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        // change the ComboBox-Arrow colors
+        inputReceiver_by.setArrowButtonColor(Phrases.COLOR_BUTTON);
+        inputCategory.setArrowButtonColor(Phrases.COLOR_BUTTON);
+        inputPurpose.setArrowButtonColor(Phrases.COLOR_BUTTON);
+
+        // change to spending
+        this.isSpending = false;
+        this.changeToSpending();
+
+        this.revalidate();
+        this.repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         this.revalidate();
@@ -785,6 +819,10 @@ public class Window extends JFrame implements ActionListener {
     }
 
     // GETTER && SETTER
+
+    public Money getMoney() {
+        return money;
+    }
 
     public boolean isSpending() {
         return isSpending;

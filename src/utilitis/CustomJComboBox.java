@@ -7,6 +7,7 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.text.BadLocationException;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -86,6 +87,17 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
     public void setWindow(Window window) {
         this.window = window;
     }
+
+    public void setArrowButtonColor(Color arrowButtonColor) {
+        this.setUI(new BasicComboBoxUI() {
+            @Override
+            protected JButton createArrowButton() {
+                return new CustomArrowButton(BasicArrowButton.SOUTH);
+            }
+        });
+
+    }
+
 
 }
 
