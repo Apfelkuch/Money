@@ -20,9 +20,7 @@ public class Phrases {
     }
 
     // Fonts
-//    public static Font showFontBold = new Font("arial", Font.BOLD, 20);
     public static Font showFontBold = new Font("arial", Font.BOLD, 12);
-    //    public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
     public static Font showFontPlain = new Font("arial", Font.PLAIN, 12);
     public static Font inputFont = new Font("arial", Font.BOLD, 12);
 

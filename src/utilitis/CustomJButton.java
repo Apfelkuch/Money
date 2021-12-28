@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class CustomJButton extends JButton {
 
-    BevelBorder raised,lower;
+    BevelBorder raised, lower;
 
     public CustomJButton() {
         this(null);

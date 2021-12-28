@@ -392,18 +392,6 @@ public class Money {
         return entries;
     }
 
-    public ArrayList<String> getList_receiverBy() {
-        return list_receiverBy;
-    }
-
-    public ArrayList<String> getList_categories() {
-        return list_categories;
-    }
-
-    public ArrayList<String> getList_purpose() {
-        return list_purpose;
-    }
-
     public String getPath() {
         return path;
     }

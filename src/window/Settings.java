@@ -136,7 +136,7 @@ public class Settings extends Overlays {
             intColorHashMap.put(7, Phrases.COLOR_CONTROL_3);
             intColorHashMap.put(8, Phrases.COLOR_BUTTON);
             for (int i = 0; i < intColorHashMap.size(); i++) {
-                customJButtonArrayList.get(i).setBackground(intColorHashMap.get(i+1));
+                customJButtonArrayList.get(i).setBackground(intColorHashMap.get(i + 1));
             }
         });
         buttons.add(button_default);

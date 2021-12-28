@@ -1,7 +1,5 @@
 package utilitis;
 
-import Phrases.Phrases;
-
 import java.awt.*;
 
 // TODO build the button Border
