@@ -12,7 +12,7 @@ public abstract class Overlays extends java.awt.Window {
         super(moneyWindow);
         this.moneyWindow = moneyWindow;
 
-        this.setSize(100,100);
+        this.setSize(100, 100);
         this.setLocation(location);
         this.setVisible(true);
 

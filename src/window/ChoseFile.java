@@ -21,13 +21,15 @@ public class ChoseFile {
 
     public ChoseFile(String title, String[] paths, JFrame parent) {
 
+        Font font = new Font("arial", Font.BOLD, 15);
+
         dialog = new JDialog(parent);
         dialog.setTitle(title);
         dialog.setModal(true);
 
         panel = new JPanel();
 
-        panel.setLayout(new GridLayout(paths.length+2, 1));
+        panel.setLayout(new GridLayout(paths.length + 2, 1));
         panel.setBackground(Color.LIGHT_GRAY);
         panel.setForeground(Color.LIGHT_GRAY);
 
@@ -45,10 +47,9 @@ public class ChoseFile {
                     File selectedFile = fileChooser.getSelectedFile();
                     returnString = selectedFile.getPath();
                 }
-                dialog.dispose();
             }
         });
-        labelNew.setFont(new Font("arial", Font.BOLD, 15));
+        labelNew.setFont(font);
         labelNew.setForeground(Color.BLACK);
         labelNew.setBackground(Color.GRAY);
         labelNew.setOpaque(true);
@@ -65,7 +66,7 @@ public class ChoseFile {
                     dialog.dispose();
                 }
             });
-            label.setFont(new Font("arial", Font.BOLD, 15));
+            label.setFont(font);
             label.setForeground(Color.BLACK);
             label.setBackground(Color.GRAY);
             label.setOpaque(true);
@@ -83,9 +84,8 @@ public class ChoseFile {
 
                 int returnVal = fileChooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    returnString = fileChooser.getSelectedFile().getAbsolutePath();
+                    returnString = fileChooser.getSelectedFile().getParentFile().getAbsolutePath();
                 }
-                dialog.dispose();
             }
         });
         labelChose.setFont(new Font("arial", Font.BOLD, 15));

@@ -1,7 +1,5 @@
 package utilitis;
 
-import Phrases.Phrases;
-
 import java.awt.*;
 
 // TODO build the button Border
@@ -17,8 +15,8 @@ public class BevelBorder extends javax.swing.border.BevelBorder {
     public static final int LOWERED = 1;
 
 
-    public BevelBorder(int bevelType) {
-        super(bevelType, Phrases.COLOR_BUTTON, Phrases.COLOR_BUTTON.darker());
+    public BevelBorder(int bevelType, Color color) {
+        super(bevelType, color, color.darker());
     }
 
     @Override

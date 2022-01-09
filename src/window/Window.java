@@ -1,6 +1,5 @@
 package window;
 
-import Input.KeyAdapterInput;
 import Money.Entry;
 import Money.Money;
 import Phrases.Phrases;
@@ -45,7 +44,9 @@ public class Window extends JFrame implements ActionListener {
 
     // table
     private JLabel controlsReceiver_by;
+    private JPanel headRow;
     private JPanel content;
+    private JPanel split;
     private final int contentHeight = 50;
     private int maxContentElements = 4;
     private int oldMaxContentElements;
@@ -65,6 +66,8 @@ public class Window extends JFrame implements ActionListener {
     private JPanel controlPanel;
     private JPanel controls;
     private int oldControlsWidth;
+    private JPanel input;
+    private JPanel controlButtons, controlButtonsI;
 
     private CustomJButton spending;
     private CustomJButton income;
@@ -174,7 +177,6 @@ public class Window extends JFrame implements ActionListener {
             e.printStackTrace();
             System.exit(10);
         }
-        mainLayer.setBackground(Phrases.MAIN_LAYER_BACKGROUND);
         this.setContentPane(mainLayer);
 
 
@@ -225,7 +227,7 @@ public class Window extends JFrame implements ActionListener {
         mainLayer.add(table, BorderLayout.CENTER);
 
         // table head row
-        JPanel headRow = new JPanel();
+        headRow = new JPanel();
         headRow.setLayout(new GridLayout(1, 6));
         headRow.setBackground(Phrases.COLOR_TABLE_HEAD_ROW);
         table.add(headRow, BorderLayout.NORTH);
@@ -271,7 +273,7 @@ public class Window extends JFrame implements ActionListener {
         table.add(content, BorderLayout.CENTER);
 
         // split
-        JPanel split = new JPanel();
+        split = new JPanel();
         split.setBackground(Phrases.COLOR_TABLE_SPLIT);
         table.add(split, BorderLayout.SOUTH);
     }
@@ -302,7 +304,7 @@ public class Window extends JFrame implements ActionListener {
 
 
         // control Buttons
-        JPanel controlButtons = new JPanel();
+        controlButtons = new JPanel();
         controlButtons.setBackground(Phrases.COLOR_CONTROL_1);
         controlButtons.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtons);
@@ -322,7 +324,7 @@ public class Window extends JFrame implements ActionListener {
         controlButtons.add(income);
 
         // control Buttons I
-        JPanel controlButtonsI = new JPanel();
+        controlButtonsI = new JPanel();
         controlButtonsI.setBackground(Phrases.COLOR_CONTROL_2);
         controlButtonsI.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtonsI);
@@ -356,10 +358,9 @@ public class Window extends JFrame implements ActionListener {
         controlButtonsI.add(cancel);
 
         // input
-        JPanel input = new JPanel();
+        input = new JPanel();
         input.setLayout(new GridLayout(3, 2));
         input.setMaximumSize(maxInputDim);
-        input.setBackground(controlButtonsI.getBackground());
         input.setBackground(Phrases.COLOR_CONTROL_3);
         controls.add(input);
 
@@ -376,8 +377,6 @@ public class Window extends JFrame implements ActionListener {
         inputReceiver_by.setPreferredSize(inputDimensionBig);
         inputReceiver_by.setEditable(true);
         inputReceiver_by.setSelectedItem(null);
-        inputReceiver_by.addActionListener(this);
-        inputReceiver_by.addKeyListener(new KeyAdapterInput(this));
         focusElements.add(inputReceiver_by);
         jPanelReceiverBy.add(inputReceiver_by);
 
@@ -394,7 +393,6 @@ public class Window extends JFrame implements ActionListener {
         inputCategory.setPreferredSize(inputDimensionBig);
         inputCategory.setEditable(true);
         inputCategory.setSelectedItem(null);
-        inputCategory.addActionListener(this);
         focusElements.add(inputCategory);
         jPanelCategory.add(inputCategory);
 
@@ -411,7 +409,6 @@ public class Window extends JFrame implements ActionListener {
         inputPurpose.setPreferredSize(inputDimensionBig);
         inputPurpose.setEditable(true);
         inputPurpose.setSelectedItem(null);
-        inputPurpose.addActionListener(this);
         focusElements.add(inputPurpose);
         jPanelPurpose.add(inputPurpose);
 
@@ -674,28 +671,57 @@ public class Window extends JFrame implements ActionListener {
         inputPurpose.setSelectedItem(null);
     }
 
+    public void reload() {
+        // change color of panels
+        headRow.setBackground(Phrases.COLOR_TABLE_HEAD_ROW);
+        content.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
+        split.setBackground(Phrases.COLOR_TABLE_SPLIT);
+        controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
+        controlPanel.setBackground(Phrases.COLOR_CONTROL_PANEL_BACKGROUND);
+        controlButtons.setBackground(Phrases.COLOR_CONTROL_1);
+        controlButtonsI.setBackground(Phrases.COLOR_CONTROL_2);
+        input.setBackground(Phrases.COLOR_CONTROL_3);
+        // change the input button colors
+        spending.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        income.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        neu.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        edit.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        enter.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        cancel.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        choiceDate.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        calcValue.setBackground_BorderColor(Phrases.COLOR_BUTTON);
+        // change the ComboBox-Arrow colors
+        inputReceiver_by.setArrowButtonColor(Phrases.COLOR_BUTTON);
+        inputCategory.setArrowButtonColor(Phrases.COLOR_BUTTON);
+        inputPurpose.setArrowButtonColor(Phrases.COLOR_BUTTON);
+
+        // change to spending
+        this.isSpending = false;
+        this.changeToSpending();
+
+        this.revalidate();
+        this.repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         this.revalidate();
         this.repaint();
-        if (e.getSource() == spending) {
-//            System.out.println("spending");
+        if (e.getSource() == spending) { // spending
             entryShown = false;
             if (isInputEmpty()) {
                 changeToSpending();
             }
             editing = false;
             adding = true;
-        } else if (e.getSource() == income) {
-//            System.out.println("income");
+        } else if (e.getSource() == income) { // income
             entryShown = false;
             if (isInputEmpty()) {
                 changeToIncome();
             }
             editing = false;
             adding = true;
-        } else if (e.getSource() == neu) {
-//            System.out.println("neu");
+        } else if (e.getSource() == neu) { // new
             entryShown = false;
             this.clearInput();
             this.changeEnabled(true);
@@ -704,54 +730,44 @@ public class Window extends JFrame implements ActionListener {
             adding = true;
         } else if (e.getSource() == edit) {
             entryShown = false;
-            if (!isInputEmpty() && !this.inputReceiver_by.isEnabled()) {
-//                System.out.println("edit");
+            if (!isInputEmpty() && !this.inputReceiver_by.isEnabled()) { // edit
                 this.changeEnabled(true);
                 editing = true;
                 adding = false;
             }
         } else if (e.getSource() == enter) {
             entryShown = false;
-            if (!isInputEmpty() && adding && !editing) {
-//                System.out.println("enter");
+            if (!isInputEmpty() && adding && !editing) { // enter
                 money.enter();
                 editing = false;
                 clearInput();
                 adding = true;
-            } else if (editing) {
-//                System.out.println("confirm edit");
+            } else if (editing) {  // confirm edit
                 money.confirmEdit();
                 editing = false;
                 clearInput();
                 adding = true;
             }
-        } else if (e.getSource() == cancel) {
-//            System.out.println("cancel");
+        } else if (e.getSource() == cancel) { // cancel
             entryShown = false;
             this.clearInput();
             this.changeEnabled(true);
             editing = false;
             adding = true;
-        } else if (e.getSource() == choiceDate) {
-//            System.out.println("choice date");
+        } else if (e.getSource() == choiceDate) { // choice date
             choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
             choseDate.setLocalDate(this.getInputLocalDate());
-        } else if (e.getSource() == calcValue) {
-//            System.out.println("calc value");
+        } else if (e.getSource() == calcValue) { // calc value
             miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
-        } else if (e.getSource() == save) {
-//            System.out.println("JMenuBar save");
+        } else if (e.getSource() == save) { // JMenuBar save
             money.save();
-        } else if (e.getSource() == exit) {
-//            System.out.println("JMenuBar exit");
+        } else if (e.getSource() == exit) { // JMenuBar exit
             if (money.save()) {
                 System.exit(1);
             }
-        } else if (e.getSource() == deletePaths) {
-//            System.out.println("JMenuBar deletePaths")
+        } else if (e.getSource() == deletePaths) { // JMenuBar deletePaths
             money.clearPaths();
-        } else if (e.getSource() == path) {
-//            System.out.println("JMenuBar path")
+        } else if (e.getSource() == path) { // JMenuBar path
             JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
             fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -762,7 +778,7 @@ public class Window extends JFrame implements ActionListener {
                 money.setPath(selectedFilePath);
                 path.setText(selectedFilePath);
             }
-        } else if (e.getSource() == menuItemSettings) {
+        } else if (e.getSource() == menuItemSettings) { // JMenuBar settings
             settings = new Settings(null, this);
         }
     }
@@ -786,12 +802,12 @@ public class Window extends JFrame implements ActionListener {
 
     // GETTER && SETTER
 
-    public boolean isSpending() {
-        return isSpending;
+    public Money getMoney() {
+        return money;
     }
 
-    public boolean isEditing() {
-        return editing;
+    public boolean isSpending() {
+        return isSpending;
     }
 
     public boolean isEntryShown() {

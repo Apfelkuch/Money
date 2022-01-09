@@ -16,13 +16,11 @@ public class Phrases {
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
-
+        setDefaultColors();
     }
 
     // Fonts
-//    public static Font showFontBold = new Font("arial", Font.BOLD, 20);
     public static Font showFontBold = new Font("arial", Font.BOLD, 12);
-    //    public static Font showFontPlain = new Font("arial", Font.PLAIN, 18);
     public static Font showFontPlain = new Font("arial", Font.PLAIN, 12);
     public static Font inputFont = new Font("arial", Font.BOLD, 12);
 
@@ -53,18 +51,27 @@ public class Phrases {
                     Color.decode("#E1B80D"), Color.decode("#EFB509"), Color.decode("#D8990F"), Color.decode("#CD7213") /*Orange*/};
 
 
-    public static Color MAIN_LAYER_BACKGROUND = null;
+    public static Color COLOR_TABLE_CONTENT_BACKGROUND;
+    public static Color COLOR_TABLE_HEAD_ROW;
+    public static Color COLOR_TABLE_SPLIT;
+    public static Color COLOR_CONTROL_PANEL_BACKGROUND;
+    public static Color COLOR_CONTROL_BACKGROUND;
+    public static Color COLOR_CONTROL_1;
+    public static Color COLOR_CONTROL_2;
+    public static Color COLOR_CONTROL_3;
+    public static Color COLOR_BUTTON;
 
-    public static Color COLOR_TABLE_CONTENT_BACKGROUND = Phrases.own[0];
-    public static Color COLOR_TABLE_HEAD_ROW = COLOR_TABLE_CONTENT_BACKGROUND == null ? null : COLOR_TABLE_CONTENT_BACKGROUND.darker();
-    public static Color COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker().darker();
-    public static Color COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0];
-    public static Color COLOR_CONTROL_BACKGROUND = null;
-    public static Color COLOR_CONTROL_1 = Phrases.own[0].darker().darker();
-    public static Color COLOR_CONTROL_2 = Phrases.own[0].darker().darker();
-    public static Color COLOR_CONTROL_3 = Phrases.own[0];
-    //    public static Color COLOR_BUTTON = Phrases.own[1].brighter();
-    public static Color COLOR_BUTTON = Phrases.own[0].darker();
+    public static void setDefaultColors() {
+        COLOR_TABLE_CONTENT_BACKGROUND = Phrases.own[0];
+        COLOR_TABLE_HEAD_ROW = COLOR_TABLE_CONTENT_BACKGROUND == null ? null : COLOR_TABLE_CONTENT_BACKGROUND.darker();
+        COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker().darker();
+        COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0];
+        COLOR_CONTROL_BACKGROUND = null;
+        COLOR_CONTROL_1 = Phrases.own[0].darker().darker();
+        COLOR_CONTROL_2 = Phrases.own[0].darker().darker();
+        COLOR_CONTROL_3 = Phrases.own[0];
+        COLOR_BUTTON = Phrases.own[0].darker();
+    }
 
     /**
      * The color for a positive balance
@@ -114,6 +121,8 @@ public class Phrases {
     public static String colorControl2 = "Hintergrund Eingabe 2";
     public static String colorControl3 = "Hintergrund Eingabe 3";
     public static String colorButton = "Knopffarbe";
+    public static String use = "use";
+    public static String normal = "default";
 
     /**
      * The number of times a receiver, by, category or purpose must be used before it is shown be default in the drop down menu.

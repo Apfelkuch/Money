@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class CustomJButton extends JButton {
 
-    BevelBorder raised,lower;
+    BevelBorder raised, lower;
 
     public CustomJButton() {
         this(null);
@@ -18,8 +18,8 @@ public class CustomJButton extends JButton {
         super.setFocusPainted(false);
         super.setContentAreaFilled(false);
         super.setRolloverEnabled(false);
-        raised = new BevelBorder(BevelBorder.RAISED);
-        lower = new BevelBorder(BevelBorder.LOWERED);
+        raised = new BevelBorder(BevelBorder.RAISED, Phrases.COLOR_BUTTON);
+        lower = new BevelBorder(BevelBorder.LOWERED, Phrases.COLOR_BUTTON);
         setBackground(Phrases.COLOR_BUTTON);
     }
 
@@ -34,6 +34,16 @@ public class CustomJButton extends JButton {
         }
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
+    }
+
+    public void setBorderColor(Color color) {
+        raised = new BevelBorder(BevelBorder.RAISED, Phrases.COLOR_BUTTON);
+        lower = new BevelBorder(BevelBorder.LOWERED, Phrases.COLOR_BUTTON);
+    }
+
+    public void setBackground_BorderColor(Color color) {
+        this.setBackground(color);
+        this.setBorderColor(color);
     }
 
 }
