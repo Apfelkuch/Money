@@ -46,6 +46,7 @@ public class ChoseFile {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
                     returnString = selectedFile.getPath();
+                    dialog.dispose();
                 }
             }
         });
@@ -112,6 +113,7 @@ public class ChoseFile {
         dialog.setSize(new Dimension(dialog.getWidth() < 300 ? 300 : dialog.getWidth(), dialog.getHeight()));
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
+        System.out.println(returnString);
         return returnString;
     }
 
