@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-// improve loading
 public class Load {
 
     public static boolean load(Money money, String path, int maxContentElements) {
@@ -35,7 +34,7 @@ public class Load {
                 content = new StringBuilder();
                 reading = true;
                 divider = 0;
-                while (reading) {
+                while (reading) { // read one data set (entry, controlCheck, ...)
                     int read = bufferedReader.read();
                     if (read == -1) { // check if the end is reached
                         end = true;
@@ -86,6 +85,7 @@ public class Load {
             if (pos < 0) {
                 pos = 0;
             }
+            money.updateAllEntries();
             money.moveTopEntry(pos);
 
         } catch (Exception e) {
