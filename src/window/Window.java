@@ -25,6 +25,11 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+// improve enter zur nächsten Ziele weg
+// improve enter für Eintragen
+// improve Betrags eingabe
+// improve Speichername festlegen
+// improve Design
 public class Window extends JFrame implements ActionListener {
 
     // layers

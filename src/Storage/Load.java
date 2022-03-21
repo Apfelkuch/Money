@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+// improve loading
 public class Load {
 
     public static boolean load(Money money, String path, int maxContentElements) {
