@@ -33,7 +33,7 @@ public class Money {
 
     public Money() {
 
-        paths = Load.loadPaths(Phrases.PATH + "//" + Phrases.FILE_PATHS);
+        paths = Load.loadPaths(Phrases.FILE_PATHS);
 
         startingWindow startingWindow = new startingWindow();
         startingWindow.setMaxProgressBar(4);
@@ -57,7 +57,7 @@ public class Money {
 
         // loading
 
-        boolean loading = Load.load(this, path + "\\" + Phrases.FILENAME, window.getMaxContentElements());
+        boolean loading = Load.load(this, path, window.getMaxContentElements());
         if (loading) {
             System.out.println("Money.Money >> Entries loaded");
         } else {
@@ -229,8 +229,8 @@ public class Money {
         if (!paths.contains(path)) {
             paths.add(path);
         }
-        Save.saveFiles(Phrases.PATH + "//" + Phrases.FILE_PATHS, paths.toArray(new String[0]));
-        return Save.save(this, path + "//" + Phrases.FILENAME);
+        Save.saveFiles(Phrases.FILE_PATHS, paths.toArray(new String[0]));
+        return Save.save(this, path);
     }
 
     public void moveTopEntry(int amount) {

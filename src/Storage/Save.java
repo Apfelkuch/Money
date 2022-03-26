@@ -7,7 +7,6 @@ import Phrases.Phrases;
 import java.io.File;
 import java.io.PrintWriter;
 
-// improve saving
 public class Save {
 
     public static boolean save(Money money, String path) {

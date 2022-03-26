@@ -3,12 +3,9 @@ package window;
 import Phrases.Phrases;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class ChoseFile {
@@ -39,13 +36,10 @@ public class ChoseFile {
         labelNew.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
-                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int returnVal = fileChooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    returnString = selectedFile.getPath();
+                FileChooser fileChooser = new FileChooser(System.getProperty("user.home"));
+                if (fileChooser.showSaveDialog(null) == FileChooser.APPROVE_OPTION) {
+                    String path = fileChooser.getSelectedFile().getPath();
+                    returnString = path.substring(path.lastIndexOf('.') + 1).equals(Phrases.EXTENSION) ? path : path.concat("." + Phrases.EXTENSION);
                     dialog.dispose();
                 }
             }
@@ -58,13 +52,15 @@ public class ChoseFile {
         panel.add(labelNew);
 
         for (String path : paths) {
-            JLabel label = new JLabel(path + "\\" + Phrases.FILENAME);
+            JLabel label = new JLabel(path);
             label.setName(path);
             label.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    returnString = label.getName();
-                    dialog.dispose();
+                    if (new File(path).exists()) { // file can only be opened if the file exists
+                        returnString = label.getName();
+                        dialog.dispose();
+                    }
                 }
             });
             label.setFont(font);
@@ -79,13 +75,11 @@ public class ChoseFile {
         labelChose.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter(".money", "money");
-                fileChooser.setFileFilter(fileNameExtensionFilter); // setFileFilter
-
+                FileChooser fileChooser = new FileChooser();
                 int returnVal = fileChooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    returnString = fileChooser.getSelectedFile().getParentFile().getAbsolutePath();
+                if (returnVal == FileChooser.APPROVE_OPTION) {
+                    returnString = fileChooser.getSelectedFile().getAbsolutePath();
+                    dialog.dispose();
                 }
             }
         });
@@ -98,13 +92,6 @@ public class ChoseFile {
 
         dialog.setContentPane(panel);
 
-        dialog.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                returnString = null;
-                dialog.dispose();
-            }
-        });
-
         dialog.setResizable(false);
     }
 
@@ -113,7 +100,7 @@ public class ChoseFile {
         dialog.setSize(new Dimension(dialog.getWidth() < 300 ? 300 : dialog.getWidth(), dialog.getHeight()));
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
-        System.out.println(returnString);
+        System.out.println("ChoseFile.inputDialog >> returnString: " + returnString);
         return returnString;
     }
 

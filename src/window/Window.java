@@ -15,6 +15,7 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
@@ -28,7 +29,6 @@ import java.util.TimerTask;
 // improve enter zur nächsten Ziele weg
 // improve enter für Eintragen
 // improve Betrags eingabe
-// improve Speichername festlegen
 // improve Design
 public class Window extends JFrame implements ActionListener {
 
@@ -43,9 +43,9 @@ public class Window extends JFrame implements ActionListener {
     // menu bar
     private JMenuItem save;
     private JMenuItem exit;
-    private JMenuItem path;
     private JMenuItem deletePaths;
     private JMenuItem menuItemSettings;
+    private JMenuItem saveUnder;
 
     // table
     private JLabel controlsReceiver_by;
@@ -208,6 +208,10 @@ public class Window extends JFrame implements ActionListener {
         save.addActionListener(this);
         options.add(save);
 
+        saveUnder = new JMenuItem(Phrases.saveUnder);
+        saveUnder.addActionListener(this);
+        options.add(saveUnder);
+
         exit = new JMenuItem(Phrases.exit);
         exit.addActionListener(this);
         options.add(exit);
@@ -215,10 +219,6 @@ public class Window extends JFrame implements ActionListener {
         deletePaths = new JMenuItem(Phrases.deletePaths);
         deletePaths.addActionListener(this);
         options.add(deletePaths);
-
-        path = new JMenuItem(money.getPath());
-        path.addActionListener(this);
-        options.add(path);
 
         menuItemSettings = new JMenuItem(Phrases.settings);
         menuItemSettings.addActionListener(this);
@@ -766,23 +766,31 @@ public class Window extends JFrame implements ActionListener {
             miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
         } else if (e.getSource() == save) { // JMenuBar save
             money.save();
+        } else if (e.getSource() == saveUnder) { // JMenuBar saveUnder
+            // create the save-path
+            FileChooser fileChooser = new FileChooser(Phrases.FILE_PATHS);
+            if (fileChooser.showSaveDialog(null) == FileChooser.APPROVE_OPTION) {
+                String path = fileChooser.getSelectedFile().getPath();
+                File newFile = new File(path.substring(path.lastIndexOf('.') + 1).equals(Phrases.EXTENSION) ? path : path.concat("." + Phrases.EXTENSION));
+                try {
+                    if (newFile.createNewFile()) {
+                        System.out.println("Window.actionPerformed >> saveUnder has created a new File");
+                    } else {
+                        System.out.println("Window.actionPerformed >> saveUnder File already existed");
+                    }
+                    money.setPath(newFile.getPath());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            // save
+            money.save();
         } else if (e.getSource() == exit) { // JMenuBar exit
             if (money.save()) {
                 System.exit(1);
             }
         } else if (e.getSource() == deletePaths) { // JMenuBar deletePaths
             money.clearPaths();
-        } else if (e.getSource() == path) { // JMenuBar path
-            JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
-            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int returnVal = fileChooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                String selectedFilePath = selectedFile.getPath();
-                money.setPath(selectedFilePath);
-                path.setText(selectedFilePath);
-            }
         } else if (e.getSource() == menuItemSettings) { // JMenuBar settings
             settings = new Settings(null, this);
         }

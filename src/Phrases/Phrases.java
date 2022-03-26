@@ -42,6 +42,7 @@ public class Phrases {
     // The Text on the menu bar
     public static String options = "options";
     public static String save = "save";
+    public static String saveUnder = "save under";
     public static String exit = "exit";
 
 
@@ -94,9 +95,8 @@ public class Phrases {
     public static final char DIVIDER = (char) 160; // 1 = divide , 2 = divide controlValue from Content, 3 = divide entries in 1000 packs
     public static final char PLACEHOLDER = (char) 177;
     public static final String CONTROL_VALUE = "Version 1" + Phrases.DIVIDER + Phrases.DIVIDER;
-    public static final String PATH = System.getProperties().getProperty("user.dir") + "\\Money";
-    public static final String FILENAME = "save.money";
-    public static final String FILE_PATHS = "paths.money";
+    public static final String EXTENSION = "money";
+    public static final String FILE_PATHS = System.getProperties().getProperty("user.dir") + "\\Money\\paths.money";
     public static final String choseFile = "Wähle eine Datei";
     public static final String startNew = "Neu starten";
     public static final String searchFile = "Suche ein File";
