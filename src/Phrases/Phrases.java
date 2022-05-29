@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 
 public class Phrases {
 
@@ -85,8 +86,8 @@ public class Phrases {
 
     // input
     public static String moneySymbol = "€";
-    public static final int inputValueMax = Integer.parseInt("10000");
-    public static final int inputValueMin = Integer.parseInt("-1");
+    public static final int inputValueMax = Integer.parseInt("1000000");
+    public static final int inputValueMin = Integer.parseInt("0");
 
     // save and load
     public static final Charset CHARSET = StandardCharsets.ISO_8859_1;
@@ -107,9 +108,11 @@ public class Phrases {
     public static Color EXTRA_WINDOW_FOREGROUND = Color.BLACK;
     public static Color EXTRA_WINDOW_BACKGROUND = Color.LIGHT_GRAY;
 
-    public static String valueOutOfBounce = "Die Eingabe ist zu groß";
+    public static String valueOutOfBounce = "Die Eingabe ist zu groß (max = " + new DecimalFormat("#,###.##").format(inputValueMax) + ")";
     public static String invalidInput = "Falsche Eingabe";
-    public static String invalidInputChar = "Verbotene Zeichen verwendet.";
+    public static String invalidInputChar = "Verbotene Zeichen verwendet";
+    public static String syntaxErrorInCalculationExpression = "Syntaxfehler im Ausdruck";
+    public static String calculationSuccessfulWithRounding = "Das Ergebniss wurde gerundet.";
 
     // settings
     public static String settings = "Einstellungen";
@@ -128,5 +131,9 @@ public class Phrases {
      * The number of times a receiver, by, category or purpose must be used before it is shown be default in the drop down menu.
      */
     public static final int LIST_JUMP_VALUE = 8;
+
+    // calculator
+    public static int calculatorMinValue = 0;
+    public static int calculatorMaxValue = 9999999; // max input value because calculating with higher numbers is difficult. Written with exponent (eg. 3e7)
 
 }

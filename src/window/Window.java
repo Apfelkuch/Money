@@ -29,7 +29,6 @@ import java.util.TimerTask;
 
 // improve enter zur nächsten Ziele weg
 // improve enter für Eintragen
-// improve Betrags eingabe
 // improve Design
 public class Window extends JFrame implements ActionListener {
 
@@ -499,7 +498,7 @@ public class Window extends JFrame implements ActionListener {
                     newContent = newContent.substring(0, euroSymbol);
                 }
                 if (newContent.indexOf(".") != newContent.lastIndexOf(".")) { // if the input have more than one dot the verification fails
-                    showPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInput);
+                    new CustomPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInput);
                     tc.selectAll();
                     return false;
                 }
@@ -513,7 +512,7 @@ public class Window extends JFrame implements ActionListener {
                         }
                     }
                     if (!result) { // if a char is invalid the verification fails
-                        showPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInputChar);
+                        new CustomPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInputChar);
                         tc.selectAll();
                         return false;
                     }
@@ -557,8 +556,10 @@ public class Window extends JFrame implements ActionListener {
         calcValue.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (miniCalculator != null)
+                if (miniCalculator != null) {
+                    calcValue.requestFocus();
                     miniCalculator.keyTyped(e);
+                }
             }
         });
         focusElements.add(calcValue);
@@ -750,7 +751,11 @@ public class Window extends JFrame implements ActionListener {
             choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
             choseDate.setLocalDate(this.getInputLocalDate());
         } else if (e.getSource() == calcValue) { // calc value
+            if (getInputValue() > Phrases.inputValueMax) {
+                setInputValue(String.valueOf(Phrases.inputValueMax));
+            }
             miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
+            calcValue.requestFocus();
         } else if (e.getSource() == save) { // JMenuBar save
             money.save();
         } else if (e.getSource() == saveUnder) { // JMenuBar saveUnder
@@ -840,7 +845,10 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public void setInputValue(String value) {
-        this.inputValue.setValue(value);
+        JTextField textField = new JTextField(value);
+        this.inputValue.getInputVerifier().verify(textField);
+        this.inputValue.setValue(textField.getText());
+        inputValue.requestFocus();
     }
 
     public void setInputDate(LocalDate localDate) {
