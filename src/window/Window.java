@@ -5,6 +5,7 @@ import Money.Money;
 import Phrases.Phrases;
 import utilitis.CustomJButton;
 import utilitis.CustomJComboBox;
+import utilitis.CustomPopup;
 import utilitis.Options;
 
 import javax.swing.*;
@@ -529,7 +530,7 @@ public class Window extends JFrame implements ActionListener {
                         throw new NumberFormatException();
                     }
                 } catch (NullPointerException | NumberFormatException e) {
-                    showPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.valueOutOfBounce);
+                    new CustomPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.valueOutOfBounce);
                     tc.selectAll();
                     return false;
                 }
@@ -570,20 +571,6 @@ public class Window extends JFrame implements ActionListener {
         input.add(jPanelValue);
         input.add(jPanelPurpose);
 
-    }
-
-    private void showPopup(int x, int y, String message) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.add(new JLabel(message));
-        popupMenu.setLocation(x, y);
-        popupMenu.setVisible(true);
-        java.util.Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                popupMenu.setVisible(false);
-            }
-        }, 2000);
     }
 
     public void focusNext() {
