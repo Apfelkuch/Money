@@ -24,8 +24,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 // improve enter zur nächsten Ziele weg
 // improve enter für Eintragen
@@ -484,6 +482,7 @@ public class Window extends JFrame implements ActionListener {
 //        inputValue.setFormatterFactory(new DefaultFormatterFactory());
         inputValue.setValue("0,00 " + Phrases.moneySymbol);
         inputValue.setFont(Phrases.inputFont);
+        // TODO: Apfel 30.08.2022 rework so that it reacts and checks any new letter
         inputValue.setInputVerifier(new InputVerifier() {
             @Override
             public boolean verify(JComponent input) {
@@ -828,11 +827,13 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public String getInputCategory() {
-        return (String) inputCategory.getSelectedItem();
+        String content = (String) inputCategory.getSelectedItem();
+        return content == null ? " " : content;
     }
 
     public String getInputPurpose() {
-        return (String) inputPurpose.getSelectedItem();
+        String content = (String) inputPurpose.getSelectedItem();
+        return content == null ? " " : content;
     }
 
     public LocalDate getInputLocalDate() {
