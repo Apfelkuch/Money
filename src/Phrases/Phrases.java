@@ -21,9 +21,10 @@ public class Phrases {
     }
 
     // Fonts
-    public static Font showFontBold = new Font("arial", Font.BOLD, 12);
-    public static Font showFontPlain = new Font("arial", Font.PLAIN, 12);
-    public static Font inputFont = new Font("arial", Font.BOLD, 12);
+    public static int fontSize = 13; // default = 12
+    public static Font showFontBold = new Font("arial", Font.BOLD, fontSize);
+    public static Font showFontPlain = new Font("arial", Font.PLAIN, fontSize);
+    public static Font inputFont = new Font("arial", Font.BOLD, fontSize);
 
     // The Text on th GUI
     public static String number = "Nr.";
@@ -66,8 +67,9 @@ public class Phrases {
     public static void setDefaultColors() {
         COLOR_TABLE_CONTENT_BACKGROUND = Phrases.own[0];
         COLOR_TABLE_HEAD_ROW = COLOR_TABLE_CONTENT_BACKGROUND == null ? null : COLOR_TABLE_CONTENT_BACKGROUND.darker();
-        COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker().darker();
-        COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0];
+        COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker();
+        assert Phrases.own[0] != null;
+        COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0].darker();
         COLOR_CONTROL_BACKGROUND = null;
         COLOR_CONTROL_1 = Phrases.own[0].darker().darker();
         COLOR_CONTROL_2 = Phrases.own[0].darker().darker();

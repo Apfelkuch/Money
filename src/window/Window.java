@@ -278,6 +278,7 @@ public class Window extends JFrame implements ActionListener {
         // split
         split = new JPanel();
         split.setBackground(Phrases.COLOR_TABLE_SPLIT);
+        split.setPreferredSize(new Dimension(0, split.getPreferredSize().height / 2));
         table.add(split, BorderLayout.SOUTH);
     }
 
@@ -300,7 +301,7 @@ public class Window extends JFrame implements ActionListener {
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
         controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
 
-        controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         controlPanel.setBackground(Phrases.COLOR_CONTROL_PANEL_BACKGROUND);
         controlPanel.add(controls);
         mainLayer.add(controlPanel, BorderLayout.SOUTH);
@@ -380,6 +381,7 @@ public class Window extends JFrame implements ActionListener {
         inputReceiver_by.setPreferredSize(inputDimensionBig);
         inputReceiver_by.setEditable(true);
         inputReceiver_by.setSelectedItem(null);
+        inputReceiver_by.setName("inputReceiver_by");
         focusElements.add(inputReceiver_by);
         jPanelReceiverBy.add(inputReceiver_by);
 
@@ -396,6 +398,7 @@ public class Window extends JFrame implements ActionListener {
         inputCategory.setPreferredSize(inputDimensionBig);
         inputCategory.setEditable(true);
         inputCategory.setSelectedItem(null);
+        inputCategory.setName("inputCategory");
         focusElements.add(inputCategory);
         jPanelCategory.add(inputCategory);
 
@@ -412,6 +415,7 @@ public class Window extends JFrame implements ActionListener {
         inputPurpose.setPreferredSize(inputDimensionBig);
         inputPurpose.setEditable(true);
         inputPurpose.setSelectedItem(null);
+        inputPurpose.setName("inputPurpose");
         focusElements.add(inputPurpose);
         jPanelPurpose.add(inputPurpose);
 
@@ -453,6 +457,15 @@ public class Window extends JFrame implements ActionListener {
         inputDate.setPreferredSize(inputDimensionSmall);
         inputDate.setBorder(null);
         inputDate.setValue(setDateOnControl(LocalDate.now()));
+        inputDate.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == '\n') {
+                    focusNext();
+                }
+            }
+        });
+        inputDate.setName("inputDate");
         focusElements.add(inputDate);
         jPanelDate.add(inputDate);
         choiceDate = new CustomJButton();
@@ -547,6 +560,15 @@ public class Window extends JFrame implements ActionListener {
         });
         inputValue.setPreferredSize(inputDimensionSmall);
         inputValue.setBorder(null);
+        inputValue.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyChar() == '\n') {
+                    focusNext();
+                }
+            }
+        });
+        inputValue.setName("inputValue");
         focusElements.add(inputValue);
         jPanelValue.add(inputValue);
         calcValue = new CustomJButton();
@@ -574,12 +596,19 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public void focusNext() {
-        Component component = getFocusOwner().getParent();
+        // The JFormattedTextFields are direct focus Owner.
+        // The CustomJComboBox are not direct the focus Owner, their Parents are.
+        Component component = getFocusOwner();
         if (component == null) {
+            System.err.println("[Error] Window.focusNext >> component == null");
             return;
         }
-        int pos = focusElements.indexOf(component);
-        focusElements.get(pos + 1).requestFocus();
+        int pos = focusElements.contains(component) ? focusElements.indexOf(component) : focusElements.indexOf(component.getParent());
+        if (pos == -1) {
+            System.err.println("[Error] Window.focusNext >> pos == -1");
+        }
+        int newPos = pos + 1 >= focusElements.size() ? 0 : pos + 1;
+        focusElements.get(newPos).requestFocus();
     }
 
     public boolean isInputEmpty() {
