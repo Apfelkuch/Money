@@ -100,7 +100,7 @@ public class ChoseFile {
         dialog.setSize(new Dimension(dialog.getWidth() < 300 ? 300 : dialog.getWidth(), dialog.getHeight()));
         dialog.setLocationRelativeTo(parent);
         dialog.setVisible(true);
-        System.out.println("ChoseFile.inputDialog >> returnString: " + returnString);
+//        System.out.println("ChoseFile.inputDialog >> returnString: " + returnString);
         return returnString;
     }
 

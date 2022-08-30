@@ -17,7 +17,7 @@ public class Load {
         try {
             File file = new File(path);
             if (!file.exists()) {
-                System.out.println("No file found");
+                System.err.println("[Error] No file found");
                 return false;
             }
 
@@ -141,7 +141,7 @@ public class Load {
         try {
             File file = new File(path);
             if (!file.exists()) {
-                System.out.println("No file found");
+                System.err.println("[Error] No file found");
                 return new ArrayList<>();
             }
 

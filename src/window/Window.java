@@ -316,14 +316,14 @@ public class Window extends JFrame implements ActionListener {
         spending.setFont(Phrases.inputFont);
         spending.setPreferredSize(buttonsDimension);
         spending.addActionListener(this);
-        focusElements.add(spending);
+//        focusElements.add(spending);
         controlButtons.add(spending);
 
         income = new CustomJButton(Phrases.tableIncome);
         income.setFont(Phrases.inputFont);
         income.setPreferredSize(buttonsDimension);
         income.addActionListener(this);
-        focusElements.add(income);
+//        focusElements.add(income);
         controlButtons.add(income);
 
         // control Buttons I
@@ -336,28 +336,28 @@ public class Window extends JFrame implements ActionListener {
         neu.setFont(Phrases.inputFont);
         neu.setPreferredSize(buttonsDimension);
         neu.addActionListener(this);
-        focusElements.add(neu);
+//        focusElements.add(neu);
         controlButtonsI.add(neu);
 
         edit = new CustomJButton(Phrases.edit);
         edit.setFont(Phrases.inputFont);
         edit.setPreferredSize(buttonsDimension);
         edit.addActionListener(this);
-        focusElements.add(edit);
+//        focusElements.add(edit);
         controlButtonsI.add(edit);
 
         enter = new CustomJButton(Phrases.enter);
         enter.setFont(Phrases.inputFont);
         enter.setPreferredSize(buttonsDimension);
         enter.addActionListener(this);
-        focusElements.add(enter);
+//        focusElements.add(enter);
         controlButtonsI.add(enter);
 
         cancel = new CustomJButton(Phrases.cancel);
         cancel.setFont(Phrases.inputFont);
         cancel.setPreferredSize(buttonsDimension);
         cancel.addActionListener(this);
-        focusElements.add(cancel);
+//        focusElements.add(cancel);
         controlButtonsI.add(cancel);
 
         // input
@@ -466,7 +466,7 @@ public class Window extends JFrame implements ActionListener {
                 }
             }
         });
-        focusElements.add(choiceDate);
+//        focusElements.add(choiceDate);
         jPanelDate.add(choiceDate);
 
         JPanel jPanelValue = new JPanel();
@@ -524,7 +524,7 @@ public class Window extends JFrame implements ActionListener {
                 try {
                     d = Double.parseDouble(newContent);
                     if (d > Phrases.inputValueMax || d < Phrases.inputValueMin) {
-                        System.out.println("\033[1;31m" + "[Error] Window.inputValue.Verifier: value is out of bounds" + "\033[0m");
+                        System.err.println("[Error] Window.inputValue.Verifier: value is out of bounds");
                         throw new NumberFormatException();
                     }
                 } catch (NullPointerException | NumberFormatException e) {
@@ -561,7 +561,7 @@ public class Window extends JFrame implements ActionListener {
                 }
             }
         });
-        focusElements.add(calcValue);
+//        focusElements.add(calcValue);
         jPanelValue.add(calcValue);
 
 
