@@ -12,6 +12,7 @@ public class startingWindow extends JFrame {
         this.setSize(new Dimension(300, 200));
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setIconImage(new ImageIcon("res\\money.png").getImage());
 
         ImageIcon imageIcon = new ImageIcon("res\\icons\\dark\\loading\\2x.png");
 

@@ -108,6 +108,7 @@ public class Window extends JFrame implements ActionListener {
         this.setMinimumSize(this.getSize());
         this.setResizable(true);
         this.setLocationRelativeTo(null);
+        this.setIconImage(new ImageIcon("res\\money.png").getImage());
 
         this.money = money;
 
