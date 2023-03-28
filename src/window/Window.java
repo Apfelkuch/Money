@@ -289,6 +289,8 @@ public class Window extends JFrame implements ActionListener {
         }
         content.add(entry.showEntry(content.getWidth(), content.getHeight() / maxContentElements, this));
 
+        content.requestFocus();
+
         this.revalidate();
         this.repaint();
     }

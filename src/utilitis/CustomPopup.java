@@ -1,50 +1,50 @@
 package utilitis;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class CustomPopup {
-    private JPopupMenu jPopupMenu;
-    private boolean opaque;
-
-    public CustomPopup() {
-    }
+    private final Popup popup;
 
     public CustomPopup(int x, int y, String message) {
-        new CustomPopup(x, y, message, 2000);
+        this(null, x, y, message, 2000, null);
     }
 
-    public CustomPopup(int x, int y, String message, long delay) {
-        buildPopup(x, y, message);
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                jPopupMenu.setVisible(false);
-            }
-        }, delay);
-    }
-
-    public CustomPopup buildPopup(int x, int y, String message) {
-        jPopupMenu = new JPopupMenu();
+    public CustomPopup(Component owner, int x, int y, String message, long delay, Dimension minSize) {
         JTextArea jTextArea = new JTextArea(message);
-        jTextArea.setOpaque(opaque);
-        jPopupMenu.add(jTextArea);
-        jPopupMenu.setBorder(new LineBorder(Color.BLACK, 1));
-        jPopupMenu.setLocation(x, y);
-        jPopupMenu.setVisible(true);
-        return this;
-    }
+        String longest_message_part = "";
+        for (String s : message.split("\n")) {
+            if (s.length() >= longest_message_part.length()) {
+                longest_message_part = s;
+            }
+        }
+        if (minSize != null) {
+            minSize.width = Math.max(minSize.width, (jTextArea.getFontMetrics(jTextArea.getFont()).stringWidth(longest_message_part) + 2)); // Adjust the width of the popup.
+            jTextArea.setPreferredSize(minSize);
+        }
 
-    public void close() {
-        jPopupMenu.setVisible(false);
-    }
-
-    public CustomPopup setOpaque(boolean opaque) {
-        this.opaque = opaque;
-        return this;
+        popup = PopupFactory.getSharedInstance().getPopup(owner, jTextArea, x, y);
+        popup.show();
+        if (delay > 0) {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+//                    System.out.println("TIMER ENDED");
+                    popup.hide();
+                }
+            }, delay);
+        } else {
+            jTextArea.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    popup.hide();
+                }
+            });
+            jTextArea.addMouseWheelListener(e -> popup.hide());
+        }
     }
 }

@@ -9,10 +9,11 @@ import window.Window;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Entry {
 
@@ -24,8 +25,10 @@ public class Entry {
     private final double income;
     private final Options option;
     private final Money money;
+    private final long showTime = 2_000L; // in milliseconds
     private int number;
     private double balance;
+    private Timer showTimer = new Timer();
 
     public Entry(Options option, int number, LocalDate localDate, String receiverBy, String category, String purpose, double spending, double income, double balance, Money money) {
         this.option = option;
@@ -101,20 +104,31 @@ public class Entry {
         textArea.setOpaque(false);
         textArea.setEnabled(false);
         textArea.addMouseListener(panel.getMouseListeners()[0]);
+
+        textArea.addMouseWheelListener(e -> {
+            showTimer.cancel();
+            textArea.getParent().dispatchEvent(e); // send the Event to the Listener of the Parent ==> scrolling of the entries is otherwise not possible
+        });
         textArea.addMouseListener(new MouseAdapter() {
-            // TODO: Apfel 30.08.2022 Idea: adjust the position to the movement of the mouse??
-            CustomPopup customPopup = new CustomPopup().setOpaque(false);
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                customPopup = customPopup.buildPopup(e.getXOnScreen(), e.getYOnScreen(), textArea.getText());
-            }
-
             @Override
             public void mouseExited(MouseEvent e) {
-                if (customPopup != null) {
-                    customPopup.close();
-                }
+                showTimer.cancel();
+            }
+        });
+        textArea.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                showTimer.cancel();
+                showTimer = new Timer();
+                showTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        int x = e.getXOnScreen() - 10;
+                        int y = e.getYOnScreen() - 10;
+                        Dimension minSize = new Dimension(100, (textArea.getFont().getSize() * (textArea.getText().split("\n").length + 1)));
+                        new CustomPopup(textArea, x, y, textArea.getText(), 0L, minSize);
+                    }
+                }, showTime);
             }
         });
         return textArea;
