@@ -9,7 +9,9 @@ import window.Window;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,20 +20,19 @@ import java.util.TimerTask;
 
 public class Entry {
 
-    private final LocalDate localDate;
-    private final String receiverBy;
-    private final String category;
-    private final String purpose;
-    private final double spending;
-    private final double income;
-    private final Options option;
-    private final Money money;
     private final long showTime = 2_000L; // in milliseconds
+    private final DecimalFormat numberFormat = new DecimalFormat("0.00");
+    private final Money money;
+    private LocalDate localDate;
+    private String receiverBy;
+    private String category;
+    private String purpose;
+    private double spending;
+    private double income;
+    private Options option;
     private int number;
     private double balance;
     private Timer showTimer = new Timer();
-
-    private final DecimalFormat numberFormat = new DecimalFormat("0.00");
 
     public Entry(Options option, int number, LocalDate localDate, String receiverBy, String category, String purpose, double spending, double income, double balance, Money money) {
         this.option = option;
@@ -48,10 +49,6 @@ public class Entry {
 
     public void updateBalance(double previousBalance) {
         this.balance = formatNumber(previousBalance + income - spending);
-    }
-
-    public void updateNumber(int number) {
-        this.number = number;
     }
 
     @Override
@@ -152,37 +149,72 @@ public class Entry {
         return number;
     }
 
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     public LocalDate getLocalDate() {
         return localDate;
+    }
+
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
     }
 
     public String getReceiverBy() {
         return receiverBy;
     }
 
+    public void setReceiverBy(String receiverBy) {
+        this.receiverBy = receiverBy;
+    }
+
     public String getCategory() {
         return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getPurpose() {
         return purpose;
     }
 
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
     public Double getSpending() {
         return spending;
+    }
+
+    public void setSpending(double spending) {
+        this.spending = spending;
     }
 
     public Double getIncome() {
         return income;
     }
 
+    public void setIncome(double income) {
+        this.income = income;
+    }
+
     public Options getOption() {
         return option;
+    }
+
+    public void setOption(Options option) {
+        this.option = option;
     }
 
     public double getBalance() {
         return balance;
     }
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 }
 

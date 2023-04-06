@@ -213,7 +213,13 @@ public class Money {
         }
 
         // set a new entry at the place of the edited entry
-        entries.set(currentEntry, new Entry(tempEntry.getOption(), tempEntry.getNumber(), date, receiverBy, category, purpose, spending, income, balance, this));
+        tempEntry.setLocalDate(date);
+        tempEntry.setReceiverBy(receiverBy.isBlank() ? " " : receiverBy);
+        tempEntry.setCategory(category.isBlank() ? " " : category);
+        tempEntry.setPurpose(purpose.isBlank() ? " " : purpose);
+        tempEntry.setSpending(spending);
+        tempEntry.setIncome(income);
+        tempEntry.setBalance(balance);
 
         // update all following entries.
         for (int i = currentEntry; i < entries.size(); i++) {
@@ -274,7 +280,7 @@ public class Money {
 
         for (int i = current; i < entries.size(); i++) {
             // update the following entry numbers
-            entries.get(i).updateNumber(entries.get(i).getNumber() - 1);
+            entries.get(i).setNumber(entries.get(i).getNumber() - 1);
 
             // update the following entry balances
             if (updateBalance) {
