@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Timer;
@@ -30,6 +31,8 @@ public class Entry {
     private double balance;
     private Timer showTimer = new Timer();
 
+    private final DecimalFormat numberFormat = new DecimalFormat("0.00");
+
     public Entry(Options option, int number, LocalDate localDate, String receiverBy, String category, String purpose, double spending, double income, double balance, Money money) {
         this.option = option;
         this.number = number;
@@ -37,14 +40,14 @@ public class Entry {
         this.receiverBy = receiverBy;
         this.category = category;
         this.purpose = purpose;
-        this.spending = spending;
-        this.income = income;
-        this.balance = balance;
+        this.spending = formatNumber(spending);
+        this.income = formatNumber(income);
+        this.balance = formatNumber(balance);
         this.money = money;
     }
 
     public void updateBalance(double previousBalance) {
-        this.balance = previousBalance + income - spending;
+        this.balance = formatNumber(previousBalance + income - spending);
     }
 
     public void updateNumber(int number) {
@@ -137,6 +140,10 @@ public class Entry {
     public String setDateOnTable(LocalDate date) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return date.format(dateTimeFormatter);
+    }
+
+    public double formatNumber(double d) {
+        return Double.parseDouble(numberFormat.format(d).replaceAll(",", "."));
     }
 
     // GETTER && SETTER

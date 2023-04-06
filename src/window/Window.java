@@ -3,10 +3,7 @@ package window;
 import Money.Entry;
 import Money.Money;
 import Phrases.Phrases;
-import utilitis.CustomJButton;
-import utilitis.CustomJComboBox;
-import utilitis.CustomPopup;
-import utilitis.Options;
+import utilitis.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -19,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -30,30 +28,10 @@ import java.util.Date;
 // improve Design
 public class Window extends JFrame implements ActionListener {
 
+    public static final Dimension extraButton = new Dimension(20, 20);
     // layers
     private final JPanel mainLayer;
-
-    // overlays
-    private miniCalculator miniCalculator;
-    private choseDate choseDate;
-    private Settings settings;
-
-    // menu bar
-    private JMenuItem save;
-    private JMenuItem exit;
-    private JMenuItem deletePaths;
-    private JMenuItem menuItemSettings;
-    private JMenuItem saveUnder;
-
-    // table
-    private JLabel controlsReceiver_by;
-    private JPanel headRow;
-    private JPanel content;
-    private JPanel split;
     private final int contentHeight = 50;
-    private int maxContentElements = 4;
-    private int oldMaxContentElements;
-
     // dimensions
     private final Dimension maxInputDim = new Dimension(900, 0);
     // dimensions control
@@ -62,42 +40,49 @@ public class Window extends JFrame implements ActionListener {
     private final Dimension inputDimensionSmall = new Dimension(100, 20);
     private final Dimension textDimensionBig = new Dimension(80, 20);
     private final Dimension textDimensionSmall = new Dimension(50, 20);
-    public static final Dimension extraButton = new Dimension(20, 20);
-
-
+    private final ArrayList<Component> focusElements;
+    // logic
+    private final Money money;
+    // overlays
+    private miniCalculator miniCalculator;
+    private choseDate choseDate;
+    private Settings settings;
+    // menu bar
+    private JMenuItem save;
+    private JMenuItem exit;
+    private JMenuItem deletePaths;
+    private JMenuItem menuItemSettings;
+    private JMenuItem saveUnder;
+    // table
+    private JLabel controlsReceiver_by;
+    private JPanel headRow;
+    private JPanel content;
+    private JPanel split;
+    private int maxContentElements = 4;
+    private int oldMaxContentElements;
     // controls
     private JPanel controlPanel;
     private JPanel controls;
     private int oldControlsWidth;
     private JPanel input;
     private JPanel controlButtons, controlButtonsI;
-
     private CustomJButton spending;
     private CustomJButton income;
     private boolean isSpending;
-
     private CustomJButton neu;
     private CustomJButton edit;
     private CustomJButton enter;
     private CustomJButton cancel;
-
     private CustomJComboBox<String> inputReceiver_by;
     private CustomJComboBox<String> inputCategory;
     private CustomJComboBox<String> inputPurpose;
     private JFormattedTextField inputDate;
     private CustomJButton choiceDate;
-    private JFormattedTextField inputValue;
+    private InputField_fixes inputValue;
     private CustomJButton calcValue;
-
-
-    private final ArrayList<Container> focusElements;
-
     private boolean editing = false;
     private boolean adding = true;
     private boolean entryShown = false;
-
-    // logic
-    private final Money money;
 
     public Window(String title, Money money) {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -493,31 +478,49 @@ public class Window extends JFrame implements ActionListener {
         controlsValue.setFont(Phrases.inputFont);
         jPanelValue.add(controlsValue);
 
-        char[] validChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
-        inputValue = new JFormattedTextField();
-//        inputValue.setFormatterFactory(new DefaultFormatterFactory());
-        inputValue.setValue("0,00 " + Phrases.moneySymbol);
+        char[] validChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', '.', KeyEvent.VK_DELETE, KeyEvent.VK_ENTER};
+        inputValue = new InputField_fixes("0,00");
+        inputValue.setPrefix("");
+        inputValue.setPostfix(" " + Phrases.moneySymbol);
         inputValue.setFont(Phrases.inputFont);
-        // TODO: Apfel 30.08.2022 rework so that it reacts and checks any new letter
+        inputValue.addKeyListener(new KeyAdapter() { // only typed valid key are added
+            @Override
+            public void keyTyped(KeyEvent e) {
+                boolean valid = false;
+                for (char c : validChars) {
+                    if (e.getKeyChar() == c) {
+                        valid = true;
+                        break;
+                    }
+                }
+
+                if (!valid) {
+//                    System.out.println("Window.keyPressed: Input for the input value is invalid");
+                    e.consume();
+                }
+            }
+        });
         inputValue.setInputVerifier(new InputVerifier() {
+            private final DecimalFormat df = new DecimalFormat("0.00");
+            private JTextComponent tc = null;
+
             @Override
             public boolean verify(JComponent input) {
-                JTextComponent tc = (JTextComponent) input;
-                String newContent = tc.getText();
-                newContent = newContent.replaceAll(",", "."); // replace ',' to '.'
-                newContent = newContent.replaceAll(" ", "");
-                newContent = newContent.replaceAll("\t", "");
-                newContent = newContent.replaceAll(Character.toString(160), ""); // no-break space (Geschütztes Leerzeichen) removing. ASCI value: 160
-                int euroSymbol = newContent.indexOf(Phrases.moneySymbol); // find the index of the moneySymbol
-                if (euroSymbol != -1) { // shorten the newContent to the area before the first moneySymbol
-                    newContent = newContent.substring(0, euroSymbol);
+                tc = (JTextComponent) input;
+                String content = tc.getText();
+                // clean the
+                content = content.replaceAll(",", "."); // replace ',' with '.'
+                content = content.replaceAll(" ", "");
+                content = content.replaceAll("\t", "");
+                content = content.replaceAll(Character.toString(160), ""); // no-break space (Geschütztes Leerzeichen) removing. ASCI value: 160
+                int euroSymbol = content.indexOf(Phrases.moneySymbol); // find the index of the moneySymbol
+                if (euroSymbol != -1) { // shorten the content to the area before the first moneySymbol
+                    content = content.substring(0, euroSymbol);
                 }
-                if (newContent.indexOf(".") != newContent.lastIndexOf(".")) { // if the input have more than one dot the verification fails
-                    new CustomPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInput);
-                    tc.selectAll();
-                    return false;
+                if (content.indexOf(".") != content.lastIndexOf(".")) { // if the input have more than one dot the verification fails
+                    return failedVerification(Phrases.invalidInput);
                 }
-                char[] characters = newContent.toCharArray(); // check if the String only have valid Characters
+                char[] characters = content.toCharArray(); // check if the String only have valid Characters
                 for (char c : characters) {
                     boolean result = false;
                     for (char c1 : validChars) {
@@ -527,38 +530,42 @@ public class Window extends JFrame implements ActionListener {
                         }
                     }
                     if (!result) { // if a char is invalid the verification fails
-                        new CustomPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.invalidInputChar);
-                        tc.selectAll();
-                        return false;
+                        return failedVerification(Phrases.invalidInputChar);
                     }
                 }
                 // checks if the string is blank or only contains a dot
-                if (newContent.isBlank() || (newContent.contains(".") && newContent.length() == 1)) {
-                    newContent = "0.0";
+                if (content.isBlank() || (content.contains(".") && content.length() == 1)) {
+                    content = "0.0";
                 }
-                double d;
+                double input_number;
                 try {
-                    d = Double.parseDouble(newContent);
-                    if (d > Phrases.inputValueMax || d < Phrases.inputValueMin) {
+                    input_number = Double.parseDouble(content);
+                    if (input_number > Phrases.inputValueMax || input_number < Phrases.inputValueMin) {
                         System.err.println("[Error] Window.inputValue.Verifier: value is out of bounds");
                         throw new NumberFormatException();
                     }
                 } catch (NullPointerException | NumberFormatException e) {
-                    new CustomPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), Phrases.valueOutOfBounce);
-                    tc.selectAll();
-                    return false;
+                    return failedVerification(Phrases.valueOutOfBounce);
                 }
                 // shorten the input on two digits behind the comma
-                Double d1 = new BigDecimal(Double.toString(d)).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                String d2; // Build the String which is displayed
-                switch (d1.toString().substring(d1.toString().indexOf(".") + 1).length()) { // assure that the value have always to digits behind the comma
-                    case 0 -> d2 = d1 + ".00";
-                    case 1 -> d2 = d1 + "0";
-                    default -> d2 = d1 + "";
-                }
-                String s = d2.replaceAll("\\.", ",") + " " + Phrases.moneySymbol; // Add the money symbol
-                ((JTextComponent) input).setText(s); // set the inputValue field to the build String
+                Double output_number = new BigDecimal(Double.toString(input_number)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                inputValue.setValue(df.format(output_number)); // set the inputValue field to the build String
                 return true;
+            }
+
+            private boolean failedVerification(String message) {
+                new CustomPopup(inputValue.getLocationOnScreen().x, inputValue.getLocationOnScreen().y + inputValue.getHeight(), message);
+                if (tc != null) {
+                    tc.selectAll();
+                }
+                return false;
+            }
+
+        });
+        inputValue.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                inputValue.getInputVerifier().verify(inputValue);
             }
         });
         inputValue.setPreferredSize(inputDimensionSmall);
@@ -583,6 +590,10 @@ public class Window extends JFrame implements ActionListener {
                 if (miniCalculator != null) {
                     calcValue.requestFocus();
                     miniCalculator.keyTyped(e);
+                } else {
+                    if (e.getKeyChar() == '\n') {
+                        actionPerformed(new ActionEvent(calcValue, 0, ""));
+                    }
                 }
             }
         });
@@ -625,7 +636,7 @@ public class Window extends JFrame implements ActionListener {
         inputCategory.setSelectedIndex(-1);
         inputPurpose.setSelectedIndex(-1);
         inputDate.setValue(setDateOnControl(LocalDate.now()));
-        inputValue.setValue("0,00 " + Phrases.moneySymbol);
+        inputValue.setValue("0,00");
     }
 
     private void changeToSpending() {
@@ -658,10 +669,10 @@ public class Window extends JFrame implements ActionListener {
         entryShown = true;
         if (entry.getOption().equals(Options.INCOME)) {
             changeToIncome();
-            this.inputValue.setValue(entry.getIncome().toString().replaceAll("\\.", ",") + " " + Phrases.moneySymbol);
+            this.inputValue.setValue(entry.getIncome().toString().replaceAll("\\.", ","));
         } else if (entry.getOption().equals(Options.SPENDING)) {
             changeToSpending();
-            this.inputValue.setValue(entry.getSpending().toString().replaceAll("\\.", ",") + " " + Phrases.moneySymbol);
+            this.inputValue.setValue(entry.getSpending().toString().replaceAll("\\.", ","));
         }
         this.inputReceiver_by.setSelectedItem(entry.getReceiverBy());
         this.inputCategory.setSelectedItem(entry.getCategory());
@@ -681,18 +692,6 @@ public class Window extends JFrame implements ActionListener {
 //        System.out.println("Window.setInputReceiver_by >> strings: " + Arrays.toString(strings));
         inputReceiver_by.setModel(new DefaultComboBoxModel<>(strings));
         inputReceiver_by.setSelectedItem(null);
-    }
-
-    public void setInputCategory(String[] strings) {
-//        System.out.println("Window.setInputCategory >> strings: " + Arrays.toString(strings));
-        inputCategory.setModel(new DefaultComboBoxModel<>(strings));
-        inputCategory.setSelectedItem(null);
-    }
-
-    public void setInputPurpose(String[] strings) {
-//        System.out.println("Window.setInputPurpose >> strings: " + Arrays.toString(strings));
-        inputPurpose.setModel(new DefaultComboBoxModel<>(strings));
-        inputPurpose.setSelectedItem(null);
     }
 
     public void reload() {
@@ -836,8 +835,6 @@ public class Window extends JFrame implements ActionListener {
         content.removeAll();
     }
 
-    // GETTER && SETTER
-
     public Money getMoney() {
         return money;
     }
@@ -846,12 +843,20 @@ public class Window extends JFrame implements ActionListener {
         return isSpending;
     }
 
+    // GETTER && SETTER
+
     public boolean isEntryShown() {
         return entryShown;
     }
 
     public int getMaxContentElements() {
         return maxContentElements;
+    }
+
+    private void setMaxContentElements(int maxContentElements) {
+        this.maxContentElements = maxContentElements;
+        content.setLayout(new GridLayout(maxContentElements, 1));
+        money.updateAllEntries();
     }
 
     public String getInputReceiverBy() {
@@ -863,9 +868,21 @@ public class Window extends JFrame implements ActionListener {
         return content == null ? " " : content;
     }
 
+    public void setInputCategory(String[] strings) {
+//        System.out.println("Window.setInputCategory >> strings: " + Arrays.toString(strings));
+        inputCategory.setModel(new DefaultComboBoxModel<>(strings));
+        inputCategory.setSelectedItem(null);
+    }
+
     public String getInputPurpose() {
         String content = (String) inputPurpose.getSelectedItem();
         return content == null ? " " : content;
+    }
+
+    public void setInputPurpose(String[] strings) {
+//        System.out.println("Window.setInputPurpose >> strings: " + Arrays.toString(strings));
+        inputPurpose.setModel(new DefaultComboBoxModel<>(strings));
+        inputPurpose.setSelectedItem(null);
     }
 
     public LocalDate getInputLocalDate() {
@@ -874,7 +891,7 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public double getInputValue() {
-        return Double.parseDouble(inputValue.getValue().toString().replaceAll(",", ".").replaceAll(" " + Phrases.moneySymbol, ""));
+        return Double.parseDouble(inputValue.getValue().replaceAll(",", "."));
     }
 
     public void setInputValue(String value) {
@@ -898,11 +915,5 @@ public class Window extends JFrame implements ActionListener {
 
     public void setSettings(Settings settings) {
         this.settings = settings;
-    }
-
-    private void setMaxContentElements(int maxContentElements) {
-        this.maxContentElements = maxContentElements;
-        content.setLayout(new GridLayout(maxContentElements, 1));
-        money.updateAllEntries();
     }
 }
