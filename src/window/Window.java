@@ -105,11 +105,16 @@ public class Window extends JFrame implements ActionListener {
                 if (choseDate != null) choseDate.setLocation(choiceDate.getLocationOnScreen());
                 if (settings != null) settings.setLocation(null);
                 // adjust the count of the content elements on the table
-                if (content.getHeight() >= ((maxContentElements + 1) * contentHeight)) {
-                    updateMaxContentElements(1);
-                }
-                if (content.getHeight() < (maxContentElements * contentHeight)) {
-                    updateMaxContentElements(-1);
+                if (Math.abs((content.getHeight() / contentHeight) - maxContentElements) <= 1) { // The Window is manually resized, for smooth content transition
+                    if (content.getHeight() >= ((maxContentElements + 1) * contentHeight)) {
+                        updateMaxContentElements(1);
+                    }
+                    if (content.getHeight() < (maxContentElements * contentHeight)) {
+                        updateMaxContentElements(-1);
+                    }
+                } else { // The Window is resized step by step, change the amount of more than one content-line on the screen
+                    updateMaxContentElements((content.getHeight() / contentHeight) - maxContentElements);
+                    maxContentElements = content.getHeight() / contentHeight;
                 }
                 // adjust the input control size
                 controls.setSize(new Dimension(Math.min(controlPanel.getWidth(), maxInputDim.width), controls.getHeight()));
