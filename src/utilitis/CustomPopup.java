@@ -1,6 +1,7 @@
 package utilitis;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -16,6 +17,7 @@ public class CustomPopup {
 
     public CustomPopup(Component owner, int x, int y, String message, long delay, Dimension minSize) {
         JTextArea jTextArea = new JTextArea(message);
+        jTextArea.setBorder(new LineBorder(Color.BLACK,1));
         String longest_message_part = "";
         for (String s : message.split("\n")) {
             if (s.length() >= longest_message_part.length()) {
