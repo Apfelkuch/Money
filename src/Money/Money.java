@@ -223,7 +223,7 @@ public class Money {
 
         // update all following entries.
         for (int i = currentEntry; i < entries.size(); i++) {
-            entries.get(i).updateBalance(currentEntry == 0 ? 0 : entries.get(i - 1).getBalance());
+            entries.get(i).updateBalance(i == 0 ? 0 : entries.get(i - 1).getBalance());
         }
 
         // update the showing
