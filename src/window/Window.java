@@ -81,7 +81,6 @@ public class Window extends JFrame implements ActionListener {
     private InputField_fixes inputValue;
     private CustomJButton calcValue;
     private boolean editing = false;
-    private boolean adding = true;
     private boolean entryShown = false;
     // Window state
     private boolean programEdited = false;
@@ -763,48 +762,43 @@ public class Window extends JFrame implements ActionListener {
                 changeToSpending();
             }
             editing = false;
-            adding = true;
         } else if (e.getSource() == income) { // income
             entryShown = false;
             if (isInputEmpty()) {
                 changeToIncome();
             }
             editing = false;
-            adding = true;
         } else if (e.getSource() == neu) { // new
             entryShown = false;
             this.clearInput();
             this.changeEnabled(true);
             this.changeToSpending();
             editing = false;
-            adding = true;
         } else if (e.getSource() == edit) {
             entryShown = false;
             if (!isInputEmpty() && !this.inputReceiver_by.isEnabled()) { // edit
                 this.changeEnabled(true);
                 editing = true;
-                adding = false;
             }
         } else if (e.getSource() == enter) {
             this.programIsEdited();
             entryShown = false;
-            if (!isInputEmpty() && adding && !editing) { // enter
-                money.enter();
-                editing = false;
-                clearInput();
-                adding = true;
-            } else if (editing) {  // confirm edit
+            if (isInputEmpty() || !this.inputReceiver_by.isEnabled())
+                return;
+            if (editing) { // confirm edit
                 money.confirmEdit();
-                editing = false;
                 clearInput();
-                adding = true;
+            } else { // enter
+                money.enter();
+                clearInput();
             }
+            editing = false;
+
         } else if (e.getSource() == cancel) { // cancel
             entryShown = false;
             this.clearInput();
             this.changeEnabled(true);
             editing = false;
-            adding = true;
         } else if (e.getSource() == choiceDate) { // choice date
             choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
             choseDate.setLocalDate(this.getInputLocalDate());
@@ -854,7 +848,6 @@ public class Window extends JFrame implements ActionListener {
 
     public void edit(Entry entry) {
         money.edit(entry);
-        adding = false;
     }
 
     public String setDateOnControl(LocalDate date) {
