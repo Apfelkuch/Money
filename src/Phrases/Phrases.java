@@ -116,6 +116,9 @@ public class Phrases {
     public static String syntaxErrorInCalculationExpression = "Syntaxfehler im Ausdruck";
     public static String calculationSuccessfulWithRounding = "Das Ergebniss wurde gerundet.";
 
+    public static String saveDialogTitle = "Saving";
+    public static String saveDialogText = "Do you want to save the file?";
+
     // settings
     public static String settings = "Einstellungen";
     public static String colorTable = "Hintergrund der Einträge";

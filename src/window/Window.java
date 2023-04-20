@@ -83,10 +83,14 @@ public class Window extends JFrame implements ActionListener {
     private boolean editing = false;
     private boolean adding = true;
     private boolean entryShown = false;
+    // Window state
+    private boolean programEdited = false;
+    private final String title;
 
     public Window(String title, Money money) {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle(title);
+        this.title = title;
         // start the window Maximized
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setSize(600, 470);
@@ -156,6 +160,16 @@ public class Window extends JFrame implements ActionListener {
             }
         });
 
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int result = ExtraWindow.confirmDialog(null, Phrases.saveDialogTitle, Phrases.saveDialogText, Phrases.showFontPlain, Phrases.EXTRA_WINDOW_BACKGROUND, Phrases.EXTRA_WINDOW_FOREGROUND);
+                if (result == ExtraWindow.EXIT_WITH_YES) {
+                    save();
+                }
+            }
+        });
+
         // init
         focusElements = new ArrayList<>();
 
@@ -177,6 +191,14 @@ public class Window extends JFrame implements ActionListener {
         this.revalidate();
         this.repaint();
 
+    }
+
+    public boolean programIsEdited() {
+        if (programEdited)
+            return false;
+        programEdited = true;
+        this.setTitle(title + " *");
+        return true;
     }
 
     private void updateMaxContentElements(int amount) {
@@ -764,6 +786,7 @@ public class Window extends JFrame implements ActionListener {
                 adding = false;
             }
         } else if (e.getSource() == enter) {
+            this.programIsEdited();
             entryShown = false;
             if (!isInputEmpty() && adding && !editing) { // enter
                 money.enter();
@@ -792,7 +815,7 @@ public class Window extends JFrame implements ActionListener {
             miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
             calcValue.requestFocus();
         } else if (e.getSource() == save) { // JMenuBar save
-            money.save();
+            this.save();
         } else if (e.getSource() == saveUnder) { // JMenuBar saveUnder
             // create the save-path
             FileChooser fileChooser = new FileChooser(Phrases.FILE_PATHS);
@@ -811,9 +834,9 @@ public class Window extends JFrame implements ActionListener {
                 }
             }
             // save
-            money.save();
+            save();
         } else if (e.getSource() == exit) { // JMenuBar exit
-            if (money.save()) {
+            if (save()) {
                 System.exit(1);
             }
         } else if (e.getSource() == deletePaths) { // JMenuBar deletePaths
@@ -821,6 +844,12 @@ public class Window extends JFrame implements ActionListener {
         } else if (e.getSource() == menuItemSettings) { // JMenuBar settings
             settings = new Settings(null, this);
         }
+    }
+
+    private boolean save() {
+        this.setTitle(this.title);
+        this.programEdited = false;
+        return money.save();
     }
 
     public void edit(Entry entry) {
