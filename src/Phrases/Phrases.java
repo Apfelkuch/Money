@@ -9,8 +9,10 @@ import java.text.DecimalFormat;
 
 public class Phrases {
 
+    private Phrases() {}
+
     // Fonts
-    public Phrases() {
+    public static void init() {
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
             graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("res/arial.ttf")));
@@ -64,6 +66,12 @@ public class Phrases {
     public static Color COLOR_CONTROL_3;
     public static Color COLOR_BUTTON;
 
+    public static Color BACKGROUND;
+    public static Color BACKGROUND_LIGHT;
+    public static Color FOREGROUND;
+    public static Color HIGHLIGHTS;
+    public static Color BORDER;
+
     public static void setDefaultColors() {
         COLOR_TABLE_CONTENT_BACKGROUND = Phrases.own[0];
         COLOR_TABLE_HEAD_ROW = COLOR_TABLE_CONTENT_BACKGROUND == null ? null : COLOR_TABLE_CONTENT_BACKGROUND.darker();
@@ -75,6 +83,12 @@ public class Phrases {
         COLOR_CONTROL_2 = Phrases.own[0].darker().darker();
         COLOR_CONTROL_3 = Phrases.own[0];
         COLOR_BUTTON = Phrases.own[0].darker();
+
+        BACKGROUND = Color.GRAY;
+        FOREGROUND = Color.BLACK;
+        HIGHLIGHTS = BACKGROUND.darker();
+        BORDER = Color.BLACK.brighter();
+        BACKGROUND_LIGHT = Color.LIGHT_GRAY;
     }
 
     /**

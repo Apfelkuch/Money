@@ -212,8 +212,8 @@ public class Window extends JFrame implements ActionListener {
 
         // Option
         JMenu options = new JMenu(Phrases.options);
-
         menuBar.add(options);
+
         save = new JMenuItem(Phrases.save);
         save.addActionListener(this);
         options.add(save);
@@ -222,13 +222,19 @@ public class Window extends JFrame implements ActionListener {
         saveUnder.addActionListener(this);
         options.add(saveUnder);
 
+        options.addSeparator();
+
         exit = new JMenuItem(Phrases.exit);
         exit.addActionListener(this);
         options.add(exit);
 
+        options.addSeparator();
+
         deletePaths = new JMenuItem(Phrases.deletePaths);
         deletePaths.addActionListener(this);
         options.add(deletePaths);
+
+        options.addSeparator();
 
         menuItemSettings = new JMenuItem(Phrases.settings);
         menuItemSettings.addActionListener(this);
@@ -493,6 +499,7 @@ public class Window extends JFrame implements ActionListener {
                 }
             }
         });
+        choiceDate.setIcon(new ImageIcon("res\\icons\\icons8-kalender-16.png"));
 //        focusElements.add(choiceDate);
         jPanelDate.add(choiceDate);
 
@@ -623,6 +630,7 @@ public class Window extends JFrame implements ActionListener {
                 }
             }
         });
+        calcValue.setIcon(new ImageIcon("res\\icons\\icons8-taschenrechner-16.png"));
 //        focusElements.add(calcValue);
         jPanelValue.add(calcValue);
 
@@ -752,22 +760,29 @@ public class Window extends JFrame implements ActionListener {
         this.repaint();
     }
 
+    public void enterEntry() {
+        if (editing) {
+            money.confirmEdit();
+        } else {
+            money.addNewEntry();
+        }
+        editing = false;
+        entryShown = false;
+        clearInput();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         this.revalidate();
         this.repaint();
         if (e.getSource() == spending) { // spending
-            entryShown = false;
-            if (isInputEmpty()) {
+            if (!editing && !entryShown && isInputEmpty()) {
                 changeToSpending();
             }
-            editing = false;
         } else if (e.getSource() == income) { // income
-            entryShown = false;
-            if (isInputEmpty()) {
+            if (!editing && !entryShown && isInputEmpty()) {
                 changeToIncome();
             }
-            editing = false;
         } else if (e.getSource() == neu) { // new
             entryShown = false;
             this.clearInput();
@@ -785,13 +800,7 @@ public class Window extends JFrame implements ActionListener {
             entryShown = false;
             if (isInputEmpty() || !this.inputReceiver_by.isEnabled())
                 return;
-            if (editing) { // confirm edit
-                money.confirmEdit();
-                clearInput();
-            } else { // enter
-                money.enter();
-                clearInput();
-            }
+            enterEntry();
             editing = false;
 
         } else if (e.getSource() == cancel) { // cancel

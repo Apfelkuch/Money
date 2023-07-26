@@ -1,6 +1,7 @@
 package Money;
 
 import Phrases.Phrases;
+import Phrases.Design;
 import Storage.Load;
 import Storage.Save;
 import utilitis.Options;
@@ -33,6 +34,9 @@ public class Money {
 
     public Money() {
 
+        Phrases.init();
+        Design.init();
+
         paths = Load.loadPaths(Phrases.FILE_PATHS);
 
         startingWindow startingWindow = new startingWindow();
@@ -46,8 +50,6 @@ public class Money {
         }
 
         startingWindow.addToProgressBar(1);
-
-        new Phrases();
 
         startingWindow.addToProgressBar(1);
 
@@ -66,7 +68,12 @@ public class Money {
 
         startingWindow.addToProgressBar(1);
 
-//        // testing entries
+        startingWindow.dispose();
+        window.setVisible(true);
+
+    }
+
+    public void testingData() { // testing
 //        int preload = 10000;
 //        for (int i = 0; i < preload; i++) {
 //            entries.add(new Entry(Options.INCOME, i + 1, LocalDate.of(2021, 7, 10), "receiver", "category", "purpose", 0f, 0f, 0f, this));
@@ -80,7 +87,6 @@ public class Money {
 //            window.addContentToTable(e);
 //        }
 
-//        // testing list
 //        list_receiverBy = new ArrayList<>();
 //        list_receiverBy.add("and");
 //        list_receiverBy.add("you");
@@ -112,14 +118,9 @@ public class Money {
 //            }
 //        }
 //        window.setInputPurpose(list_purpose.toArray(new String[0]));
-
-
-        startingWindow.dispose();
-        window.setVisible(true);
-
     }
 
-    public void enter() {
+    public void addNewEntry() {
         Options option = window.isSpending() ? Options.SPENDING : Options.INCOME;
         int number = entries.size() + 1;
         LocalDate date = window.getInputLocalDate();
