@@ -1,11 +1,17 @@
 package window;
 
+import Phrases.Phrases;
+import utilitis.CustomJLabel;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class startingWindow extends JFrame {
 
     private final JProgressBar jProgressBar;
+    private final CustomJLabel loadingText;
 
     public startingWindow() {
         super("Starting the program");
@@ -13,31 +19,38 @@ public class startingWindow extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setIconImage(new ImageIcon("res\\money.png").getImage());
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                loadingText.cancelAnimation();
+            }
+        });
+        this.setCursor(Cursor.WAIT_CURSOR);
 
-        ImageIcon imageIcon = new ImageIcon("res\\icons\\dark\\loading\\2x.png");
+        this.setUndecorated(true);
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         this.add(panel);
 
-        JLabel label = new JLabel("Loading...");
-        label.setFont(new Font("arial", Font.BOLD, 30));
-        label.setForeground(Color.BLACK);
-        label.setIcon(imageIcon);
-        label.setBackground(Color.GRAY);
-        label.setOpaque(true);
-        label.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(label, BorderLayout.CENTER);
+        loadingText = new CustomJLabel();
+        loadingText.setText("Loading...");
+        loadingText.setFont(new Font("arial", Font.BOLD, 30));
+        loadingText.setForeground(Color.BLACK);
+        loadingText.setAnimatedIcon(new ImageIcon("res\\icons\\dark\\loading\\2x.png"), Phrases.periodForAnimatedIcon);
+        loadingText.setBackground(Color.GRAY);
+        loadingText.setOpaque(true);
+        panel.add(loadingText, BorderLayout.CENTER);
 
         jProgressBar = new JProgressBar();
         jProgressBar.setMinimum(0);
         jProgressBar.setMaximum(100);
         jProgressBar.setValue(0);
-        jProgressBar.setBackground(label.getBackground());
-        jProgressBar.setForeground(label.getForeground());
+        jProgressBar.setPreferredSize(new Dimension(-1, 15));
+        jProgressBar.setBackground(loadingText.getBackground());
+        jProgressBar.setForeground(loadingText.getForeground());
+        jProgressBar.setBorder(null);
         jProgressBar.setBorderPainted(false);
-        panel.add(jProgressBar, BorderLayout.PAGE_END);
-
+        panel.add(jProgressBar, BorderLayout.SOUTH);
 
         this.setVisible(true);
     }

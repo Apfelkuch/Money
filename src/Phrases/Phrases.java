@@ -137,6 +137,8 @@ public class Phrases {
      */
     public static final int LIST_JUMP_VALUE = 8;
 
+    public static long periodForAnimatedIcon = 3;
+
     // calculator
     public static int calculatorMinValue = 0;
     public static int calculatorMaxValue = 9999999; // max input value because calculating with higher numbers is difficult. Written with exponent (eg. 3e7)
