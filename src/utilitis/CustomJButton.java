@@ -25,6 +25,7 @@ public class CustomJButton extends JButton {
 
     @Override
     protected void paintComponent(Graphics g) {
+        Color originalColor = g.getColor();
         g.setColor(getBackground());
         if (getModel().isPressed()) {
             this.setBorder(lower);
@@ -33,6 +34,7 @@ public class CustomJButton extends JButton {
         }
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
+        g.setColor(originalColor);
     }
 
     public void setBorderColor(Color color) {
