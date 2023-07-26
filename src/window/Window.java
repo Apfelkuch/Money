@@ -162,9 +162,11 @@ public class Window extends JFrame implements ActionListener {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int result = ExtraWindow.confirmDialog(null, Phrases.saveDialogTitle, Phrases.saveDialogText, Phrases.showFontPlain, Phrases.EXTRA_WINDOW_BACKGROUND, Phrases.EXTRA_WINDOW_FOREGROUND);
-                if (result == ExtraWindow.EXIT_WITH_YES) {
-                    save();
+                if (isProgramEdited()) {
+                    int result = ExtraWindow.confirmDialog(null, Phrases.saveDialogTitle, Phrases.saveDialogText, Phrases.showFontPlain, Phrases.EXTRA_WINDOW_BACKGROUND, Phrases.EXTRA_WINDOW_FOREGROUND);
+                    if (result == ExtraWindow.EXIT_WITH_YES) {
+                        save();
+                    }
                 }
             }
         });
@@ -951,5 +953,9 @@ public class Window extends JFrame implements ActionListener {
 
     public void setSettings(Settings settings) {
         this.settings = settings;
+    }
+
+    public boolean isProgramEdited() {
+        return programEdited;
     }
 }
