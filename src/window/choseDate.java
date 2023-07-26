@@ -114,8 +114,11 @@ public class choseDate extends Overlays {
         }
 
         // bottom
+        JPanel bottom = new JPanel(new BorderLayout());
+        bottom.setBorder(new LineBorder(Color.GREEN));
+        contentPanel.add(bottom, BorderLayout.SOUTH);
+
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        contentPanel.add(buttons, BorderLayout.SOUTH);
         CustomJButton use = new CustomJButton("use");
         use.setPreferredSize(new Dimension(50, buttonDim.height));
         use.addActionListener(e -> use());
@@ -124,7 +127,16 @@ public class choseDate extends Overlays {
         exit.setPreferredSize(new Dimension(50, buttonDim.height));
         exit.addActionListener(e -> exit());
         buttons.add(exit);
+        bottom.add(buttons, BorderLayout.EAST);
 
+        CustomJButton today = new CustomJButton("today");
+        today.setPreferredSize(new Dimension(50, buttonDim.height));
+        today.addActionListener(e -> {
+            localDate = LocalDate.now();
+            updateDate();
+        });
+
+        bottom.add(new JPanel(new FlowLayout(FlowLayout.CENTER)).add(today).getParent(), BorderLayout.WEST);
     }
 
     private void use() {
