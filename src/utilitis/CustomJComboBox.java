@@ -58,7 +58,7 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
                     char key = event.getKeyChar();
                     if (key == '\n') {
                         if (window != null) {
-                            window.focusNext();
+                            window.addEntry();
                         }
                         return;
                     }

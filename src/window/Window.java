@@ -23,9 +23,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
-// improve enter zur nächsten Ziele weg
-// improve enter für Eintragen
-// improve Design
 public class Window extends JFrame implements ActionListener {
 
     public static final Dimension extraButton = new Dimension(20, 20);
@@ -483,7 +480,7 @@ public class Window extends JFrame implements ActionListener {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyChar() == '\n') {
-                    focusNext();
+                    addEntry();
                 }
             }
         });
@@ -609,7 +606,7 @@ public class Window extends JFrame implements ActionListener {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyChar() == '\n') {
-                    focusNext();
+                    addEntry();
                 }
             }
         });
@@ -662,9 +659,14 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public boolean isInputEmpty() {
-        return (inputReceiver_by.getSelectedItem() == null || inputReceiver_by.getSelectedItem().toString().isBlank()) &&
-                (inputCategory.getSelectedItem() == null || inputCategory.getSelectedItem().toString().isBlank()) &&
+        return (inputReceiver_by.getSelectedItem() == null || inputReceiver_by.getSelectedItem().toString().isBlank()) ||
+                (inputCategory.getSelectedItem() == null || inputCategory.getSelectedItem().toString().isBlank()) ||
                 (inputPurpose.getSelectedItem() == null || inputPurpose.getSelectedItem().toString().isBlank());
+    }
+
+    public boolean isInputEnoughContentForEntry() {
+        boolean inputReceiverBy_Filled = this.inputReceiver_by.getSelectedItem() != null && !this.inputReceiver_by.getSelectedItem().toString().isBlank();
+        return !isInputEmpty() || inputReceiverBy_Filled;
     }
 
     public void clearInput() {
@@ -763,6 +765,9 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public void enterEntry() {
+        if (!this.inputReceiver_by.isEnabled() || !isInputEnoughContentForEntry())
+            return;
+        this.programEdited();
         if (editing) {
             money.confirmEdit();
         } else {
@@ -771,6 +776,10 @@ public class Window extends JFrame implements ActionListener {
         editing = false;
         entryShown = false;
         clearInput();
+    }
+
+    public void addEntry() {
+        enterEntry();
     }
 
     @Override
@@ -798,13 +807,9 @@ public class Window extends JFrame implements ActionListener {
                 editing = true;
             }
         } else if (e.getSource() == enter) {
-            this.programIsEdited();
             entryShown = false;
-            if (isInputEmpty() || !this.inputReceiver_by.isEnabled())
-                return;
             enterEntry();
             editing = false;
-
         } else if (e.getSource() == cancel) { // cancel
             entryShown = false;
             this.clearInput();
