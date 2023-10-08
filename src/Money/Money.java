@@ -33,7 +33,7 @@ public class Money {
 
     public Money() {
 
-        paths = Load.loadPaths(Phrases.PATH + "//" + Phrases.FILE_PATHS);
+        paths = Load.loadPaths(Phrases.FILE_PATHS);
 
         startingWindow startingWindow = new startingWindow();
         startingWindow.setMaxProgressBar(4);
@@ -57,7 +57,7 @@ public class Money {
 
         // loading
 
-        boolean loading = Load.load(this, path + "\\" + Phrases.FILENAME, window.getMaxContentElements());
+        boolean loading = Load.load(this, path, window.getMaxContentElements());
         if (loading) {
             System.out.println("Money.Money >> Entries loaded");
         } else {
@@ -213,11 +213,17 @@ public class Money {
         }
 
         // set a new entry at the place of the edited entry
-        entries.set(currentEntry, new Entry(tempEntry.getOption(), tempEntry.getNumber(), date, receiverBy, category, purpose, spending, income, balance, this));
+        tempEntry.setLocalDate(date);
+        tempEntry.setReceiverBy(receiverBy.isBlank() ? " " : receiverBy);
+        tempEntry.setCategory(category.isBlank() ? " " : category);
+        tempEntry.setPurpose(purpose.isBlank() ? " " : purpose);
+        tempEntry.setSpending(spending);
+        tempEntry.setIncome(income);
+        tempEntry.setBalance(balance);
 
         // update all following entries.
         for (int i = currentEntry; i < entries.size(); i++) {
-            entries.get(i).updateBalance(currentEntry == 0 ? 0 : entries.get(i - 1).getBalance());
+            entries.get(i).updateBalance(i == 0 ? 0 : entries.get(i - 1).getBalance());
         }
 
         // update the showing
@@ -229,8 +235,8 @@ public class Money {
         if (!paths.contains(path)) {
             paths.add(path);
         }
-        Save.saveFiles(Phrases.PATH + "//" + Phrases.FILE_PATHS, paths.toArray(new String[0]));
-        return Save.save(this, path + "//" + Phrases.FILENAME);
+        Save.saveFiles(Phrases.FILE_PATHS, paths.toArray(new String[0]));
+        return Save.save(this, path);
     }
 
     public void moveTopEntry(int amount) {
@@ -274,7 +280,7 @@ public class Money {
 
         for (int i = current; i < entries.size(); i++) {
             // update the following entry numbers
-            entries.get(i).updateNumber(entries.get(i).getNumber() - 1);
+            entries.get(i).setNumber(entries.get(i).getNumber() - 1);
 
             // update the following entry balances
             if (updateBalance) {

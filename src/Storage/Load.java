@@ -17,7 +17,7 @@ public class Load {
         try {
             File file = new File(path);
             if (!file.exists()) {
-                System.out.println("No file found");
+                System.err.println("[Error] No file found");
                 return false;
             }
 
@@ -34,7 +34,7 @@ public class Load {
                 content = new StringBuilder();
                 reading = true;
                 divider = 0;
-                while (reading) {
+                while (reading) { // read one data set (entry, controlCheck, ...)
                     int read = bufferedReader.read();
                     if (read == -1) { // check if the end is reached
                         end = true;
@@ -85,6 +85,7 @@ public class Load {
             if (pos < 0) {
                 pos = 0;
             }
+            money.updateAllEntries();
             money.moveTopEntry(pos);
 
         } catch (Exception e) {
@@ -140,7 +141,7 @@ public class Load {
         try {
             File file = new File(path);
             if (!file.exists()) {
-                System.out.println("No file found");
+                System.err.println("[Error] No file found");
                 return new ArrayList<>();
             }
 

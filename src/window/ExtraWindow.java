@@ -1,5 +1,7 @@
 package window;
 
+import utilitis.CustomJButton;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -23,15 +25,6 @@ public class ExtraWindow {
 
     private JTextField input = null;
 
-    private final JLabel text;
-
-    private JButton positiveButton = null;
-    private JButton negativeButton = null;
-
-    private final JPanel jpMain;
-    private final JPanel jpMessage;
-    private final JPanel jpButtons;
-
     /**
      * Construct the Dialog window with all parts.
      *
@@ -47,10 +40,11 @@ public class ExtraWindow {
         dialog = new JDialog();
         dialog.setTitle(title);
         dialog.setModal(true);
+        dialog.setIconImage(new ImageIcon("res\\money.png").getImage());
 
-        jpMain = new JPanel();
-        jpMessage = new JPanel();
-        jpButtons = new JPanel();
+        JPanel jpMain = new JPanel();
+        JPanel jpMessage = new JPanel();
+        JPanel jpButtons = new JPanel();
 
         jpMain.setLayout(new BorderLayout());
         jpMain.setBackground(colorBackground);
@@ -63,17 +57,22 @@ public class ExtraWindow {
         jpMain.add(jpButtons, BorderLayout.SOUTH);
 
         // message
-        text = new JLabel(message);
+        JLabel text = new JLabel(message);
         text.setFont(font);
         jpMessage.add(text);
 
         // buttons
+        JButton positiveButton;
+        JButton negativeButton;
         if (sort == 0 || sort == 2) {
             positiveButton = new JButton("ok");
             negativeButton = new JButton("cancel");
         } else if (sort == 1) {
             positiveButton = new JButton("yes");
             negativeButton = new JButton("no");
+        } else {
+            positiveButton = new JButton();
+            negativeButton = new JButton();
         }
         positiveButton.setFont(font);
         positiveButton.setPreferredSize(new Dimension(100, 30));

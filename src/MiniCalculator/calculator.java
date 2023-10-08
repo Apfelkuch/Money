@@ -2,28 +2,36 @@ package MiniCalculator;
 
 import Phrases.Phrases;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 
 public class calculator {
 
-    private final char[] operatorChars = {'+', '-', '*', '/'};
     public final char[] validChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-', '*', '/'};
-
+    private final char[] operatorChars = {'+', '-', '*', '/'};
     private String content;
 
-    private BigDecimal result;
+    private double result = 0.0d;
+    private int decimalPlaces = 2;
 
-    public void calc() {
+    // return Values
+    public final int calculation_successful = 0;
+    public final int calculation_fails = 1;
+    public final int calculation_successful_with_rounding = 2;
+
+    /**
+     * Calculate the expression and return the result.
+     * If the result is negative the 0 is returned.
+     *
+     * @throws IllegalArgumentException Throw if two or more operators are following each other directly.
+     */
+    public int calc() throws IllegalArgumentException {
         // make sure that no invalid character are in the stringProperty
         for (int i = 0; i < content.length(); i++) {
             char charAt = content.charAt(i);
             if (Character.isLetter(charAt)) {
-                System.out.println("MiniCalculator.keyPressed >> character.isAlpha: " + charAt);
+                System.err.println("[Error] calculator.calc >> character is not valid. Letter at : " + charAt);
                 content = "";
-                return;
+                return calculation_fails;
             }
             boolean containInvalidChar = true;
             for (Character c : validChars) {
@@ -33,62 +41,78 @@ public class calculator {
                 }
             }
             if (containInvalidChar) {
+                System.err.println("[Error] calculator.calc >> character is not valid");
                 content = "";
-                return;
+                return calculation_fails;
             }
         }
+        // check if the content ends with an operator
         if (content.charAt(content.length() - 1) == '+' ||
                 content.charAt(content.length() - 1) == '-' ||
                 content.charAt(content.length() - 1) == '*' ||
                 content.charAt(content.length() - 1) == '/') {
             content = "";
-            return;
+            return calculation_fails;
         }
-
-        String text = content;
-        if (text.isBlank()) // return if the text is empty
-            return;
-        if (!Character.isDigit(text.charAt(0))) // return if the first character is not a digit
-            return;
+        // return if the text is empty or if the first character is not a digit, but a comma as first is possible
+        if (content.isBlank() || (!Character.isDigit(content.charAt(0)) && !(content.charAt(0) == '.'))) {
+            content = "";
+            return calculation_fails;
+        }
 
         // find the operators
         ArrayList<IntChar> operators = new ArrayList<>();
-        for (int i = 0; i < text.length(); i++) {
+        for (int i = 0; i < content.length(); i++) {
             for (char c : operatorChars) {
-                if (c == text.charAt(i)) {
-                    operators.add(new IntChar(i, text.charAt(i)));
+                if (c == content.charAt(i)) {
+                    operators.add(new IntChar(i, content.charAt(i)));
                     break;
                 }
             }
         }
         if (operators.size() == 0) {
-            return;
+            return calculation_fails;
         }
 //        System.out.println("MiniCalculator.calc.operators >> " + Arrays.toString(operators.toArray(new IntChar[0])));
 
         // divide the text in different numbers between the operators
-        BigDecimal[] numbers = new BigDecimal[operators.size() + 1];
+        double[] numbers = new double[operators.size() + 1];
         int place = 0;
         String part = "";
-        for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) == '+' || text.charAt(i) == '-' || text.charAt(i) == '*' || text.charAt(i) == '/') {
-                numbers[place] = BigDecimal.valueOf(Double.parseDouble(part));
-                part = "";
-                place++;
-            } else {
-                part += text.charAt(i);
+        try {
+            for (int i = 0; i < content.length(); i++) {
+                if (content.charAt(i) == '+' || content.charAt(i) == '-' || content.charAt(i) == '*' || content.charAt(i) == '/') {
+                    numbers[place] = Double.parseDouble(part);
+                    part = "";
+                    place++;
+                } else {
+                    part += content.charAt(i);
+                }
             }
+            numbers[place] = Double.parseDouble(part);
+        } catch (NumberFormatException e) {
+            System.err.println("[ERROR] Syntax error in calculation expression");
+            throw new IllegalArgumentException("Syntax error in calculation expression");
         }
-        numbers[place] = BigDecimal.valueOf(Double.parseDouble(part));
 //        System.out.println("MiniCalculator.calc.numbers >> " + Arrays.toString(numbers));
 
+        // cut the decimal places to down to max decimal place number (decimalPlaces)
+        for (int i = 0; i < numbers.length; i++) {
+            String doubleString = Double.valueOf(numbers[i]).toString();
+            int pos = doubleString.indexOf(".") + 1;
+            if (doubleString.substring(pos).length() > decimalPlaces) {
+                numbers[i] = Double.parseDouble(doubleString.substring(0, pos + decimalPlaces));
+            }
+        }
+//        System.out.println("MiniCalculator.calc.numbers >> " + Arrays.toString(numbers));
+
+        int returnValue = calculation_successful;
         // calculate the result
-        BigDecimal emptyMarker = new BigDecimal(Phrases.inputValueMin - 1);
-        MathContext mathContext = new MathContext(3, RoundingMode.DOWN);
+        double emptyMarker = Phrases.calculatorMinValue - 1;
         // calculate multiplication and division from left to right
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).character == '*') { // multiplication
-                BigDecimal result = numbers[i].multiply(numbers[i + 1], mathContext);
+                double result = numbers[i] * numbers[i + 1];
                 numbers[i] = result;
                 numbers[i + 1] = emptyMarker; // mark the place as empty
                 operators.remove(i);
@@ -96,7 +120,7 @@ public class calculator {
                 numbers = trimArray(numbers, emptyMarker);
                 this.result = result;
             } else if (operators.get(i).character == '/') { // division
-                BigDecimal result = numbers[i].divide(numbers[i + 1], mathContext);
+                double result = numbers[i] / numbers[i + 1];
                 numbers[i] = result;
                 numbers[i + 1] = emptyMarker;
                 operators.remove(i);
@@ -109,7 +133,7 @@ public class calculator {
         // calculate addition and subtraction from left to right
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).character == '+') { // addition
-                BigDecimal result = numbers[i].add(numbers[i + 1], mathContext);
+                double result = numbers[i] + numbers[i + 1];
                 numbers[i] = result;
                 numbers[i + 1] = emptyMarker; // mark the place as empty
                 operators.remove(i);
@@ -117,7 +141,7 @@ public class calculator {
                 numbers = trimArray(numbers, emptyMarker);
                 this.result = result;
             } else if (operators.get(i).character == '-') { // subtraction
-                BigDecimal result = numbers[i].subtract(numbers[i + 1], mathContext);
+                double result = numbers[i] - numbers[i + 1];
                 numbers[i] = result;
                 numbers[i + 1] = emptyMarker;
                 operators.remove(i);
@@ -127,46 +151,62 @@ public class calculator {
             }
         }
 
-        // show the result
-        try {
-            content = result + "";
-//            System.out.println("calculator.calc >> content: " + content);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        // adjust the result. If the result is smaller than the minimum achievable value, the result is set to the minimum achievable value. Turn negative results into zero's.
+        if (result < Phrases.calculatorMinValue) {
+            returnValue = calculation_successful_with_rounding;
+            result = 0;
         }
+        // adjust the result. If the result is higher than the maximum achievable value, the result is set to the maximum achievable value.
+        if (result > Phrases.calculatorMaxValue) {
+            returnValue = calculation_successful_with_rounding;
+            result = Phrases.calculatorMaxValue;
+        }
+
+        // trim the result on two decimal places
+        String s = String.valueOf(result);
+        int end = s.indexOf('.') + 1 + decimalPlaces;
+        end = end > s.length() ? s.length() : end;
+        this.content = s.substring(0, end);
+
+        return returnValue;
     }
 
-    public float getResult() throws NullPointerException {
+    public double getResult() throws NullPointerException {
         if (content.equals("")) {
-            return Float.parseFloat("0");
+            return Double.parseDouble("0");
         }
-        if (result != null) {
-            return Float.parseFloat(result.toString());
-        }
-        return Float.parseFloat(content);
+        return Double.parseDouble(content);
     }
 
-    private BigDecimal[] trimArray(BigDecimal[] array, BigDecimal emptyMarker) {
+    private double[] trimArray(double[] array, double emptyMarker) {
         // find he number of emptyMarkers in the array
         int countEmptyMarkers = 0;
-        for (BigDecimal bigDecimal : array) {
-            if (bigDecimal.equals(emptyMarker)) {
+        for (double element : array) {
+            if (element == emptyMarker) {
                 countEmptyMarkers++;
             }
         }
         // move the emptyMarkers to the end
         for (int j = 0; j < countEmptyMarkers; j++) {
             for (int i = 1; i < array.length; i++) {
-                if (array[i - 1].equals(emptyMarker)) {
-                    BigDecimal l = array[i - 1];
+                if (array[i - 1] == emptyMarker) {
+                    double l = array[i - 1];
                     array[i - 1] = array[i];
                     array[i] = l;
                 }
             }
         }
-        BigDecimal[] result = new BigDecimal[array.length - countEmptyMarkers];
+        double[] result = new double[array.length - countEmptyMarkers];
         System.arraycopy(array, 0, result, 0, result.length);
         return result;
+    }
+
+    public int getDecimalPlaces() {
+        return decimalPlaces;
+    }
+
+    public void setDecimalPlaces(int decimalPlaces) {
+        this.decimalPlaces = decimalPlaces;
     }
 
     public void setTextField(String s) {

@@ -3,6 +3,7 @@ package window;
 import MiniCalculator.calculator;
 import Phrases.Phrases;
 import utilitis.CustomJButton;
+import utilitis.CustomPopup;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -17,8 +18,6 @@ public class miniCalculator extends Overlays {
 
     private boolean calculated;
 
-    private Dimension buttonDim;
-
     public miniCalculator(Point location, window.Window moneyWindow) {
         super(location, moneyWindow);
         this.setSize(contentPanel.getSize());
@@ -28,7 +27,7 @@ public class miniCalculator extends Overlays {
 
     @Override
     public void build(java.awt.Window window) {
-        buttonDim = new Dimension(25, 25);
+        Dimension buttonDim = new Dimension(25, 25);
 
         contentPanel = new JPanel();
         contentPanel.setSize(5 * buttonDim.width, 7 * buttonDim.height);
@@ -48,70 +47,73 @@ public class miniCalculator extends Overlays {
         // row 1
         CustomJButton one = new CustomJButton("1");
         one.setPreferredSize(buttonDim);
-        one.addActionListener(e -> textField.setText(textField.getText() + one.getText()));
+        one.addActionListener(e -> ActionListener(one));
         numPad.add(one, 0);
         CustomJButton two = new CustomJButton("2");
         two.setPreferredSize(buttonDim);
-        two.addActionListener(e -> textField.setText(textField.getText() + two.getText()));
+        two.addActionListener(e -> ActionListener(two));
         numPad.add(two, 1);
         CustomJButton three = new CustomJButton("3");
         three.setPreferredSize(buttonDim);
-        three.addActionListener(e -> textField.setText(textField.getText() + three.getText()));
+        three.addActionListener(e -> ActionListener(three));
         numPad.add(three, 2);
         CustomJButton addition = new CustomJButton("+");
         addition.setPreferredSize(buttonDim);
-        addition.addActionListener(e -> textField.setText(textField.getText() + addition.getText()));
+        addition.addActionListener(e -> ActionListener(addition));
         numPad.add(addition, 3);
         // row 2
         CustomJButton four = new CustomJButton("4");
         four.setPreferredSize(buttonDim);
-        four.addActionListener(e -> textField.setText(textField.getText() + four.getText()));
+        four.addActionListener(e -> ActionListener(four));
         numPad.add(four, 4);
         CustomJButton five = new CustomJButton("5");
         five.setPreferredSize(buttonDim);
-        five.addActionListener(e -> textField.setText(textField.getText() + five.getText()));
+        five.addActionListener(e -> ActionListener(five));
         numPad.add(five, 5);
         CustomJButton six = new CustomJButton("6");
         six.setPreferredSize(buttonDim);
-        six.addActionListener(e -> textField.setText(textField.getText() + six.getText()));
+        six.addActionListener(e -> ActionListener(six));
         numPad.add(six, 6);
         CustomJButton subtraction = new CustomJButton("-");
         subtraction.setPreferredSize(buttonDim);
-        subtraction.addActionListener(e -> textField.setText(textField.getText() + subtraction.getText()));
+        subtraction.addActionListener(e -> ActionListener(subtraction));
         numPad.add(subtraction, 7);
         // row 3
         CustomJButton seven = new CustomJButton("7");
         seven.setPreferredSize(buttonDim);
-        seven.addActionListener(e -> textField.setText(textField.getText() + seven.getText()));
+        seven.addActionListener(e -> ActionListener(seven));
         numPad.add(seven, 8);
         CustomJButton eight = new CustomJButton("8");
         eight.setPreferredSize(buttonDim);
-        eight.addActionListener(e -> textField.setText(textField.getText() + eight.getText()));
+        eight.addActionListener(e -> ActionListener(eight));
         numPad.add(eight, 9);
         CustomJButton nine = new CustomJButton("9");
         nine.setPreferredSize(buttonDim);
-        nine.addActionListener(e -> textField.setText(textField.getText() + nine.getText()));
+        nine.addActionListener(e -> ActionListener(nine));
         numPad.add(nine, 10);
         CustomJButton multiplication = new CustomJButton("*");
         multiplication.setPreferredSize(buttonDim);
-        multiplication.addActionListener(e -> textField.setText(textField.getText() + multiplication.getText()));
+        multiplication.addActionListener(e -> ActionListener(multiplication));
         numPad.add(multiplication, 11);
         // row 4
         CustomJButton del = new CustomJButton("C");
         del.setPreferredSize(buttonDim);
-        del.addActionListener(e -> textField.setText(""));
+        del.addActionListener(e -> {
+            textField.setText("");
+            calculated = false;
+        });
         numPad.add(del, 12);
         CustomJButton zero = new CustomJButton("0");
         zero.setPreferredSize(buttonDim);
-        zero.addActionListener(e -> textField.setText(textField.getText() + zero.getText()));
+        zero.addActionListener(e -> ActionListener(zero));
         numPad.add(zero, 13);
         CustomJButton comma = new CustomJButton(",");
         comma.setPreferredSize(buttonDim);
-        comma.addActionListener(e -> textField.setText(textField.getText() + comma.getText()));
+        comma.addActionListener(e -> ActionListener(comma));
         numPad.add(comma, 14);
         CustomJButton division = new CustomJButton("/");
         division.setPreferredSize(buttonDim);
-        division.addActionListener(e -> textField.setText(textField.getText() + division.getText()));
+        division.addActionListener(e -> ActionListener(division));
         numPad.add(division, 15);
         // row 5
         CustomJButton back = new CustomJButton("back");
@@ -136,11 +138,25 @@ public class miniCalculator extends Overlays {
 
     }
 
+    private void ActionListener(CustomJButton customJButton) {
+        textField.setText(textField.getText() + customJButton.getText());
+        calculated = false;
+    }
+
     private void calc() {
         if (textField.getText().isBlank())
             return;
         calculator.setTextField(textField.getText().replaceAll(",", "."));
-        calculator.calc();
+        int returnValue;
+        try {
+            returnValue = calculator.calc();
+        } catch (IllegalArgumentException e) {
+            new CustomPopup(textField.getLocationOnScreen().x, textField.getLocationOnScreen().y + textField.getHeight(), Phrases.syntaxErrorInCalculationExpression);
+            return;
+        }
+        if (returnValue == calculator.calculation_successful_with_rounding) {
+            new CustomPopup(textField.getLocationOnScreen().x, textField.getLocationOnScreen().y + textField.getHeight(), Phrases.calculationSuccessfulWithRounding);
+        }
         textField.setText(calculator.getResult() + "");
         calculated = true;
     }
@@ -152,7 +168,7 @@ public class miniCalculator extends Overlays {
         if (textField.getText().isBlank()) {
             return;
         }
-        super.moneyWindow.setInputValue(String.valueOf(calculator.getResult()).replaceAll("\\.", ",") + Phrases.moneySymbol);
+        super.moneyWindow.setInputValue(String.valueOf(calculator.getResult()));
         this.dispose();
     }
 
