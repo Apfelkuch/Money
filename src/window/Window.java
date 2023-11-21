@@ -84,8 +84,9 @@ public class Window extends JFrame implements ActionListener {
     private final String title;
 
     public Window(String title, Money money) {
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setTitle(title);
+        super(title);
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        super.setTitle(title);
         this.title = title;
         // start the window Maximized
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -159,12 +160,7 @@ public class Window extends JFrame implements ActionListener {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (isProgramEdited()) {
-                    int result = ExtraWindow.confirmDialog(null, Phrases.saveDialogTitle, Phrases.saveDialogText, Phrases.showFontPlain, Phrases.EXTRA_WINDOW_BACKGROUND, Phrases.EXTRA_WINDOW_FOREGROUND);
-                    if (result == ExtraWindow.EXIT_WITH_YES) {
-                        save();
-                    }
-                }
+                closeProgram();
             }
         });
 
@@ -191,12 +187,11 @@ public class Window extends JFrame implements ActionListener {
 
     }
 
-    public boolean programIsEdited() {
+    public void programEdited() {
         if (programEdited)
-            return false;
+            return;
         programEdited = true;
         this.setTitle(title + " *");
-        return true;
     }
 
     private void updateMaxContentElements(int amount) {
@@ -240,6 +235,11 @@ public class Window extends JFrame implements ActionListener {
         options.add(menuItemSettings);
 
     }
+
+//    @Override
+//    public void setTitle(String title) {
+//        windowTitle.setText(title);
+//    }
 
     private void addTable() {
         JPanel table = new JPanel();
@@ -764,6 +764,22 @@ public class Window extends JFrame implements ActionListener {
         this.repaint();
     }
 
+    public void closeProgram() {
+        if (!isProgramEdited()) {
+            dispose();
+            System.exit(0);
+        }
+        int result = ExtraWindow.confirmDialog(this, Phrases.saveDialogTitle, Phrases.saveDialogText, Phrases.showFontPlain, Phrases.EXTRA_WINDOW_BACKGROUND, Phrases.EXTRA_WINDOW_FOREGROUND, true);
+        if (result == ExtraWindow.EXIT_WITH_CANCEL) {
+            return;
+        }
+        if (result == ExtraWindow.EXIT_WITH_YES) {
+            save();
+        }
+        dispose();
+        System.exit(0);
+    }
+
     public void enterEntry() {
         if (!this.inputReceiver_by.isEnabled() || !isInputEnoughContentForEntry())
             return;
@@ -796,25 +812,23 @@ public class Window extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == neu) { // new
             entryShown = false;
+            editing = false;
             this.clearInput();
             this.changeEnabled(true);
             this.changeToSpending();
-            editing = false;
         } else if (e.getSource() == edit) {
-            entryShown = false;
-            if (!isInputEmpty() && !this.inputReceiver_by.isEnabled()) { // edit
-                this.changeEnabled(true);
+            if (entryShown) { // edit
+                entryShown = false;
                 editing = true;
+                this.changeEnabled(true);
             }
         } else if (e.getSource() == enter) {
-            entryShown = false;
             enterEntry();
-            editing = false;
         } else if (e.getSource() == cancel) { // cancel
             entryShown = false;
+            editing = false;
             this.clearInput();
             this.changeEnabled(true);
-            editing = false;
         } else if (e.getSource() == choiceDate) { // choice date
             selectDate = new CalendarOverlay(choiceDate.getLocationOnScreen(), this);
             selectDate.setLocalDate(this.getInputLocalDate());
@@ -846,9 +860,7 @@ public class Window extends JFrame implements ActionListener {
             // save
             save();
         } else if (e.getSource() == exit) { // JMenuBar exit
-            if (save()) {
-                System.exit(1);
-            }
+            closeProgram();
         } else if (e.getSource() == deletePaths) { // JMenuBar deletePaths
             money.clearPaths();
         } else if (e.getSource() == menuItemSettings) { // JMenuBar settings
