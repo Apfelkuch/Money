@@ -1,5 +1,7 @@
 package window;
 
+import Phrases.Design;
+import Phrases.Phrases;
 import utilitis.CustomJButton;
 
 import javax.swing.*;
@@ -35,12 +37,13 @@ public class ExtraWindow {
      * @param colorBackground The background color.
      * @param colorForeground The foreground color.
      */
-    public ExtraWindow(String title, String message, int sort, Font font, Color colorBackground, Color colorForeground) {
+    public ExtraWindow(String title, String message, int sort, Font font, Color colorBackground, Color colorForeground, boolean closable) {
 
         dialog = new JDialog();
         dialog.setTitle(title);
         dialog.setModal(true);
         dialog.setIconImage(new ImageIcon("res\\money.png").getImage());
+        dialog.setUndecorated(true);
 
         JPanel jpMain = new JPanel();
         JPanel jpMessage = new JPanel();
@@ -49,6 +52,7 @@ public class ExtraWindow {
         jpMain.setLayout(new BorderLayout());
         jpMain.setBackground(colorBackground);
         jpMain.setForeground(colorForeground);
+        jpMain.setBorder(new LineBorder(Phrases.BORDER, 2));
 
         jpMessage.setOpaque(false);
         jpButtons.setOpaque(false);
@@ -56,30 +60,54 @@ public class ExtraWindow {
         jpMain.add(jpMessage, BorderLayout.CENTER);
         jpMain.add(jpButtons, BorderLayout.SOUTH);
 
+        JMenuBar optionBar = new JMenuBar();
+        optionBar.setLayout(new BorderLayout());
+        jpMain.add(optionBar, BorderLayout.NORTH);
+
+        int iconSize = 20;
+        Image image = new ImageIcon("res\\money.png").getImage().getScaledInstance(iconSize, iconSize, Image.SCALE_DEFAULT);
+        ImageIcon appIcon = new ImageIcon(image);
+        JLabel app = new JLabel(appIcon);
+        app.setPreferredSize(new Dimension(iconSize, iconSize));
+        optionBar.add(app, BorderLayout.WEST);
+        if (closable) {
+            ImageIcon closeIcon = new ImageIcon("res\\icons\\icons8-löschen-24.png");
+            CustomJButton close = new CustomJButton();
+            close.setIcon(closeIcon);
+            close.setPreferredSize(new Dimension(iconSize, iconSize));
+            close.setBorderPainted(false);
+            close.addActionListener(e -> {
+                returnValue = EXIT_WITH_CANCEL;
+                dialog.dispose();
+            });
+            optionBar.add(close, BorderLayout.EAST);
+        }
+
         // message
         JLabel text = new JLabel(message);
         text.setFont(font);
         jpMessage.add(text);
 
         // buttons
-        JButton positiveButton;
-        JButton negativeButton;
+        int buttonHeight = 30;
+        CustomJButton positiveButton;
+        CustomJButton negativeButton;
         if (sort == 0 || sort == 2) {
-            positiveButton = new JButton("ok");
-            negativeButton = new JButton("cancel");
+            positiveButton = new CustomJButton("ok");
+            negativeButton = new CustomJButton("cancel");
         } else if (sort == 1) {
-            positiveButton = new JButton("yes");
-            negativeButton = new JButton("no");
+            positiveButton = new CustomJButton("yes");
+            negativeButton = new CustomJButton("no");
         } else {
-            positiveButton = new JButton();
-            negativeButton = new JButton();
+            positiveButton = new CustomJButton();
+            negativeButton = new CustomJButton();
         }
         positiveButton.setFont(font);
-        positiveButton.setPreferredSize(new Dimension(100, 30));
+        positiveButton.setPreferredSize(new Dimension(100, buttonHeight));
         positiveButton.setFocusable(false);
 
         negativeButton.setFont(font);
-        negativeButton.setPreferredSize(new Dimension(100, 30));
+        negativeButton.setPreferredSize(new Dimension(100, buttonHeight));
         negativeButton.setFocusable(false);
 
         jpButtons.add(positiveButton);
@@ -193,8 +221,8 @@ public class ExtraWindow {
      * @param colorForeground The foreground color.
      * @return EXIT_WITH_OK (1) for ok, EXIT_WITH_CANCEL (2) for cancel.
      */
-    public static int messageDialog(Component parent, String title, String message, Font font, Color colorBackground, Color colorForeground) {
-        ExtraWindow f = new ExtraWindow(title, message, 0, font, colorBackground, colorForeground);
+    public static int messageDialog(Component parent, String title, String message, Font font, Color colorBackground, Color colorForeground, boolean closable) {
+        ExtraWindow f = new ExtraWindow(title, message, 0, font, colorBackground, colorForeground, closable);
         return f.showDialog(parent);
     }
 
@@ -209,13 +237,13 @@ public class ExtraWindow {
      * @param colorForeground The foreground color.
      * @return EXIT_WITH_YES (3) for yes, EXIT_WITH_NO (4) for no.
      */
-    public static int confirmDialog(Component parent, String title, String message, Font font, Color colorBackground, Color colorForeground) {
-        ExtraWindow f = new ExtraWindow(title, message, 1, font, colorBackground, colorForeground);
+    public static int confirmDialog(Component parent, String title, String message, Font font, Color colorBackground, Color colorForeground, boolean closable) {
+        ExtraWindow f = new ExtraWindow(title, message, 1, font, colorBackground, colorForeground, closable);
         return f.showDialog(parent);
     }
 
     /**
-     * Show a input Dialog.
+     * Show an input Dialog.
      *
      * @param parent          The parent of the dialog.
      * @param title           The title of the dialog window.
@@ -225,13 +253,13 @@ public class ExtraWindow {
      * @param colorForeground The foreground color.
      * @return NULL for no input or only a blank input, otherwise the returnString.
      */
-    public static String inputDialog(Component parent, String title, String message, Font font, Color colorBackground, Color colorForeground) {
-        ExtraWindow f = new ExtraWindow(title, message, 2, font, colorBackground, colorForeground);
+    public static String inputDialog(Component parent, String title, String message, Font font, Color colorBackground, Color colorForeground, boolean closable) {
+        ExtraWindow f = new ExtraWindow(title, message, 2, font, colorBackground, colorForeground, closable);
         return f.inputDialog(parent);
     }
 
     /**
-     * Show a input Dialog.
+     * Show an input Dialog.
      *
      * @param parent          The parent of the dialog.
      * @param title           The title of the dialog window.
@@ -242,10 +270,24 @@ public class ExtraWindow {
      * @param colorForeground The foreground color.
      * @return NULL for no input or only a blank input, otherwise the returnString.
      */
-    public static String inputDialogWithText(Component parent, String title, String message, String text, Font font, Color colorBackground, Color colorForeground) {
-        ExtraWindow f = new ExtraWindow(title, message, 2, font, colorBackground, colorForeground);
+    public static String inputDialogWithText(Component parent, String title, String message, String text, Font font, Color colorBackground, Color colorForeground, boolean closable) {
+        ExtraWindow f = new ExtraWindow(title, message, 2, font, colorBackground, colorForeground, closable);
         f.input.setText(text);
         return f.inputDialog(parent);
+    }
+
+    public static void main(String[] args) {
+        Phrases.init();
+        Phrases.setDefaultColors();
+        Design.init();
+        System.out.println(ExtraWindow.messageDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true));
+        System.out.println(ExtraWindow.confirmDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true));
+        System.out.println(ExtraWindow.inputDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true));
+        System.out.println(ExtraWindow.inputDialogWithText(null, "Title", "message", "text", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true));
+        System.out.println(ExtraWindow.messageDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, false));
+        System.out.println(ExtraWindow.confirmDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, false));
+        System.out.println(ExtraWindow.inputDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, false));
+        System.out.println(ExtraWindow.inputDialogWithText(null, "Title", "message", "text", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, false));
     }
 
 }
