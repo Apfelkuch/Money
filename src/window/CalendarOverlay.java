@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 
-public class choseDate extends Overlays {
+public class CalendarOverlay extends Overlays {
 
     private JPanel contentPanel;
 
@@ -21,7 +21,7 @@ public class choseDate extends Overlays {
     private JLabel year;
     private CustomJButton[] days;
 
-    public choseDate(Point location, window.Window moneyWindow) {
+    public CalendarOverlay(Point location, window.Window moneyWindow) {
         super(location, moneyWindow);
         this.setSize(contentPanel.getSize());
         this.setLocation(location);
@@ -115,7 +115,6 @@ public class choseDate extends Overlays {
 
         // bottom
         JPanel bottom = new JPanel(new BorderLayout());
-        bottom.setBorder(new LineBorder(Color.GREEN));
         contentPanel.add(bottom, BorderLayout.SOUTH);
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));

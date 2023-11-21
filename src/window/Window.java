@@ -42,7 +42,7 @@ public class Window extends JFrame implements ActionListener {
     private final Money money;
     // overlays
     private miniCalculator miniCalculator;
-    private choseDate choseDate;
+    private CalendarOverlay selectDate;
     private Settings settings;
     // menu bar
     private JMenuItem save;
@@ -102,7 +102,7 @@ public class Window extends JFrame implements ActionListener {
             public void componentResized(ComponentEvent e) {
                 // adjust the position of the windows if the frame is resized
                 if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
-                if (choseDate != null) choseDate.setLocation(choiceDate.getLocationOnScreen());
+                if (selectDate != null) selectDate.setLocation(choiceDate.getLocationOnScreen());
                 if (settings != null) settings.setLocation(null);
                 // adjust the count of the content elements on the table
                 if (Math.abs((content.getHeight() / contentHeight) - maxContentElements) <= 1) { // The Window is manually resized, for smooth content transition
@@ -125,7 +125,7 @@ public class Window extends JFrame implements ActionListener {
             public void componentMoved(ComponentEvent e) {
                 // adjust the position of the windows if the frame is moved
                 if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
-                if (choseDate != null) choseDate.setLocation(choiceDate.getLocationOnScreen());
+                if (selectDate != null) selectDate.setLocation(choiceDate.getLocationOnScreen());
                 if (settings != null) settings.setLocation(null);
             }
         });
@@ -493,8 +493,8 @@ public class Window extends JFrame implements ActionListener {
         choiceDate.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (choseDate != null) {
-                    choseDate.keyTyped(e);
+                if (selectDate != null) {
+                    selectDate.keyTyped(e);
                 }
             }
         });
@@ -816,8 +816,8 @@ public class Window extends JFrame implements ActionListener {
             this.changeEnabled(true);
             editing = false;
         } else if (e.getSource() == choiceDate) { // choice date
-            choseDate = new choseDate(choiceDate.getLocationOnScreen(), this);
-            choseDate.setLocalDate(this.getInputLocalDate());
+            selectDate = new CalendarOverlay(choiceDate.getLocationOnScreen(), this);
+            selectDate.setLocalDate(this.getInputLocalDate());
         } else if (e.getSource() == calcValue) { // calc value
             if (getInputValue() > Phrases.inputValueMax) {
                 setInputValue(String.valueOf(Phrases.inputValueMax));
@@ -948,8 +948,8 @@ public class Window extends JFrame implements ActionListener {
         this.inputDate.setValue(setDateOnControl(localDate));
     }
 
-    public void setChoseDate(window.choseDate choseDate) {
-        this.choseDate = choseDate;
+    public void setChoseDate(CalendarOverlay selectDate) {
+        this.selectDate = selectDate;
     }
 
     public void setMiniCalculator(window.miniCalculator miniCalculator) {
