@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import FileChooser.CustomFileChooser;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -842,19 +843,24 @@ public class Window extends JFrame implements ActionListener {
             this.save();
         } else if (e.getSource() == saveUnder) { // JMenuBar saveUnder
             // create the save-path
-            FileChooser fileChooser = new FileChooser(Phrases.FILE_PATHS);
-            if (fileChooser.showSaveDialog(null) == FileChooser.APPROVE_OPTION) {
-                String path = fileChooser.getSelectedFile().getPath();
-                File newFile = new File(path.substring(path.lastIndexOf('.') + 1).equals(Phrases.EXTENSION) ? path : path.concat("." + Phrases.EXTENSION));
+            CustomFileChooser customFileChooser = new CustomFileChooser(Phrases.FILE_PATHS);
+            if (customFileChooser.showSaveDialog(this) == CustomFileChooser.APPROVE_OPTION) {
+                File newFile = new File(customFileChooser.getSelectedFileMoneyFormat().getPath());
                 try {
-                    if (newFile.createNewFile()) {
-                        System.out.println("Window.actionPerformed >> saveUnder has created a new File");
-                    } else {
+                    if (!newFile.createNewFile()) {
                         System.out.println("Window.actionPerformed >> saveUnder File already existed");
+                        if (ExtraWindow.confirmDialog(this, Phrases.overrideWhenSavingTitle, Phrases.overrideWhenSavingMessage,
+                                Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true) != ExtraWindow.EXIT_WITH_OK) {
+                            throw new Exception("Saving ist canceled");
+                        }
+                    } else {
+                        System.out.println("Window.actionPerformed >> saveUnder has created a new File");
                     }
                     money.setPath(newFile.getPath());
                 } catch (IOException ex) {
                     ex.printStackTrace();
+                } catch (Exception ex) {
+                    // Possibility to add a message that saving has been canceled
                 }
             }
             // save

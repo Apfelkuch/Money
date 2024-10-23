@@ -2,7 +2,6 @@ package Phrases;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.awt.*;
 
 public class Design {
     public static void init() {
@@ -28,12 +27,6 @@ public class Design {
         UIManager.put("MenuBar.border", new LineBorder(Phrases.BACKGROUND));
         UIManager.put("MenuBar.background", Phrases.BACKGROUND);
         UIManager.put("MenuBar.foreground", Phrases.FOREGROUND);
-
-        UIManager.put("Label.foreground", Phrases.FOREGROUND);
-
-        UIManager.put("Button.background", Phrases.BACKGROUND);
-        UIManager.put("Button.foreground", Phrases.FOREGROUND);
-        UIManager.put("Button.select", Color.GREEN);
 
     }
 

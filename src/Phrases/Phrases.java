@@ -9,7 +9,8 @@ import java.text.DecimalFormat;
 
 public class Phrases {
 
-    private Phrases() {}
+    private Phrases() {
+    }
 
     // Fonts
     public static void init() {
@@ -112,7 +113,8 @@ public class Phrases {
     public static final char DIVIDER = (char) 160; // 1 = divide , 2 = divide controlValue from Content, 3 = divide entries in 1000 packs
     public static final char PLACEHOLDER = (char) 177;
     public static final String CONTROL_VALUE = "Version 1" + Phrases.DIVIDER + Phrases.DIVIDER;
-    public static final String EXTENSION = "money";
+    public static final String EXTENSION_MONEY = "money";
+    public static final String EXTENSION_MONEY_TEXT = "Money (*.money)";
     public static final String FILE_PATHS = System.getProperties().getProperty("user.dir") + "\\Money\\paths.money";
     public static final String choseFile = "Wähle eine Datei";
     public static final String startNew = "Neu starten";
@@ -132,6 +134,9 @@ public class Phrases {
 
     public static String saveDialogTitle = "Saving";
     public static String saveDialogText = "Do you want to save the file?";
+
+    public static String overrideWhenSavingTitle = "Datei überschreiben";
+    public static String overrideWhenSavingMessage = "Soll die Datei mit dem aktuellen stand überschrieben werden?";
 
     // settings
     public static String settings = "Einstellungen";

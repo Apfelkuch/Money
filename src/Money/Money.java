@@ -6,7 +6,7 @@ import Storage.Load;
 import Storage.Save;
 import utilitis.Options;
 import utilitis.StringInteger;
-import window.ChoseFile;
+import window.FileChooser;
 import window.Window;
 import window.startingWindow;
 
@@ -42,7 +42,8 @@ public class Money {
         startingWindow startingWindow = new startingWindow();
         startingWindow.setMaxProgressBar(4);
 
-        path = ChoseFile.inputDialog(startingWindow, Phrases.choseFile, paths.toArray(new String[0]));
+        FileChooser fileChooser = new FileChooser(Phrases.choseFile, paths.toArray(new String[0]), startingWindow);
+        path = fileChooser.getSelectedFileOption();
 
         if (path == null) {
             startingWindow.dispose();
