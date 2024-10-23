@@ -248,11 +248,11 @@ public class Money {
         topEntry += amount; // move the topEntry with the amount
 
         // adjust topEntry
-        if (topEntry < 0) {
-            topEntry = 0;
-        }
         if (topEntry > entries.size() - window.getMaxContentElements()) {
             topEntry = entries.size() - window.getMaxContentElements();
+        }
+        if (topEntry < 0) {
+            topEntry = 0;
         }
 
         if (oldTopEntry == topEntry) return;
