@@ -1,11 +1,12 @@
 package Money;
 
 import Phrases.Phrases;
+import Phrases.Design;
 import Storage.Load;
 import Storage.Save;
 import utilitis.Options;
 import utilitis.StringInteger;
-import window.ChoseFile;
+import window.FileChooser;
 import window.Window;
 import window.startingWindow;
 
@@ -33,12 +34,16 @@ public class Money {
 
     public Money() {
 
-        paths = Load.loadPaths(Phrases.PATH + "//" + Phrases.FILE_PATHS);
+        Phrases.init();
+        Design.init();
+
+        paths = Load.loadPaths(Phrases.FILE_PATHS);
 
         startingWindow startingWindow = new startingWindow();
         startingWindow.setMaxProgressBar(4);
 
-        path = ChoseFile.inputDialog(startingWindow, Phrases.choseFile, paths.toArray(new String[0]));
+        FileChooser fileChooser = new FileChooser(Phrases.choseFile, paths.toArray(new String[0]), startingWindow);
+        path = fileChooser.getSelectedFileOption();
 
         if (path == null) {
             startingWindow.dispose();
@@ -46,8 +51,6 @@ public class Money {
         }
 
         startingWindow.addToProgressBar(1);
-
-        new Phrases();
 
         startingWindow.addToProgressBar(1);
 
@@ -57,7 +60,7 @@ public class Money {
 
         // loading
 
-        boolean loading = Load.load(this, path + "\\" + Phrases.FILENAME, window.getMaxContentElements());
+        boolean loading = Load.load(this, path, window.getMaxContentElements());
         if (loading) {
             System.out.println("Money.Money >> Entries loaded");
         } else {
@@ -66,7 +69,12 @@ public class Money {
 
         startingWindow.addToProgressBar(1);
 
-//        // testing entries
+        startingWindow.dispose();
+        window.setVisible(true);
+
+    }
+
+    public void testingData() { // testing
 //        int preload = 10000;
 //        for (int i = 0; i < preload; i++) {
 //            entries.add(new Entry(Options.INCOME, i + 1, LocalDate.of(2021, 7, 10), "receiver", "category", "purpose", 0f, 0f, 0f, this));
@@ -80,7 +88,6 @@ public class Money {
 //            window.addContentToTable(e);
 //        }
 
-//        // testing list
 //        list_receiverBy = new ArrayList<>();
 //        list_receiverBy.add("and");
 //        list_receiverBy.add("you");
@@ -112,14 +119,9 @@ public class Money {
 //            }
 //        }
 //        window.setInputPurpose(list_purpose.toArray(new String[0]));
-
-
-        startingWindow.dispose();
-        window.setVisible(true);
-
     }
 
-    public void enter() {
+    public void addNewEntry() {
         Options option = window.isSpending() ? Options.SPENDING : Options.INCOME;
         int number = entries.size() + 1;
         LocalDate date = window.getInputLocalDate();
@@ -213,11 +215,17 @@ public class Money {
         }
 
         // set a new entry at the place of the edited entry
-        entries.set(currentEntry, new Entry(tempEntry.getOption(), tempEntry.getNumber(), date, receiverBy, category, purpose, spending, income, balance, this));
+        tempEntry.setLocalDate(date);
+        tempEntry.setReceiverBy(receiverBy.isBlank() ? " " : receiverBy);
+        tempEntry.setCategory(category.isBlank() ? " " : category);
+        tempEntry.setPurpose(purpose.isBlank() ? " " : purpose);
+        tempEntry.setSpending(spending);
+        tempEntry.setIncome(income);
+        tempEntry.setBalance(balance);
 
         // update all following entries.
         for (int i = currentEntry; i < entries.size(); i++) {
-            entries.get(i).updateBalance(currentEntry == 0 ? 0 : entries.get(i - 1).getBalance());
+            entries.get(i).updateBalance(i == 0 ? 0 : entries.get(i - 1).getBalance());
         }
 
         // update the showing
@@ -229,8 +237,8 @@ public class Money {
         if (!paths.contains(path)) {
             paths.add(path);
         }
-        Save.saveFiles(Phrases.PATH + "//" + Phrases.FILE_PATHS, paths.toArray(new String[0]));
-        return Save.save(this, path + "//" + Phrases.FILENAME);
+        Save.saveFiles(Phrases.FILE_PATHS, paths.toArray(new String[0]));
+        return Save.save(this, path);
     }
 
     public void moveTopEntry(int amount) {
@@ -241,11 +249,11 @@ public class Money {
         topEntry += amount; // move the topEntry with the amount
 
         // adjust topEntry
-        if (topEntry < 0) {
-            topEntry = 0;
-        }
         if (topEntry > entries.size() - window.getMaxContentElements()) {
             topEntry = entries.size() - window.getMaxContentElements();
+        }
+        if (topEntry < 0) {
+            topEntry = 0;
         }
 
         if (oldTopEntry == topEntry) return;
@@ -274,7 +282,7 @@ public class Money {
 
         for (int i = current; i < entries.size(); i++) {
             // update the following entry numbers
-            entries.get(i).updateNumber(entries.get(i).getNumber() - 1);
+            entries.get(i).setNumber(entries.get(i).getNumber() - 1);
 
             // update the following entry balances
             if (updateBalance) {

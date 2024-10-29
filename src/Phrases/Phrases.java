@@ -5,11 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 
 public class Phrases {
 
+    private Phrases() {
+    }
+
     // Fonts
-    public Phrases() {
+    public static void init() {
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
             graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("res/arial.ttf")));
@@ -20,9 +24,10 @@ public class Phrases {
     }
 
     // Fonts
-    public static Font showFontBold = new Font("arial", Font.BOLD, 12);
-    public static Font showFontPlain = new Font("arial", Font.PLAIN, 12);
-    public static Font inputFont = new Font("arial", Font.BOLD, 12);
+    public static int fontSize = 13; // default = 12
+    public static Font showFontBold = new Font("arial", Font.BOLD, fontSize);
+    public static Font showFontPlain = new Font("arial", Font.PLAIN, fontSize);
+    public static Font inputFont = new Font("arial", Font.BOLD, fontSize);
 
     // The Text on th GUI
     public static String number = "Nr.";
@@ -42,6 +47,7 @@ public class Phrases {
     // The Text on the menu bar
     public static String options = "options";
     public static String save = "save";
+    public static String saveUnder = "save under";
     public static String exit = "exit";
 
 
@@ -61,16 +67,29 @@ public class Phrases {
     public static Color COLOR_CONTROL_3;
     public static Color COLOR_BUTTON;
 
+    public static Color BACKGROUND;
+    public static Color BACKGROUND_LIGHT;
+    public static Color FOREGROUND;
+    public static Color HIGHLIGHTS;
+    public static Color BORDER;
+
     public static void setDefaultColors() {
         COLOR_TABLE_CONTENT_BACKGROUND = Phrases.own[0];
         COLOR_TABLE_HEAD_ROW = COLOR_TABLE_CONTENT_BACKGROUND == null ? null : COLOR_TABLE_CONTENT_BACKGROUND.darker();
-        COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker().darker();
-        COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0];
+        COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker();
+        assert Phrases.own[0] != null;
+        COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0].darker();
         COLOR_CONTROL_BACKGROUND = null;
         COLOR_CONTROL_1 = Phrases.own[0].darker().darker();
         COLOR_CONTROL_2 = Phrases.own[0].darker().darker();
         COLOR_CONTROL_3 = Phrases.own[0];
         COLOR_BUTTON = Phrases.own[0].darker();
+
+        BACKGROUND = Color.GRAY;
+        FOREGROUND = Color.BLACK;
+        HIGHLIGHTS = BACKGROUND.darker();
+        BORDER = Color.BLACK.brighter();
+        BACKGROUND_LIGHT = Color.LIGHT_GRAY;
     }
 
     /**
@@ -84,8 +103,8 @@ public class Phrases {
 
     // input
     public static String moneySymbol = "€";
-    public static final int inputValueMax = Integer.parseInt("10000");
-    public static final int inputValueMin = Integer.parseInt("-1");
+    public static final int inputValueMax = Integer.parseInt("1000000");
+    public static final int inputValueMin = Integer.parseInt("0");
 
     // save and load
     public static final Charset CHARSET = StandardCharsets.ISO_8859_1;
@@ -94,9 +113,9 @@ public class Phrases {
     public static final char DIVIDER = (char) 160; // 1 = divide , 2 = divide controlValue from Content, 3 = divide entries in 1000 packs
     public static final char PLACEHOLDER = (char) 177;
     public static final String CONTROL_VALUE = "Version 1" + Phrases.DIVIDER + Phrases.DIVIDER;
-    public static final String PATH = System.getProperties().getProperty("user.dir") + "\\Money";
-    public static final String FILENAME = "save.money";
-    public static final String FILE_PATHS = "paths.money";
+    public static final String EXTENSION_MONEY = "money";
+    public static final String EXTENSION_MONEY_TEXT = "Money (*.money)";
+    public static final String FILE_PATHS = System.getProperties().getProperty("user.dir") + "\\Money\\paths.money";
     public static final String choseFile = "Wähle eine Datei";
     public static final String startNew = "Neu starten";
     public static final String searchFile = "Suche ein File";
@@ -107,9 +126,17 @@ public class Phrases {
     public static Color EXTRA_WINDOW_FOREGROUND = Color.BLACK;
     public static Color EXTRA_WINDOW_BACKGROUND = Color.LIGHT_GRAY;
 
-    public static String valueOutOfBounce = "Die Eingabe ist zu groß";
+    public static String valueOutOfBounce = "Die Eingabe ist zu groß (max = " + new DecimalFormat("#,###.##").format(inputValueMax) + ")";
     public static String invalidInput = "Falsche Eingabe";
-    public static String invalidInputChar = "Verbotene Zeichen verwendet.";
+    public static String invalidInputChar = "Verbotene Zeichen verwendet";
+    public static String syntaxErrorInCalculationExpression = "Syntaxfehler im Ausdruck";
+    public static String calculationSuccessfulWithRounding = "Das Ergebniss wurde gerundet.";
+
+    public static String saveDialogTitle = "Saving";
+    public static String saveDialogText = "Do you want to save the file?";
+
+    public static String overrideWhenSavingTitle = "Datei überschreiben";
+    public static String overrideWhenSavingMessage = "Soll die Datei mit dem aktuellen stand überschrieben werden?";
 
     // settings
     public static String settings = "Einstellungen";
@@ -128,5 +155,11 @@ public class Phrases {
      * The number of times a receiver, by, category or purpose must be used before it is shown be default in the drop down menu.
      */
     public static final int LIST_JUMP_VALUE = 8;
+
+    public static long periodForAnimatedIcon = 3;
+
+    // calculator
+    public static int calculatorMinValue = 0;
+    public static int calculatorMaxValue = 9999999; // max input value because calculating with higher numbers is difficult. Written with exponent (eg. 3e7)
 
 }

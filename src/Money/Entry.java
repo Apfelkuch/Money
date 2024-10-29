@@ -2,27 +2,37 @@ package Money;
 
 import Input.MouseAdapterEntry;
 import Phrases.Phrases;
+import utilitis.CustomPopup;
 import utilitis.Options;
 import window.Window;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Entry {
 
-    private int number;
-    private final LocalDate localDate;
-    private final String receiverBy;
-    private final String category;
-    private final String purpose;
-    private final double spending;
-    private final double income;
-    private double balance;
-    private final Options option;
+    private final long showTime = 2_000L; // in milliseconds
+    private final DecimalFormat numberFormat = new DecimalFormat("0.00");
     private final Money money;
+    private LocalDate localDate;
+    private String receiverBy;
+    private String category;
+    private String purpose;
+    private double spending;
+    private double income;
+    private Options option;
+    private int number;
+    private double balance;
+    private Timer showTimer = new Timer();
 
     public Entry(Options option, int number, LocalDate localDate, String receiverBy, String category, String purpose, double spending, double income, double balance, Money money) {
         this.option = option;
@@ -31,18 +41,14 @@ public class Entry {
         this.receiverBy = receiverBy;
         this.category = category;
         this.purpose = purpose;
-        this.spending = spending;
-        this.income = income;
-        this.balance = balance;
+        this.spending = formatNumber(spending);
+        this.income = formatNumber(income);
+        this.balance = formatNumber(balance);
         this.money = money;
     }
 
     public void updateBalance(double previousBalance) {
-        this.balance = previousBalance + income - spending;
-    }
-
-    public void updateNumber(int number) {
-        this.number = number;
+        this.balance = formatNumber(previousBalance + income - spending);
     }
 
     @Override
@@ -63,36 +69,78 @@ public class Entry {
         newEntry.setSize(width, height);
         newEntry.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
         newEntry.setLayout(new GridLayout(1, 6));
-        newEntry.add(buildLabel(JLabel.CENTER, "" + number, Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, this.setDateOnTable(localDate), Phrases.normalFontColor));
+        newEntry.addMouseListener(new MouseAdapterEntry(window, newEntry, this, money));
+
+        newEntry.add(buildLabel("" + number, Phrases.normalFontColor));
+        newEntry.add(buildLabel(this.setDateOnTable(localDate), Phrases.normalFontColor));
 
         //OPTION 1
-        newEntry.add(buildLabel(JLabel.LEFT, "<html>"
-                + (receiverBy == null ? "" : receiverBy) + "<br>"
-                + (category == null ? "" : category) + "<br>"
-                + (purpose == null ? "" : purpose)
-                + "</html>", Phrases.normalFontColor), 2);
+        newEntry.add(buildTextArea((receiverBy == null ? "" : receiverBy) + "\n" + (category == null ? "" : category) + "\n" + (purpose == null ? "" : purpose), Phrases.normalFontColor, newEntry), 2);
 
-        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.SPENDING) ? spending + " " + Phrases.moneySymbol : "", Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, option.equals(Options.INCOME) ? income + " " + Phrases.moneySymbol : "", Phrases.normalFontColor));
-        newEntry.add(buildLabel(JLabel.CENTER, balance + " " + Phrases.moneySymbol, balance < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
-        newEntry.addMouseListener(new MouseAdapterEntry(window, newEntry, this, money));
+        newEntry.add(buildLabel(option.equals(Options.SPENDING) ? spending + " " + Phrases.moneySymbol : "", Phrases.normalFontColor));
+        newEntry.add(buildLabel(option.equals(Options.INCOME) ? income + " " + Phrases.moneySymbol : "", Phrases.normalFontColor));
+        newEntry.add(buildLabel(balance + " " + Phrases.moneySymbol, balance < 0 ? Phrases.minusFontColor : Phrases.normalFontColor));
 
         return newEntry;
     }
 
-    private JLabel buildLabel(int alignment, String content, Color fontColor) {
+    private JLabel buildLabel(String content, Color fontColor) {
         JLabel label = new JLabel(content);
         label.setForeground(fontColor);
         label.setFont(Phrases.showFontPlain);
         label.setBorder(new LineBorder(Color.BLACK, 1));
-        label.setHorizontalAlignment(alignment);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         return label;
+    }
+
+    private JTextArea buildTextArea(String content, Color fontColor, JPanel panel) {
+        JTextArea textArea = new JTextArea(content);
+        textArea.setForeground(fontColor);
+        textArea.setDisabledTextColor(fontColor);
+        textArea.setFont(Phrases.showFontPlain);
+        textArea.setBorder(new LineBorder(Color.BLACK, 1));
+        textArea.setAlignmentX(SwingConstants.LEFT);
+        textArea.setLineWrap(false);
+        textArea.setOpaque(false);
+        textArea.setEnabled(false);
+        textArea.addMouseListener(panel.getMouseListeners()[0]);
+
+        textArea.addMouseWheelListener(e -> {
+            showTimer.cancel();
+            textArea.getParent().dispatchEvent(e); // send the Event to the Listener of the Parent ==> scrolling of the entries is otherwise not possible
+        });
+        textArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                showTimer.cancel();
+            }
+        });
+        textArea.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                showTimer.cancel();
+                showTimer = new Timer();
+                showTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        int x = e.getXOnScreen() - 10;
+                        int y = e.getYOnScreen() - 10;
+                        Dimension minSize = new Dimension(100, (textArea.getFont().getSize() * (textArea.getText().split("\n").length + 1)));
+                        new CustomPopup(textArea, x, y, textArea.getText(), 0L, minSize);
+                    }
+                }, showTime);
+            }
+        });
+        return textArea;
     }
 
     public String setDateOnTable(LocalDate date) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return date.format(dateTimeFormatter);
+    }
+
+    public double formatNumber(double d) {
+        return Double.parseDouble(numberFormat.format(d).replaceAll(",", "."));
     }
 
     // GETTER && SETTER
@@ -101,37 +149,72 @@ public class Entry {
         return number;
     }
 
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     public LocalDate getLocalDate() {
         return localDate;
+    }
+
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
     }
 
     public String getReceiverBy() {
         return receiverBy;
     }
 
+    public void setReceiverBy(String receiverBy) {
+        this.receiverBy = receiverBy;
+    }
+
     public String getCategory() {
         return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getPurpose() {
         return purpose;
     }
 
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
     public Double getSpending() {
         return spending;
+    }
+
+    public void setSpending(double spending) {
+        this.spending = spending;
     }
 
     public Double getIncome() {
         return income;
     }
 
+    public void setIncome(double income) {
+        this.income = income;
+    }
+
     public Options getOption() {
         return option;
+    }
+
+    public void setOption(Options option) {
+        this.option = option;
     }
 
     public double getBalance() {
         return balance;
     }
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 }
 
