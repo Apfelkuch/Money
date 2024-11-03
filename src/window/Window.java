@@ -44,12 +44,10 @@ public class Window extends JFrame implements ActionListener {
     // overlays
     private miniCalculator miniCalculator;
     private CalendarOverlay selectDate;
-    private Settings settings;
     // menu bar
     private JMenuItem save;
     private JMenuItem exit;
     private JMenuItem deletePaths;
-    private JMenuItem menuItemSettings;
     private JMenuItem saveUnder;
     // table
     private JLabel controlsReceiver_by;
@@ -105,7 +103,6 @@ public class Window extends JFrame implements ActionListener {
                 // adjust the position of the windows if the frame is resized
                 if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
                 if (selectDate != null) selectDate.setLocation(choiceDate.getLocationOnScreen());
-                if (settings != null) settings.setLocation(null);
                 // adjust the count of the content elements on the table
                 if (Math.abs((content.getHeight() / contentHeight) - maxContentElements) <= 1) { // The Window is manually resized, for smooth content transition
                     if (content.getHeight() >= ((maxContentElements + 1) * contentHeight)) {
@@ -128,7 +125,6 @@ public class Window extends JFrame implements ActionListener {
                 // adjust the position of the windows if the frame is moved
                 if (miniCalculator != null) miniCalculator.setLocation(calcValue.getLocationOnScreen());
                 if (selectDate != null) selectDate.setLocation(choiceDate.getLocationOnScreen());
-                if (settings != null) settings.setLocation(null);
             }
         });
 
@@ -228,12 +224,6 @@ public class Window extends JFrame implements ActionListener {
         deletePaths = new JMenuItem(Phrases.deletePaths);
         deletePaths.addActionListener(this);
         options.add(deletePaths);
-
-        options.addSeparator();
-
-        menuItemSettings = new JMenuItem(Phrases.settings);
-        menuItemSettings.addActionListener(this);
-        options.add(menuItemSettings);
 
     }
 
@@ -869,8 +859,6 @@ public class Window extends JFrame implements ActionListener {
             closeProgram();
         } else if (e.getSource() == deletePaths) { // JMenuBar deletePaths
             money.clearPaths();
-        } else if (e.getSource() == menuItemSettings) { // JMenuBar settings
-            settings = new Settings(null, this);
         }
     }
 
@@ -972,10 +960,6 @@ public class Window extends JFrame implements ActionListener {
 
     public void setMiniCalculator(window.miniCalculator miniCalculator) {
         this.miniCalculator = miniCalculator;
-    }
-
-    public void setSettings(Settings settings) {
-        this.settings = settings;
     }
 
     public boolean isProgramEdited() {
