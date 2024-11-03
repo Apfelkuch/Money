@@ -1,14 +1,15 @@
+# all editor configuration files must be excluded from this project
+
 # Default ignored files
 /shelf/
 /workspace.xml
 
-Test
-Money
-Tests
+# Testing save files of the programm
+/Money
 
 # ignore intelliJ
 out
-*.ipr
-*.iws
 *.iml
 src/META-INF
+.idea
+.gradle
