@@ -1,11 +1,11 @@
 package Phrases;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class Phrases {
 
@@ -16,7 +16,7 @@ public class Phrases {
     public static void init() {
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
-            graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("res/arial.ttf")));
+            graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(Phrases.class.getResourceAsStream("/arial.ttf"))));
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }

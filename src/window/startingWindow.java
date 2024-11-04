@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Objects;
 
 public class startingWindow extends JFrame {
 
@@ -18,7 +19,7 @@ public class startingWindow extends JFrame {
         this.setSize(new Dimension(300, 200));
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setIconImage(new ImageIcon("res\\money.png").getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/money.png"))).getImage());
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
@@ -36,7 +37,7 @@ public class startingWindow extends JFrame {
         loadingText.setText("Loading...");
         loadingText.setFont(new Font("arial", Font.BOLD, 30));
         loadingText.setForeground(Color.BLACK);
-        loadingText.setAnimatedIcon(new ImageIcon("res\\icons\\dark\\loading\\2x.png"), Phrases.periodForAnimatedIcon);
+        loadingText.setAnimatedIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/dark/loading/2x.png"))), Phrases.periodForAnimatedIcon);
         loadingText.setBackground(Color.GRAY);
         loadingText.setOpaque(true);
         panel.add(loadingText, BorderLayout.CENTER);

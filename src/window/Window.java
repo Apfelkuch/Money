@@ -488,7 +488,7 @@ public class Window extends JFrame implements ActionListener {
                 }
             }
         });
-        choiceDate.setIcon(new ImageIcon("res\\icons\\icons8-kalender-16.png"));
+        choiceDate.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/icons8-kalender-16.png"))));
 //        focusElements.add(choiceDate);
         jPanelDate.add(choiceDate);
 
@@ -619,7 +619,7 @@ public class Window extends JFrame implements ActionListener {
                 }
             }
         });
-        calcValue.setIcon(new ImageIcon("res\\icons\\icons8-taschenrechner-16.png"));
+        calcValue.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/icons8-taschenrechner-16.png"))));
 //        focusElements.add(calcValue);
         jPanelValue.add(calcValue);
 
