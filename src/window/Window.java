@@ -1,5 +1,6 @@
 package window;
 
+import FileChooser.CustomFileChooser;
 import Money.Entry;
 import Money.Money;
 import Phrases.Phrases;
@@ -23,8 +24,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
-
-import FileChooser.CustomFileChooser;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -87,7 +86,6 @@ public class Window extends JFrame implements ActionListener {
     public Window(String title, Money money) {
         super(title);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        super.setTitle(title);
         this.title = title;
         // start the window Maximized
 //        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -201,38 +199,45 @@ public class Window extends JFrame implements ActionListener {
 
     public void buildMenuBar() {
         JMenuBar menuBar = new JMenuBar();
+        formatComponent(menuBar);
         mainLayer.add(menuBar, BorderLayout.NORTH);
 
         // Option
         JMenu options = new JMenu(Phrases.options);
+        formatComponent(options);
         menuBar.add(options);
 
         save = new JMenuItem(Phrases.save);
+        formatComponent(save);
         save.addActionListener(this);
         options.add(save);
 
         saveUnder = new JMenuItem(Phrases.saveUnder);
+        formatComponent(saveUnder);
         saveUnder.addActionListener(this);
         options.add(saveUnder);
 
         options.addSeparator();
 
         exit = new JMenuItem(Phrases.exit);
+        formatComponent(exit);
         exit.addActionListener(this);
         options.add(exit);
 
         options.addSeparator();
 
         deletePaths = new JMenuItem(Phrases.deletePaths);
+        formatComponent(deletePaths);
         deletePaths.addActionListener(this);
         options.add(deletePaths);
 
     }
 
-//    @Override
-//    public void setTitle(String title) {
-//        windowTitle.setText(title);
-//    }
+    private void formatComponent(JComponent component) {
+        component.setBackground(Phrases.BACKGROUND);
+        component.setForeground(Phrases.FOREGROUND);
+        component.setBorder(new LineBorder(Phrases.BACKGROUND));
+    }
 
     private void addTable() {
         JPanel table = new JPanel();
@@ -246,34 +251,22 @@ public class Window extends JFrame implements ActionListener {
         table.add(headRow, BorderLayout.NORTH);
 
         JLabel tableNumber = new JLabel(Phrases.number);
-        tableNumber.setFont(Phrases.showFontBold);
-        tableNumber.setBorder(new LineBorder(Color.BLACK, 2));
-        tableNumber.setHorizontalAlignment(JLabel.CENTER);
+        formatTableLabel(tableNumber);
         headRow.add(tableNumber);
         JLabel tableDate = new JLabel(Phrases.date);
-        tableDate.setFont(Phrases.showFontBold);
-        tableDate.setBorder(new LineBorder(Color.BLACK, 2));
-        tableDate.setHorizontalAlignment(JLabel.CENTER);
+        formatTableLabel(tableDate);
         headRow.add(tableDate);
         JLabel tableReceiverCategoryPurpose = new JLabel("<html>" + Phrases.receiver + "<br>" + Phrases.category + "<br>" + Phrases.purpose + "</html>");
-        tableReceiverCategoryPurpose.setFont(Phrases.showFontBold);
-        tableReceiverCategoryPurpose.setBorder(new LineBorder(Color.BLACK, 2));
-        tableReceiverCategoryPurpose.setHorizontalAlignment(JLabel.CENTER);
+        formatTableLabel(tableReceiverCategoryPurpose);
         headRow.add(tableReceiverCategoryPurpose);
         JLabel tableSpending = new JLabel(Phrases.tableSpending);
-        tableSpending.setFont(Phrases.showFontBold);
-        tableSpending.setBorder(new LineBorder(Color.BLACK, 2));
-        tableSpending.setHorizontalAlignment(JLabel.CENTER);
+        formatTableLabel(tableSpending);
         headRow.add(tableSpending);
         JLabel tableIncome = new JLabel(Phrases.tableIncome);
-        tableIncome.setFont(Phrases.showFontBold);
-        tableIncome.setBorder(new LineBorder(Color.BLACK, 2));
-        tableIncome.setHorizontalAlignment(JLabel.CENTER);
+        formatTableLabel(tableIncome);
         headRow.add(tableIncome);
         JLabel tableBalance = new JLabel(Phrases.balance);
-        tableBalance.setFont(Phrases.showFontBold);
-        tableBalance.setBorder(new LineBorder(Color.BLACK, 2));
-        tableBalance.setHorizontalAlignment(JLabel.CENTER);
+        formatTableLabel(tableBalance);
         headRow.add(tableBalance);
 
         // table content
@@ -287,9 +280,15 @@ public class Window extends JFrame implements ActionListener {
 
         // split
         split = new JPanel();
-        split.setBackground(Phrases.COLOR_TABLE_SPLIT);
+        split.setBackground(Phrases.BACKGROUND);
         split.setPreferredSize(new Dimension(0, split.getPreferredSize().height / 2));
         table.add(split, BorderLayout.SOUTH);
+    }
+
+    private void formatTableLabel(JLabel label) {
+        label.setFont(Phrases.showFontBold);
+        label.setBorder(new LineBorder(Color.BLACK, 2));
+        label.setHorizontalAlignment(JLabel.CENTER);
     }
 
     public void addContentToTable(Entry entry) {
@@ -309,19 +308,17 @@ public class Window extends JFrame implements ActionListener {
     }
 
     private void addControls() throws ParseException {
-        controls = new JPanel();
-        controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-        controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
-
         controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        controlPanel.setBackground(Phrases.COLOR_CONTROL_PANEL_BACKGROUND);
-        controlPanel.add(controls);
+        controlPanel.setBackground(Phrases.BACKGROUND);
         mainLayer.add(controlPanel, BorderLayout.SOUTH);
 
+        controls = new JPanel();
+        controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+        controlPanel.add(controls);
 
         // control Buttons
         controlButtons = new JPanel();
-        controlButtons.setBackground(Phrases.COLOR_CONTROL_1);
+        controlButtons.setBackground(Phrases.COLOR_CONTROL_BUTTONS);
         controlButtons.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtons);
 
@@ -341,7 +338,7 @@ public class Window extends JFrame implements ActionListener {
 
         // control Buttons I
         controlButtonsI = new JPanel();
-        controlButtonsI.setBackground(Phrases.COLOR_CONTROL_2);
+        controlButtonsI.setBackground(Phrases.COLOR_CONTROL_BUTTONS);
         controlButtonsI.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         controls.add(controlButtonsI);
 
@@ -377,7 +374,7 @@ public class Window extends JFrame implements ActionListener {
         input = new JPanel();
         input.setLayout(new GridLayout(3, 2));
         input.setMaximumSize(maxInputDim);
-        input.setBackground(Phrases.COLOR_CONTROL_3);
+        input.setBackground(Phrases.COLOR_CONTROL_INPUTS);
         controls.add(input);
 
         // receiverBy
@@ -725,44 +722,12 @@ public class Window extends JFrame implements ActionListener {
         inputReceiver_by.setSelectedItem(null);
     }
 
-    public void reload() {
-        // change color of panels
-        headRow.setBackground(Phrases.COLOR_TABLE_HEAD_ROW);
-        content.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
-        split.setBackground(Phrases.COLOR_TABLE_SPLIT);
-        controls.setBackground(Phrases.COLOR_CONTROL_BACKGROUND);
-        controlPanel.setBackground(Phrases.COLOR_CONTROL_PANEL_BACKGROUND);
-        controlButtons.setBackground(Phrases.COLOR_CONTROL_1);
-        controlButtonsI.setBackground(Phrases.COLOR_CONTROL_2);
-        input.setBackground(Phrases.COLOR_CONTROL_3);
-        // change the input button colors
-        spending.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        income.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        neu.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        edit.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        enter.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        cancel.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        choiceDate.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        calcValue.setBackground_BorderColor(Phrases.COLOR_BUTTON);
-        // change the ComboBox-Arrow colors
-        inputReceiver_by.setArrowButtonColor(Phrases.COLOR_BUTTON);
-        inputCategory.setArrowButtonColor(Phrases.COLOR_BUTTON);
-        inputPurpose.setArrowButtonColor(Phrases.COLOR_BUTTON);
-
-        // change to spending
-        this.isSpending = false;
-        this.changeToSpending();
-
-        this.revalidate();
-        this.repaint();
-    }
-
     public void closeProgram() {
         if (!isProgramEdited()) {
             dispose();
             System.exit(0);
         }
-        int result = ExtraWindow.confirmDialog(this, Phrases.saveDialogTitle, Phrases.saveDialogText, Phrases.showFontPlain, Phrases.EXTRA_WINDOW_BACKGROUND, Phrases.EXTRA_WINDOW_FOREGROUND, true);
+        int result = ExtraWindow.confirmDialog(this, Phrases.saveDialogTitle, Phrases.saveDialogText, Phrases.showFontPlain, Phrases.BACKGROUND_LIGHT, Phrases.FOREGROUND, true);
         if (result == ExtraWindow.EXIT_WITH_CANCEL) {
             return;
         }

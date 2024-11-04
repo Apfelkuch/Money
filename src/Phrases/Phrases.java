@@ -20,89 +20,58 @@ public class Phrases {
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
-        setDefaultColors();
     }
 
     // Fonts
-    public static int fontSize = 13; // default = 12
-    public static Font showFontBold = new Font("arial", Font.BOLD, fontSize);
-    public static Font showFontPlain = new Font("arial", Font.PLAIN, fontSize);
-    public static Font inputFont = new Font("arial", Font.BOLD, fontSize);
+    public static final int fontSize = 13; // default = 12
+    public static final Font showFontBold = new Font("arial", Font.BOLD, fontSize);
+    public static final Font showFontPlain = new Font("arial", Font.PLAIN, fontSize);
+    public static final Font inputFont = new Font("arial", Font.BOLD, fontSize);
 
     // The Text on th GUI
-    public static String number = "Nr.";
-    public static String date = "Datum";
-    public static String receiver = "Empfänger";
-    public static String category = "Kategorie";
-    public static String purpose = "V. Zweck";
-    public static String tableSpending = "Ausgaben";
-    public static String tableIncome = "Einnahmen";
-    public static String balance = "Saldo";
-    public static String neu = "Neu";
-    public static String edit = "Bearbeiten";
-    public static String enter = "Eintragen";
-    public static String cancel = "Abbrechen";
-    public static String by = "Von";
-    public static String value = "Betrag";
+    public static final String number = "Nr.";
+    public static final String date = "Datum";
+    public static final String receiver = "Empfänger";
+    public static final String category = "Kategorie";
+    public static final String purpose = "V. Zweck";
+    public static final String tableSpending = "Ausgaben";
+    public static final String tableIncome = "Einnahmen";
+    public static final String balance = "Saldo";
+    public static final String neu = "Neu";
+    public static final String edit = "Bearbeiten";
+    public static final String enter = "Eintragen";
+    public static final String cancel = "Abbrechen";
+    public static final String by = "Von";
+    public static final String value = "Betrag";
     // The Text on the menu bar
-    public static String options = "options";
-    public static String save = "save";
-    public static String saveUnder = "save under";
-    public static String exit = "exit";
+    public static final String options = "options";
+    public static final String save = "save";
+    public static final String saveUnder = "save under";
+    public static final String exit = "exit";
 
+    public static final Color BACKGROUND = Color.GRAY;
+    public static final Color BACKGROUND_LIGHT = Color.LIGHT_GRAY;
+    public static final Color FOREGROUND = Color.BLACK;
+    public static final Color HIGHLIGHTS = BACKGROUND.darker();
+    public static final Color BORDER = Color.BLACK.brighter();
 
-    // color from Color pallets (source = 'https://www.canva.com/de_de/lernen/schoene-farbpaletten-und-farbkombinationen/')
-    public static Color[] own = new Color[]
-            {Color.LIGHT_GRAY, Color.decode("#3A5199") /*Blue*/,
-                    Color.decode("#E1B80D"), Color.decode("#EFB509"), Color.decode("#D8990F"), Color.decode("#CD7213") /*Orange*/};
-
-
-    public static Color COLOR_TABLE_CONTENT_BACKGROUND;
-    public static Color COLOR_TABLE_HEAD_ROW;
-    public static Color COLOR_TABLE_SPLIT;
-    public static Color COLOR_CONTROL_PANEL_BACKGROUND;
-    public static Color COLOR_CONTROL_BACKGROUND;
-    public static Color COLOR_CONTROL_1;
-    public static Color COLOR_CONTROL_2;
-    public static Color COLOR_CONTROL_3;
-    public static Color COLOR_BUTTON;
-
-    public static Color BACKGROUND;
-    public static Color BACKGROUND_LIGHT;
-    public static Color FOREGROUND;
-    public static Color HIGHLIGHTS;
-    public static Color BORDER;
-
-    public static void setDefaultColors() {
-        COLOR_TABLE_CONTENT_BACKGROUND = Phrases.own[0];
-        COLOR_TABLE_HEAD_ROW = COLOR_TABLE_CONTENT_BACKGROUND == null ? null : COLOR_TABLE_CONTENT_BACKGROUND.darker();
-        COLOR_TABLE_SPLIT = Phrases.own[0] == null ? null : Phrases.own[0].darker();
-        assert Phrases.own[0] != null;
-        COLOR_CONTROL_PANEL_BACKGROUND = Phrases.own[0].darker();
-        COLOR_CONTROL_BACKGROUND = null;
-        COLOR_CONTROL_1 = Phrases.own[0].darker().darker();
-        COLOR_CONTROL_2 = Phrases.own[0].darker().darker();
-        COLOR_CONTROL_3 = Phrases.own[0];
-        COLOR_BUTTON = Phrases.own[0].darker();
-
-        BACKGROUND = Color.GRAY;
-        FOREGROUND = Color.BLACK;
-        HIGHLIGHTS = BACKGROUND.darker();
-        BORDER = Color.BLACK.brighter();
-        BACKGROUND_LIGHT = Color.LIGHT_GRAY;
-    }
+    public static final Color COLOR_TABLE_CONTENT_BACKGROUND = BACKGROUND_LIGHT;
+    public static final Color COLOR_TABLE_HEAD_ROW = BACKGROUND_LIGHT.darker(); // COLOR_CONTROL_BUTTONS = Color.LIGHT_GRAY.darker().darker();
+    public static final Color COLOR_CONTROL_BUTTONS = BACKGROUND;
+    public static final Color COLOR_CONTROL_INPUTS = BACKGROUND_LIGHT;
+    public static final Color COLOR_BUTTON = BACKGROUND_LIGHT.darker();
 
     /**
      * The color for a positive balance
      */
-    public static Color normalFontColor = Color.BLACK;
+    public static final Color normalFontColor = Color.BLACK;
     /**
      * The color for a negative balance
      */
-    public static Color minusFontColor = Color.RED;
+    public static final Color minusFontColor = Color.RED;
 
     // input
-    public static String moneySymbol = "€";
+    public static final String moneySymbol = "€";
     public static final int inputValueMax = Integer.parseInt("1000000");
     public static final int inputValueMin = Integer.parseInt("0");
 
@@ -123,43 +92,28 @@ public class Phrases {
 
     public static final String deleteEntry = "Eintrag löschen";
     public static final String deleteEntryMessage = "Lösche Eintrag: ";
-    public static Color EXTRA_WINDOW_FOREGROUND = Color.BLACK;
-    public static Color EXTRA_WINDOW_BACKGROUND = Color.LIGHT_GRAY;
 
-    public static String valueOutOfBounce = "Die Eingabe ist zu groß (max = " + new DecimalFormat("#,###.##").format(inputValueMax) + ")";
-    public static String invalidInput = "Falsche Eingabe";
-    public static String invalidInputChar = "Verbotene Zeichen verwendet";
-    public static String syntaxErrorInCalculationExpression = "Syntaxfehler im Ausdruck";
-    public static String calculationSuccessfulWithRounding = "Das Ergebniss wurde gerundet.";
+    public static final String valueOutOfBounce = "Die Eingabe ist zu groß (max = " + new DecimalFormat("#,###.##").format(inputValueMax) + ")";
+    public static final String invalidInput = "Falsche Eingabe";
+    public static final String invalidInputChar = "Verbotene Zeichen verwendet";
+    public static final String syntaxErrorInCalculationExpression = "Syntaxfehler im Ausdruck";
+    public static final String calculationSuccessfulWithRounding = "Das Ergebniss wurde gerundet.";
 
-    public static String saveDialogTitle = "Saving";
-    public static String saveDialogText = "Do you want to save the file?";
+    public static final String saveDialogTitle = "Speichern";
+    public static final String saveDialogText = "Möchten Sie die Datei Speichern?";
 
-    public static String overrideWhenSavingTitle = "Datei überschreiben";
-    public static String overrideWhenSavingMessage = "Soll die Datei mit dem aktuellen stand überschrieben werden?";
-
-    // settings
-    public static String settings = "Einstellungen";
-    public static String colorTable = "Hintergrund der Einträge";
-    public static String colorTableHeadRow = "Einträge Kopfzeile";
-    public static String colorSplit = "Trennung von Eingabe und Einträgen";
-    public static String colorControl = "Hintergrund der Eingabe";
-    public static String colorControl1 = "Hintergrund Eingabe 1";
-    public static String colorControl2 = "Hintergrund Eingabe 2";
-    public static String colorControl3 = "Hintergrund Eingabe 3";
-    public static String colorButton = "Knopffarbe";
-    public static String use = "use";
-    public static String normal = "default";
+    public static final String overrideWhenSavingTitle = "Datei überschreiben";
+    public static final String overrideWhenSavingMessage = "Soll die Datei mit dem aktuellen stand überschrieben werden?";
 
     /**
      * The number of times a receiver, by, category or purpose must be used before it is shown be default in the drop down menu.
      */
     public static final int LIST_JUMP_VALUE = 8;
 
-    public static long periodForAnimatedIcon = 3;
+    public static final long periodForAnimatedIcon = 3; // time in milliseconds
 
     // calculator
-    public static int calculatorMinValue = 0;
-    public static int calculatorMaxValue = 9999999; // max input value because calculating with higher numbers is difficult. Written with exponent (eg. 3e7)
+    public static final int calculatorMinValue = 0;
+    public static final int calculatorMaxValue = 9999999; // max input value because calculating with higher numbers is difficult. Written with exponent (eg. 3e7)
 
 }

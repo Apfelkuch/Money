@@ -278,7 +278,6 @@ public class ExtraWindow {
 
     public static void main(String[] args) {
         Phrases.init();
-        Phrases.setDefaultColors();
         Design.init();
         System.out.println(ExtraWindow.messageDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true));
         System.out.println(ExtraWindow.confirmDialog(null, "Title", "message", Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true));
