@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
+
 import FileChooser.CustomFileChooser;
 
 public class Window extends JFrame implements ActionListener {
@@ -93,7 +95,7 @@ public class Window extends JFrame implements ActionListener {
         this.setMinimumSize(this.getSize());
         this.setResizable(true);
         this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon("res\\money.png").getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/money.png"))).getImage());
 
         this.money = money;
 
