@@ -2,12 +2,13 @@ package utilitis;
 
 import phrases.Phrases;
 
+import javax.swing.border.BevelBorder;
 import javax.swing.*;
 import java.awt.*;
 
 public class CustomJButton extends JButton {
 
-    private BevelBorder raised, lower;
+    private final BevelBorder raised, lower;
 
     public CustomJButton() {
         this(null);
@@ -17,9 +18,8 @@ public class CustomJButton extends JButton {
         super(text);
         super.setFocusPainted(false);
         super.setContentAreaFilled(false);
-        super.setRolloverEnabled(false);
-        raised = new BevelBorder(BevelBorder.RAISED, Phrases.COLOR_BUTTON);
-        lower = new BevelBorder(BevelBorder.LOWERED, Phrases.COLOR_BUTTON);
+        raised = new BevelBorder(BevelBorder.RAISED, Phrases.COLOR_BUTTON, Phrases.COLOR_BUTTON.darker());
+        lower = new BevelBorder(BevelBorder.LOWERED, Phrases.COLOR_BUTTON, Phrases.COLOR_BUTTON.darker());
         setBackground(Phrases.COLOR_BUTTON);
     }
 
@@ -35,16 +35,6 @@ public class CustomJButton extends JButton {
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
         g.setColor(originalColor);
-    }
-
-    public void setBorderColor(Color color) {
-        raised = new BevelBorder(BevelBorder.RAISED, color);
-        lower = new BevelBorder(BevelBorder.LOWERED, color);
-    }
-
-    public void setBackground_BorderColor(Color color) {
-        this.setBackground(color);
-        this.setBorderColor(color);
     }
 
 }

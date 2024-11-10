@@ -3,6 +3,7 @@ package utilitis;
 import phrases.Phrases;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
 
@@ -14,8 +15,8 @@ public class CustomArrowButton extends BasicArrowButton {
     public CustomArrowButton(int direction) {
         super(direction, null, null, Phrases.COLOR_BUTTON.darker().darker(), null);
         super.setBorder(BorderFactory.createRaisedBevelBorder());
-        raised = new BevelBorder(BevelBorder.RAISED, Phrases.COLOR_BUTTON);
-        lower = new BevelBorder(BevelBorder.LOWERED, Phrases.COLOR_BUTTON);
+        raised = new BevelBorder(BevelBorder.RAISED, Phrases.COLOR_BUTTON, Phrases.COLOR_BUTTON.darker());
+        lower = new BevelBorder(BevelBorder.LOWERED, Phrases.COLOR_BUTTON, Phrases.COLOR_BUTTON.darker());
         setBackground(Phrases.COLOR_BUTTON);
     }
 

@@ -52,21 +52,17 @@ public class Window extends JFrame implements ActionListener {
     private JMenuItem saveUnder;
     // table
     private JLabel controlsReceiver_by;
-    private JPanel headRow;
     private JPanel content;
-    private JPanel split;
     private int maxContentElements = 4;
     private int oldMaxContentElements;
     // controls
     private JPanel controlPanel;
     private JPanel controls;
     private int oldControlsWidth;
-    private JPanel input;
-    private JPanel controlButtons, controlButtonsI;
     private CustomJButton spending;
     private CustomJButton income;
     private boolean isSpending;
-    private CustomJButton neu;
+    private CustomJButton create;
     private CustomJButton edit;
     private CustomJButton enter;
     private CustomJButton cancel;
@@ -199,41 +195,41 @@ public class Window extends JFrame implements ActionListener {
 
     public void buildMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        formatComponent(menuBar);
+        formatMenuComponent(menuBar);
         mainLayer.add(menuBar, BorderLayout.NORTH);
 
         // Option
         JMenu options = new JMenu(Phrases.options);
-        formatComponent(options);
+        formatMenuComponent(options);
         menuBar.add(options);
 
         save = new JMenuItem(Phrases.save);
-        formatComponent(save);
+        formatMenuComponent(save);
         save.addActionListener(this);
         options.add(save);
 
         saveUnder = new JMenuItem(Phrases.saveUnder);
-        formatComponent(saveUnder);
+        formatMenuComponent(saveUnder);
         saveUnder.addActionListener(this);
         options.add(saveUnder);
 
         options.addSeparator();
 
         exit = new JMenuItem(Phrases.exit);
-        formatComponent(exit);
+        formatMenuComponent(exit);
         exit.addActionListener(this);
         options.add(exit);
 
         options.addSeparator();
 
         deletePaths = new JMenuItem(Phrases.deletePaths);
-        formatComponent(deletePaths);
+        formatMenuComponent(deletePaths);
         deletePaths.addActionListener(this);
         options.add(deletePaths);
 
     }
 
-    private void formatComponent(JComponent component) {
+    private void formatMenuComponent(JComponent component) {
         component.setBackground(Phrases.BACKGROUND);
         component.setForeground(Phrases.FOREGROUND);
         component.setBorder(new LineBorder(Phrases.BACKGROUND));
@@ -245,7 +241,7 @@ public class Window extends JFrame implements ActionListener {
         mainLayer.add(table, BorderLayout.CENTER);
 
         // table head row
-        headRow = new JPanel();
+        JPanel headRow = new JPanel();
         headRow.setLayout(new GridLayout(1, 6));
         headRow.setBackground(Phrases.COLOR_TABLE_HEAD_ROW);
         table.add(headRow, BorderLayout.NORTH);
@@ -279,7 +275,7 @@ public class Window extends JFrame implements ActionListener {
         table.add(content, BorderLayout.CENTER);
 
         // split
-        split = new JPanel();
+        JPanel split = new JPanel();
         split.setBackground(Phrases.BACKGROUND);
         split.setPreferredSize(new Dimension(0, split.getPreferredSize().height / 2));
         table.add(split, BorderLayout.SOUTH);
@@ -316,62 +312,62 @@ public class Window extends JFrame implements ActionListener {
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
         controlPanel.add(controls);
 
-        // control Buttons
-        controlButtons = new JPanel();
-        controlButtons.setBackground(Phrases.COLOR_CONTROL_BUTTONS);
-        controlButtons.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        controls.add(controlButtons);
+        // control Buttons for input mode (spending / income)
+        JPanel controlInputMode = new JPanel();
+        controlInputMode.setBackground(Phrases.COLOR_CONTROL_BUTTONS);
+        controlInputMode.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        controls.add(controlInputMode);
 
         spending = new CustomJButton(Phrases.tableSpending);
         spending.setFont(Phrases.inputFont);
         spending.setPreferredSize(buttonsDimension);
         spending.addActionListener(this);
 //        focusElements.add(spending);
-        controlButtons.add(spending);
+        controlInputMode.add(spending);
 
         income = new CustomJButton(Phrases.tableIncome);
         income.setFont(Phrases.inputFont);
         income.setPreferredSize(buttonsDimension);
         income.addActionListener(this);
 //        focusElements.add(income);
-        controlButtons.add(income);
+        controlInputMode.add(income);
 
-        // control Buttons I
-        controlButtonsI = new JPanel();
-        controlButtonsI.setBackground(Phrases.COLOR_CONTROL_BUTTONS);
-        controlButtonsI.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        controls.add(controlButtonsI);
+        // control Buttons for actions (create, edit, enter, cancel)
+        JPanel controlActions = new JPanel();
+        controlActions.setBackground(Phrases.COLOR_CONTROL_BUTTONS);
+        controlActions.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        controls.add(controlActions);
 
-        neu = new CustomJButton(Phrases.neu);
-        neu.setFont(Phrases.inputFont);
-        neu.setPreferredSize(buttonsDimension);
-        neu.addActionListener(this);
+        create = new CustomJButton(Phrases.neu);
+        create.setFont(Phrases.inputFont);
+        create.setPreferredSize(buttonsDimension);
+        create.addActionListener(this);
 //        focusElements.add(neu);
-        controlButtonsI.add(neu);
+        controlActions.add(create);
 
         edit = new CustomJButton(Phrases.edit);
         edit.setFont(Phrases.inputFont);
         edit.setPreferredSize(buttonsDimension);
         edit.addActionListener(this);
 //        focusElements.add(edit);
-        controlButtonsI.add(edit);
+        controlActions.add(edit);
 
         enter = new CustomJButton(Phrases.enter);
         enter.setFont(Phrases.inputFont);
         enter.setPreferredSize(buttonsDimension);
         enter.addActionListener(this);
 //        focusElements.add(enter);
-        controlButtonsI.add(enter);
+        controlActions.add(enter);
 
         cancel = new CustomJButton(Phrases.cancel);
         cancel.setFont(Phrases.inputFont);
         cancel.setPreferredSize(buttonsDimension);
         cancel.addActionListener(this);
 //        focusElements.add(cancel);
-        controlButtonsI.add(cancel);
+        controlActions.add(cancel);
 
         // input
-        input = new JPanel();
+        JPanel input = new JPanel();
         input.setLayout(new GridLayout(3, 2));
         input.setMaximumSize(maxInputDim);
         input.setBackground(Phrases.COLOR_CONTROL_INPUTS);
@@ -768,7 +764,7 @@ public class Window extends JFrame implements ActionListener {
             if (!editing && !entryShown && isInputEmpty()) {
                 changeToIncome();
             }
-        } else if (e.getSource() == neu) { // new
+        } else if (e.getSource() == create) { // create
             entryShown = false;
             editing = false;
             this.clearInput();
