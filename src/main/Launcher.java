@@ -1,6 +1,6 @@
 package main;
 
-import Money.Money;
+import money.Money;
 
 public class Launcher {
     public static void main(String[] args) {

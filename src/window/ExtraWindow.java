@@ -1,7 +1,7 @@
 package window;
 
-import Phrases.Design;
-import Phrases.Phrases;
+import phrases.Design;
+import phrases.Phrases;
 import utilitis.CustomJButton;
 
 import javax.swing.*;

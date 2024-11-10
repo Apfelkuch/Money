@@ -1,6 +1,6 @@
 package utilitis;
 
-import Phrases.Phrases;
+import phrases.Phrases;
 
 import javax.swing.*;
 import java.awt.*;

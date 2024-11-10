@@ -1,8 +1,8 @@
-package Storage;
+package storage;
 
-import Money.Entry;
-import Money.Money;
-import Phrases.Phrases;
+import money.Entry;
+import money.Money;
+import phrases.Phrases;
 
 import java.io.File;
 import java.io.PrintWriter;

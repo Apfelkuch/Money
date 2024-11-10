@@ -1,4 +1,4 @@
-import MiniCalculator.calculator;
+import minicalculator.Calculator;
 
 import java.util.Arrays;
 public class MiniCalculatorTest {
@@ -13,7 +13,7 @@ public class MiniCalculatorTest {
         String[] wrongResults = new String[values.length];
         int correct = 0;
 
-        calculator miniCalculator = new calculator();
+        Calculator miniCalculator = new Calculator();
         for (int i = 0; i < values.length; i++) {
             System.out.println(i);
             miniCalculator.setTextField(values[i]);

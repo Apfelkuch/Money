@@ -1,7 +1,7 @@
 package window;
 
-import MiniCalculator.calculator;
-import Phrases.Phrases;
+import minicalculator.Calculator;
+import phrases.Phrases;
 import utilitis.CustomJButton;
 import utilitis.CustomPopup;
 
@@ -10,19 +10,19 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class miniCalculator extends Overlays {
+public class MiniCalculator extends Overlays {
 
-    private final calculator calculator;
+    private final Calculator calculator;
     private JPanel contentPanel;
     private JTextField textField;
 
     private boolean calculated;
 
-    public miniCalculator(Point location, window.Window moneyWindow) {
+    public MiniCalculator(Point location, window.Window moneyWindow) {
         super(location, moneyWindow);
         this.setSize(contentPanel.getSize());
         this.setLocation(location);
-        calculator = new calculator();
+        calculator = new Calculator();
     }
 
     @Override

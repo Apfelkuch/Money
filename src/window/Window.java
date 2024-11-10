@@ -1,9 +1,9 @@
 package window;
 
-import FileChooser.CustomFileChooser;
-import Money.Entry;
-import Money.Money;
-import Phrases.Phrases;
+import filechooser.CustomFileChooser;
+import money.Entry;
+import money.Money;
+import phrases.Phrases;
 import utilitis.*;
 
 import javax.swing.*;
@@ -43,7 +43,7 @@ public class Window extends JFrame implements ActionListener {
     // logic
     private final Money money;
     // overlays
-    private miniCalculator miniCalculator;
+    private MiniCalculator miniCalculator;
     private CalendarOverlay selectDate;
     // menu bar
     private JMenuItem save;
@@ -794,7 +794,7 @@ public class Window extends JFrame implements ActionListener {
             if (getInputValue() > Phrases.inputValueMax) {
                 setInputValue(String.valueOf(Phrases.inputValueMax));
             }
-            miniCalculator = new miniCalculator(calcValue.getLocationOnScreen(), this);
+            miniCalculator = new MiniCalculator(calcValue.getLocationOnScreen(), this);
             calcValue.requestFocus();
         } else if (e.getSource() == save) { // JMenuBar save
             this.save();
@@ -925,7 +925,7 @@ public class Window extends JFrame implements ActionListener {
         this.selectDate = selectDate;
     }
 
-    public void setMiniCalculator(window.miniCalculator miniCalculator) {
+    public void setMiniCalculator(MiniCalculator miniCalculator) {
         this.miniCalculator = miniCalculator;
     }
 

@@ -1,6 +1,6 @@
 package window;
 
-import Phrases.Phrases;
+import phrases.Phrases;
 import utilitis.CustomJLabel;
 
 import javax.swing.*;
@@ -9,12 +9,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Objects;
 
-public class startingWindow extends JFrame {
+public class StartingWindow extends JFrame {
 
     private final JProgressBar jProgressBar;
     private final CustomJLabel loadingText;
 
-    public startingWindow() {
+    public StartingWindow() {
         super("Starting the program");
         this.setSize(new Dimension(300, 200));
         this.setLocationRelativeTo(null);
@@ -74,7 +74,7 @@ public class startingWindow extends JFrame {
     public static void main(String[] args) {
         int max = 1000;
         try {
-            startingWindow startingWindow = new startingWindow();
+            StartingWindow startingWindow = new StartingWindow();
             startingWindow.setMaxProgressBar(max);
             for (int i = 0; i <= max; i += 1) {
                 startingWindow.setProgressBarValue(i);

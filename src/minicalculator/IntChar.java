@@ -1,4 +1,4 @@
-package MiniCalculator;
+package minicalculator;
 
 public class IntChar {
 

@@ -1,4 +1,4 @@
-package Phrases;
+package phrases;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

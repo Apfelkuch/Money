@@ -1,10 +1,10 @@
-package MiniCalculator;
+package minicalculator;
 
-import Phrases.Phrases;
+import phrases.Phrases;
 
 import java.util.ArrayList;
 
-public class calculator {
+public class Calculator {
 
     public final char[] validChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-', '*', '/'};
     private final char[] operatorChars = {'+', '-', '*', '/'};
@@ -29,7 +29,7 @@ public class calculator {
         for (int i = 0; i < content.length(); i++) {
             char charAt = content.charAt(i);
             if (Character.isLetter(charAt)) {
-                System.err.println("[Error] calculator.calc >> character is not valid. Letter at : " + charAt);
+                System.err.println("[Error] Calculator.calc >> character is not valid. Letter at : " + charAt);
                 content = "";
                 return calculation_fails;
             }
@@ -41,7 +41,7 @@ public class calculator {
                 }
             }
             if (containInvalidChar) {
-                System.err.println("[Error] calculator.calc >> character is not valid");
+                System.err.println("[Error] Calculator.calc >> character is not valid");
                 content = "";
                 return calculation_fails;
             }

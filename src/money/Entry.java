@@ -1,7 +1,7 @@
-package Money;
+package money;
 
 import Input.MouseAdapterEntry;
-import Phrases.Phrases;
+import phrases.Phrases;
 import utilitis.CustomPopup;
 import utilitis.Options;
 import window.Window;

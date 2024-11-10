@@ -1,7 +1,7 @@
 package window;
 
-import FileChooser.CustomFileChooser;
-import Phrases.Phrases;
+import filechooser.CustomFileChooser;
+import phrases.Phrases;
 
 import javax.swing.*;
 import java.awt.*;

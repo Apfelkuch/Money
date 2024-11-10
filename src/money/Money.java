@@ -1,14 +1,14 @@
-package Money;
+package money;
 
-import Phrases.Phrases;
-import Phrases.Design;
-import Storage.Load;
-import Storage.Save;
+import phrases.Phrases;
+import phrases.Design;
+import storage.Load;
+import storage.Save;
 import utilitis.Options;
 import utilitis.StringInteger;
 import window.FileChooser;
+import window.StartingWindow;
 import window.Window;
-import window.startingWindow;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class Money {
 
         paths = Load.loadPaths(Phrases.FILE_PATHS);
 
-        startingWindow startingWindow = new startingWindow();
+        StartingWindow startingWindow = new StartingWindow();
         startingWindow.setMaxProgressBar(4);
 
         FileChooser fileChooser = new FileChooser(Phrases.choseFile, paths.toArray(new String[0]), startingWindow);

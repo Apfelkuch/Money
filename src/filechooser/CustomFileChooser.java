@@ -1,6 +1,6 @@
-package FileChooser;
+package filechooser;
 
-import Phrases.Phrases;
+import phrases.Phrases;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

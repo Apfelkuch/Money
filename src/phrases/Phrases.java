@@ -1,4 +1,4 @@
-package Phrases;
+package phrases;
 
 import java.awt.*;
 import java.io.IOException;
