@@ -797,27 +797,27 @@ public class Window extends JFrame implements ActionListener {
         } else if (e.getSource() == saveUnder) { // JMenuBar saveUnder
             // create the save-path
             CustomFileChooser customFileChooser = new CustomFileChooser(Phrases.FILE_PATHS);
-            if (customFileChooser.showSaveDialog(this) == CustomFileChooser.APPROVE_OPTION) {
-                File newFile = new File(customFileChooser.getSelectedFileMoneyFormat().getPath());
-                try {
-                    if (!newFile.createNewFile()) {
-                        System.out.println("Window.actionPerformed >> saveUnder File already existed");
-                        if (ExtraWindow.confirmDialog(this, Phrases.overrideWhenSavingTitle, Phrases.overrideWhenSavingMessage,
-                                Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true) != ExtraWindow.EXIT_WITH_OK) {
-                            throw new Exception("Saving ist canceled");
-                        }
-                    } else {
-                        System.out.println("Window.actionPerformed >> saveUnder has created a new File");
-                    }
-                    money.setPath(newFile.getPath());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (Exception ex) {
-                    // Possibility to add a message that saving has been canceled
-                }
+            if (customFileChooser.showSaveDialog(this) != CustomFileChooser.APPROVE_OPTION) {
+                return;
             }
-            // save
-            save();
+            File newFile = new File(customFileChooser.getSelectedFileMoneyFormat().getPath());
+            try {
+                if (!newFile.createNewFile()) {
+                    System.out.println("Window.actionPerformed >> saveUnder File already existed");
+                    if (ExtraWindow.confirmDialog(this, Phrases.overrideWhenSavingTitle, Phrases.overrideWhenSavingMessage,
+                            Phrases.showFontBold, Phrases.BACKGROUND, Phrases.FOREGROUND, true) != ExtraWindow.EXIT_WITH_YES) {
+                        // Possibility to add a message that saving has been canceled
+                        return;
+                    }
+                } else {
+                    System.out.println("Window.actionPerformed >> saveUnder has created a new File");
+                }
+                money.setPath(newFile.getPath());
+                // save
+                save();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         } else if (e.getSource() == exit) { // JMenuBar exit
             closeProgram();
         } else if (e.getSource() == deletePaths) { // JMenuBar deletePaths
