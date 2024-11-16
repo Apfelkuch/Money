@@ -1,9 +1,9 @@
 package money;
 
-import Input.MouseAdapterEntry;
 import phrases.Phrases;
 import utilitis.CustomPopup;
 import utilitis.Options;
+import window.ExtraWindow;
 import window.Window;
 
 import javax.swing.*;
@@ -20,7 +20,10 @@ import java.util.TimerTask;
 
 public class Entry {
 
-    private final long showTime = 2_000L; // in milliseconds
+    /**
+     * time in milliseconds that the mouse must remain still, to show a popup for the Entry description (receive, category, purpose)
+     */
+    private final long showTime = 1_000L;
     private final DecimalFormat numberFormat = new DecimalFormat("0.00");
     private final Money money;
     private LocalDate localDate;
@@ -33,6 +36,7 @@ public class Entry {
     private int number;
     private double balance;
     private Timer showTimer = new Timer();
+    private CustomPopup showDescriptionPopup;
 
     public Entry(Options option, int number, LocalDate localDate, String receiverBy, String category, String purpose, double spending, double income, double balance, Money money) {
         this.option = option;
@@ -69,9 +73,35 @@ public class Entry {
         newEntry.setSize(width, height);
         newEntry.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
         newEntry.setLayout(new GridLayout(1, 6));
-        newEntry.addMouseListener(new MouseAdapterEntry(window, newEntry, this, money));
+        newEntry.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                cancelDescriptionPopup();
+                if (e.getButton() == MouseEvent.BUTTON1 || e.getButton() == MouseEvent.BUTTON3) {
+                    newEntry.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND.darker());
+                }
+            }
 
-        newEntry.add(buildLabel("" + number, Phrases.normalFontColor));
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                cancelDescriptionPopup();
+                if (e.getButton() == MouseEvent.BUTTON1 && (window.isInputEmpty() || window.isEntryShown())) {
+                    newEntry.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
+                    window.showEntry(Entry.this);
+                    window.edit(Entry.this);
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    int result = ExtraWindow.confirmDialog(window, Phrases.deleteEntry, Phrases.deleteEntryMessage + Entry.this.getNumber(), Phrases.inputFont, Phrases.BACKGROUND_LIGHT, Phrases.FOREGROUND, true);
+                    if (result == ExtraWindow.EXIT_WITH_YES) {
+                        money.updateAfterEntryDelete(Entry.this);
+                        money.updateAllEntries();
+                    }
+                    newEntry.setBackground(Phrases.COLOR_TABLE_CONTENT_BACKGROUND);
+                }
+
+            }
+        });
+
+        newEntry.add(buildLabel(String.valueOf(number), Phrases.normalFontColor));
         newEntry.add(buildLabel(this.setDateOnTable(localDate), Phrases.normalFontColor));
 
         //OPTION 1
@@ -106,32 +136,38 @@ public class Entry {
         textArea.addMouseListener(panel.getMouseListeners()[0]);
 
         textArea.addMouseWheelListener(e -> {
-            showTimer.cancel();
+            cancelDescriptionPopup();
             textArea.getParent().dispatchEvent(e); // send the Event to the Listener of the Parent ==> scrolling of the entries is otherwise not possible
         });
         textArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
-                showTimer.cancel();
+                cancelDescriptionPopup();
             }
         });
         textArea.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                showTimer.cancel();
+                cancelDescriptionPopup();
                 showTimer = new Timer();
                 showTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        int x = e.getXOnScreen() - 10;
-                        int y = e.getYOnScreen() - 10;
-                        Dimension minSize = new Dimension(100, (textArea.getFont().getSize() * (textArea.getText().split("\n").length + 1)));
-                        new CustomPopup(textArea, x, y, textArea.getText(), 0L, minSize);
+                        Dimension minSize = new Dimension(100, textArea.getHeight()); // (textArea.getFont().getSize() * 2)
+                        int x = e.getXOnScreen() + Toolkit.getDefaultToolkit().getBestCursorSize(1, 1).width;
+                        showDescriptionPopup = new CustomPopup(textArea, x, e.getYOnScreen(), textArea.getText(), 0L, minSize);
                     }
                 }, showTime);
             }
         });
         return textArea;
+    }
+
+    private void cancelDescriptionPopup() {
+        showTimer.cancel();
+        if (showDescriptionPopup != null) {
+            showDescriptionPopup.close();
+        }
     }
 
     public String setDateOnTable(LocalDate date) {
