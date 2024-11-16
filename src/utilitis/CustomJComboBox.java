@@ -7,7 +7,6 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.text.BadLocationException;
-import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -21,14 +20,13 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
 
     private Window window;
 
-    public CustomJComboBox(Type[] array, Window window) {
-        super(array);
+    public CustomJComboBox(Window window) {
+        super();
         setEditor(new BasicComboBoxEditor());
         setEditable(true);
         setUI(new BasicComboBoxUI() {
             @Override
             protected JButton createArrowButton() {
-                super.createArrowButton();
                 return new CustomArrowButton(BasicArrowButton.SOUTH);
             }
         });
@@ -87,17 +85,6 @@ public class CustomJComboBox<Type> extends JComboBox<Type> {
     public void setWindow(Window window) {
         this.window = window;
     }
-
-    public void setArrowButtonColor(Color arrowButtonColor) {
-        this.setUI(new BasicComboBoxUI() {
-            @Override
-            protected JButton createArrowButton() {
-                return new CustomArrowButton(BasicArrowButton.SOUTH);
-            }
-        });
-
-    }
-
 
 }
 

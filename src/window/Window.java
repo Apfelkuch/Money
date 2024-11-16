@@ -381,7 +381,7 @@ public class Window extends JFrame implements ActionListener {
         controlsReceiver_by.setPreferredSize(textDimensionBig);
         controlsReceiver_by.setFont(Phrases.inputFont);
         jPanelReceiverBy.add(controlsReceiver_by);
-        inputReceiver_by = new CustomJComboBox<>(new String[0], this);
+        inputReceiver_by = new CustomJComboBox<>(this);
         inputReceiver_by.setFont(Phrases.inputFont);
         inputReceiver_by.setPreferredSize(inputDimensionBig);
         inputReceiver_by.setEditable(true);
@@ -398,7 +398,7 @@ public class Window extends JFrame implements ActionListener {
         ControlsCategory.setPreferredSize(textDimensionBig);
         ControlsCategory.setFont(Phrases.inputFont);
         jPanelCategory.add(ControlsCategory);
-        inputCategory = new CustomJComboBox<>(new String[0], this);
+        inputCategory = new CustomJComboBox<>(this);
         inputCategory.setFont(Phrases.inputFont);
         inputCategory.setPreferredSize(inputDimensionBig);
         inputCategory.setEditable(true);
@@ -415,7 +415,7 @@ public class Window extends JFrame implements ActionListener {
         controlsPurpose.setPreferredSize(textDimensionBig);
         controlsPurpose.setFont(Phrases.inputFont);
         jPanelPurpose.add(controlsPurpose);
-        inputPurpose = new CustomJComboBox<>(new String[0], this);
+        inputPurpose = new CustomJComboBox<>(this);
         inputPurpose.setFont(Phrases.inputFont);
         inputPurpose.setPreferredSize(inputDimensionBig);
         inputPurpose.setEditable(true);
